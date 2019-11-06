@@ -1,5 +1,0 @@
-com\servlet\web\controller\Home.class
-com\servlet\web\dao\Member.class
-com\servlet\web\service\impl\MemberService.class
-com\servlet\web\controller\MemberController.class
-com\servlet\web\service\MemberServiceImpl.class
