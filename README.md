@@ -1,4 +1,4 @@
-# 阅读《SpringMVC 学习指南》写的一些练习例子
+# 阅读[《SpringMVC 学习指南》](http://152.136.139.89/center/java%E4%B9%A6/SpringMVC.pdf)写的一些练习例子
 
 ## 目录
 
@@ -24,7 +24,9 @@
  3. 使用@Controller注解和@RequestMapping注解实现，*特点是*：一个类的每个带有@RequestMapping注解的方法响应一个请求，配置包路径，自动扫描注解
 - @Autowired 依赖注入（member例子）
 - 配合@Autowired 的 @Service 注解
-
-coming soon
+- 主要介绍了如何重定向，以及为什么要重定向
+- 重定向如何传递参数
+ 1. 使用`RedirectAttributes.addFlashAttribute`增加一个Flash参数
+ 2. 在被定向的方法内，使用`RequestContextUtils.getInputFlashMap`从`HttpServletRequest`上获取增加的参数
 
 [例子](https://github.com/Dyinfalse/JavaLean/tree/master/comservletweb)
