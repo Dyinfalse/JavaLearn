@@ -27,7 +27,7 @@ import java.util.Date;
 //}
 /**
  * 注解形式
- * 不需要实现 Controller 类，只需要在类上面加上Controller 注解
+ * 不需要实现 Controller 类，只需要在类上面加上 Controller 注解
  * 一个RequestMapping 对应一个请求地址
  * 加了RequestMapping的方法接受一个Model类型的参数，对应这次请求的数据模型
  * 方法可以返回String或者ModelAndView
