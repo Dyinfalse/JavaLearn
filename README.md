@@ -28,5 +28,16 @@
 - 重定向如何传递参数
  1. 使用`RedirectAttributes.addFlashAttribute`增加一个Flash参数
  2. 在被定向的方法内，使用`RequestContextUtils.getInputFlashMap`从`HttpServletRequest`上获取增加的参数
+- 请求时携带参数路径参数和请求体参数
+ 1. 路径参数 -> 首先在方法上配置`@RequestMapping(value = {"/getParams/{pathParam}"}` 然后在方法参数上使用`@PathVariable String pathParam`注入
+ 2. 请求体参数 -> 直接在方法参数上使用`@RequestParam(value = "httpParam", defaultValue = "default HttpParam", required = false) String httpParam` 进行配置，并注入到方法内
 
 [例子](https://github.com/Dyinfalse/JavaLean/tree/master/comservletweb)
+
+---
+### 第五章
+
+- jsp提交表单，如果要使用jsp提供的表单组件，需要在jsp文件开头加上`<%@ taglib prefix="from" uri="http://www.springframework.org/tags/form" %>`，组件属性详细见5.2(p69-p78)
+ 1. 主要相关的属性:
+ 2. `commandName` form标签的属性，用来指明该表单映射的对象(之前在Controller里使用`ModelAndView.addObject()`方法传入jsp的对象)
+ 3. `path` 单个表单标签的属性，指明当前标签对应的是commandName对象上的哪一个字段

@@ -14,12 +14,39 @@ public class MemberController {
     @Autowired
     private MemberServiceImpl memberService;
 
+    /**
+     * 查找成员信息
+     * @return
+     */
     @RequestMapping({"/findMember"})
     public ModelAndView findMember (){
         ModelAndView mv = new ModelAndView();
         Member m = memberService.get(1L);
         mv.addObject("member", m);
         mv.setViewName("member");
+        return mv;
+    }
+
+    /**
+     * 新增成员表单
+     * @return
+     */
+    @RequestMapping({"/setMember"})
+    public ModelAndView setMember (){
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("member", new Member());
+        mv.setViewName("setMember");
+        return mv;
+    }
+
+    /**
+     * 保存成员信息
+     * @return
+     */
+    @RequestMapping({"/saveMember"})
+    public ModelAndView saveMember (Member member){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("saveMember");
         return mv;
     }
 }

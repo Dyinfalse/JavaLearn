@@ -59,8 +59,6 @@ public class Home {
 
     /**
      * 返回ModelAndView
-     *
-     *
      */
     @RequestMapping(value = {"/about"})
     public ModelAndView about (HttpServletRequest request){

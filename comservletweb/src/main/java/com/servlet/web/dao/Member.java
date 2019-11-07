@@ -46,4 +46,16 @@ public class Member {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Member (){
+
+    }
+
+    public Member (Long id, String name, Integer mobile, Integer sex, String description){
+        this.id = id;
+        this.name = name;
+        this.sex = sex;
+        this.description = description;
+        this.mobile = mobile;
+    }
 }
