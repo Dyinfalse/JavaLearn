@@ -10,7 +10,7 @@
     <context:annotation-config/>
 
     <!-- 自动扫描web包 ,将带有注解的类 纳入spring容器管理 -->
-    <context:component-scan base-package="com.servlet.web.controller"></context:component-scan>
+    <context:component-scan base-package="com.servlet.web.controller"/>
     <!--    配置扫描Service的范围-->
-    <context:component-scan base-package="com.servlet.web.service"></context:component-scan>
+    <context:component-scan base-package="com.servlet.web.service"/>
 </beans>

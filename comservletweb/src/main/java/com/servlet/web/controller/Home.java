@@ -43,7 +43,7 @@ import java.util.Map;
  * 类上加@RequestMapping注解 所有请求都会映射在 /index 后面
  */
 @org.springframework.stereotype.Controller
-@RequestMapping({"index"})
+@RequestMapping({"/"})
 public class Home {
 
     /**
