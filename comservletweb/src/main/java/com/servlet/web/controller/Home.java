@@ -2,15 +2,11 @@ package com.servlet.web.controller;
 
 //import org.springframework.stereotype.Controller;
 //import org.jetbrains.annotations.NotNull;
+import com.servlet.web.service.impl.getParamsData;
 import org.springframework.ui.Model;
-import org.springframework.web.HttpRequestHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.support.RequestContextUtils;
 //import org.springframework.web.servlet.mvc.Controller;
 //import javax.servlet.http.HttpServletRequest;
@@ -99,8 +95,8 @@ public class Home {
      *     @RequestParam 获取请求参数
      *     @PathVariable 获取路径参数
      */
-    @RequestMapping(value = {"/getParams/{pathParam}"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView getParams (@PathVariable String pathParam, @RequestParam(defaultValue = "default HttpParam", required = false) String httpParam){
+    @RequestMapping(value = {"/getParams/{pathParam}"}, method = {RequestMethod.GET})
+    public ModelAndView getParams (@PathVariable String pathParam, @RequestParam(defaultValue = "default HttpParam", required = false) String httpParam) {
 //        接受两个参数，一个通过URL传参，一个通过请求题传参
         ModelAndView mv = new ModelAndView();
 
@@ -108,8 +104,18 @@ public class Home {
 
         mv.addObject("httpParam", httpParam);
 
-        mv.setViewName("getParams");
+        mv.setViewName("page/getParams");
 
         return mv;
+    }
+
+    /**
+     * post 返回json数据
+     */
+    @RequestMapping(value = {"/getParams"}, method = {RequestMethod.POST}, consumes = "application/json")
+    @ResponseBody
+    public getParamsData getParams (@RequestBody getParamsData data){
+        System.out.println(data.getHttpParam());
+        return data;
     }
 }
