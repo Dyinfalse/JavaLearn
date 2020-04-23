@@ -16,6 +16,7 @@ public class beanFactory {
     }
 
     public Student getStudent(Integer id){
+        System.out.println("getStudent id = " + id);
         return this.map.get(id);
     }
 }

@@ -4,15 +4,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="student0" class="JavaBean.Student">
-        <property name="name" value="Bob"></property>
-        <property name="age" value="20"></property>
+        <property name="name" value="Bob"/>
+        <property name="age" value="20"/>
     </bean>
 
-    <bean id="student1" class="JavaBean.Student"></bean>
+    <bean id="student1" class="JavaBean.Student"/>
 
 <!--    工厂方法-->
     <bean id="student2" class="JavaBean.Student" factory-method="getInstance">
-        <constructor-arg value="10"></constructor-arg>
+        <constructor-arg value="10"/>
     </bean>
 
 <!--    工厂bean-->
@@ -21,8 +21,8 @@
             <map>
                 <entry key="0">
                     <bean class="JavaBean.Student">
-                        <property name="age" value="30"></property>
-                        <property name="name" value="厂长"></property>
+                        <property name="age" value="30"/>
+                        <property name="name" value="厂长"/>
                     </bean>
                 </entry>
             </map>
@@ -30,6 +30,6 @@
     </bean>
 <!--    使用工厂bean-->
     <bean id="student3" factory-bean="student-bean" factory-method="getStudent">
-        <constructor-arg value="0"></constructor-arg>
+        <constructor-arg value="0"/>
     </bean>
 </beans>
