@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.swiper-wrapper {
+    background-repeat: no-repeat;
+}
+
+img.hide {
+    display: none;
+}

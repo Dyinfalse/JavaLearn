@@ -28,11 +28,11 @@ public class Background {
      * 获取必应官方背景图数据
      * @return
      */
-    public JSONObject getBackground (String width, String height, String max) {
+    public JSONObject getBackground (String width, String height, Integer max) {
 
         String uri = bingImageUrl + "?format={format}&idx={idx}&n={n}&nc={nc}&pid={pid}&uhd={uhd}&uhdwidth={uhdwidth}&uhdheight={uhdheight}";
 
-        Map<String, String> param = new HashMap<String, String>();
+        Map<String, Object> param = new HashMap<String, Object>();
 
         param.put("format", "js");
         param.put("idx", "0");
