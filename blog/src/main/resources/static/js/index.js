@@ -1,10 +1,6 @@
 
 const BASE_URL = '';
 
-const mySwiper = new Swiper('.swiper-container', {
-    direction: 'vertical',
-});
-
 /**
  * image loading
  */
@@ -14,15 +10,13 @@ function loadImage(imageList, loadCallback) {
 
         let image = document.createElement('img');
 
-        // image.src = imageList[i].url;
-        image.src = 'http://localhost:8080/images/74afbe499aa6e6e01bd9d78f4f08f147.jpg';
-
-        // document.getElementsByTagName('body')[0].appendChild(image);
+        image.src = imageList[i].url;
 
         image.onload = function(){
             imageLoaded.push({ ...imageList[i], error: false});
 
             if(imageLoaded.length === imageList.length){
+
                 loadCallback(imageLoaded);
             }
         };
@@ -33,7 +27,7 @@ function loadImage(imageList, loadCallback) {
             if(imageLoaded.length === imageList.length){
                 loadCallback(imageLoaded);
             }
-        }
+        };
     }
 }
 
@@ -45,26 +39,38 @@ function getBingImages (){
     let height = document.documentElement.offsetHeight;
     request({
         url: '/home/getBingImages',
-        data: { width, height, max: 3 },
+        data: { width, height, max: 8 },
         success(res){
             if(res.error === 0){
                 loadImage(res.list, function (loadedImageList) {
                     console.log('图片加载完成');
+
+                    document.getElementById('loading').style.display = 'none';
+
                     for(let i = 0; i < loadedImageList.length; i++){
                         if(loadedImageList[i].error === false){
 
-                            let slider = document.createElement('img');
+                            let slider = document.createElement('div');
                             let text = document.createElement('div');
 
                             text.innerText = loadedImageList[i].title;
                             slider.className = 'swiper-slide';
-                            // slider.style.backgroundImage = 'url(' + loadedImageList[i].url + ')';
-                            slider.style.backgroundImage = 'http://localhost:8080/images/74afbe499aa6e6e01bd9d78f4f08f147.jpg';
+                            slider.style.backgroundImage = 'url(' + loadedImageList[i].url + ')';
 
                             slider.appendChild(text);
                             document.getElementById('swiper-wrapper').appendChild(slider);
                         }
                     }
+
+                    document.getElementsByClassName('btn-list')[0].style.display = 'block';
+
+                    const mySwiper = new Swiper('.swiper-container', {
+                        direction: 'vertical',
+                        mousewheel: true,
+                        pagination: {
+                            el: '.swiper-pagination',
+                        },
+                    });
                 });
             }
         }

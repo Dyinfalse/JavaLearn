@@ -6,7 +6,72 @@ body {
 .swiper-wrapper {
     background-repeat: no-repeat;
 }
+.swiper-container{
+    --swiper-theme-color: #ff6600;
+    --swiper-pagination-color: #ffffff;
+}
 
+.swiper-slide {
+    position: relative;
+}
+
+.swiper-slide div {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 10px 15px;
+    background: rgba(0,0,0,.5);
+    color: #ffffff;
+}
 img.hide {
     display: none;
+}
+@keyframes loading
+{
+    from {
+        border-left: 2px solid;}
+    to {border-left: 295px solid;}
+}
+
+@-moz-keyframes loading /* Firefox */
+{
+    from {
+        border-left: 2px solid;}
+    to {border-left: 295px solid;}
+}
+
+@-webkit-keyframes loading /* Safari 和 Chrome */
+{
+    from {
+        border-left: 2px solid;}
+    to {border-left: 295px solid;}
+}
+
+@-o-keyframes loading /* Opera */
+{
+    from {
+        border-left: 2px solid;}
+    to {border-left: 295px solid;}
+}
+
+.btn-list {
+    display: none;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: rgba(0,0,0,.5);
+    color: #ffffff;
+    width: 100px;
+    z-index: 99;
+}
+
+.btn-list div {
+    margin-bottom: 5px;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.btn-list div a {
+    color: #ffffff;
+    text-decoration: none;
 }

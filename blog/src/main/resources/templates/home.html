@@ -23,16 +23,43 @@
     <link rel="stylesheet" href="/css/index.css">
     <meta name="theme-color" content="#1890ff">
     <title>击鼓卖糖的后院</title>
+    <style>
+        body {
+            background: #79a2a0;
+        }
+        #loading {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: 300px;
+            box-sizing: border-box;
+            height: 10px;
+            color: #ffffff;
+            border: 2px solid;
+            animation: loading 1s ease-in-out .3s 1 normal;
+            -moz-animation: loading 1s ease-in-out .3s 1 normal;
+            -webkit-animation: loading 1s ease-in-out .3s 1 normal;
+            -o-animation: loading 1s ease-in-out .3s 1 normal;
+            animation-fill-mode : forwards;
+        }
+    </style>
 </head>
 <body>
-<div style="background: url('https://cn.bing.com//th?id=OHR.KauriTree_ZH-CN3695568740_UHD.jpg&rf=LaDigue_UHD.jpg&pid=hp&w=1440&h=210&rs=1&c=4')"></div>
-<div style="background: url('https://cn.bing.com//th?id=OHR.KauriTree_ZH-CN3695568740_UHD.jpg&rf=LaDigue_UHD.jpg&pid=hp&w=1440&h=210&rs=1&c=4')"></div>
-<div style="background: url('https://cn.bing.com//th?id=OHR.KauriTree_ZH-CN3695568740_UHD.jpg&rf=LaDigue_UHD.jpg&pid=hp&w=1440&h=210&rs=1&c=4')"></div>
-<div style="background: url('https://cn.bing.com//th?id=OHR.KauriTree_ZH-CN3695568740_UHD.jpg&rf=LaDigue_UHD.jpg&pid=hp&w=1440&h=210&rs=1&c=4')"></div>
-<div style="background: url('https://cn.bing.com//th?id=OHR.KauriTree_ZH-CN3695568740_UHD.jpg&rf=LaDigue_UHD.jpg&pid=hp&w=1440&h=210&rs=1&c=4')"></div>
+    <div id="loading"></div>
+    <div class="btn-list">
+        <div><a href="/book/SpringMVC.pdf">书</a></div>
+    </div>
     <div class="swiper-container">
         <div class="swiper-wrapper" id="swiper-wrapper"></div>
+        <div class="swiper-pagination"></div>
     </div>
 <script src="/js/index.js"></script>
 </body>
 </html>
+
+<!--sudo vim /etc/nginx/sites-enabled/default-->
+
+<!--nohup java -jar blog-0.0.1-SNAPSHOT.jar &#45;&#45;server.port=8081 >temp.txt &-->
