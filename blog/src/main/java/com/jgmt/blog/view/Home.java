@@ -19,4 +19,17 @@ public class Home {
 
         return mv;
     }
+
+    /**
+     * 书本页面
+     */
+    @RequestMapping("/bookList")
+    @ResponseBody
+    public ModelAndView bookList () {
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("bookList");
+
+        return mv;
+    }
 }

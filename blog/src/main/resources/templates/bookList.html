@@ -18,48 +18,45 @@
     <meta property="og:locale" content="zh_CN">
     <meta property="og:description" content="击鼓卖糖的博客，书，小理解">
     <link rel="icon" href="/images/74afbe499aa6e6e01bd9d78f4f08f147.jpg" type="image/x-icon">
-    <link rel="stylesheet" href="/css/swiper.min.css">
-    <script src="/js/swiper.min.js"></script>
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/bookList.css">
     <meta name="theme-color" content="#1890ff">
     <title>击鼓卖糖的后院</title>
-    <style>
-        body {
-            background: #79a2a0;
-        }
-        #loading {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            margin: auto;
-            width: 300px;
-            box-sizing: border-box;
-            height: 10px;
-            color: #ffffff;
-            border: 2px solid;
-            animation: loading 1s ease-in-out .3s 1 normal;
-            -moz-animation: loading 1s ease-in-out .3s 1 normal;
-            -webkit-animation: loading 1s ease-in-out .3s 1 normal;
-            -o-animation: loading 1s ease-in-out .3s 1 normal;
-            animation-fill-mode : forwards;
-        }
-    </style>
 </head>
 <body>
-    <div id="loading"></div>
-    <div class="btn-list">
-        <div><a href="/bookList">看书</a></div>
+    <div class="content">
+        <div class="book">
+            <a target="_blank" href="/book/SpringMVC.pdf">
+
+                <img src="/images/springMVC.png" alt="">
+                <p>SpringMVC</p>
+            </a>
+        </div>
+        <div class="book">
+            <a target="_blank" href="/book/javabcgfd3b.pdf">
+                <img src="/images/javagf.jpg" alt="">
+                <p>《Java编程规范（第三版）》James.Gosling</p>
+            </a>
+        </div>
+        <div class="book">
+            <a target="_blank" href="/book/springbootkfsz.pdf">
+                <img src="/images/springbootkf.jpg" alt="">
+                <p>Spring Boot开发实战</p>
+            </a>
+        </div>
+        <div class="book">
+            <a target="_blank" href="/book/springbootjm.pdf">
+                <img src="/images/springbootjm.jpg" alt="">
+                <p>SpringBoot揭秘-快速构建微服务体系</p>
+            </a>
+        </div>
+        <div class="book">
+            <a target="_blank" href="/book/javasjjgusf.pdf">
+                <img src="/images/javasjjgsf.jpg" alt="">
+                <p>java数据结构和算法</p>
+            </a>
+        </div>
     </div>
-    <div class="swiper-container">
-        <div class="swiper-wrapper" id="swiper-wrapper"></div>
-        <div class="swiper-pagination"></div>
-    </div>
-<script src="/js/index.js"></script>
+
+<script src="/js/bookList.js"></script>
 </body>
 </html>
-
-<!--sudo vim /etc/nginx/sites-enabled/default-->
-
-<!--nohup java -jar blog-0.0.1-SNAPSHOT.jar --server.port=8081 >temp.txt &-->
