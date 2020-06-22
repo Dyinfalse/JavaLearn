@@ -50,8 +50,8 @@ Student student = (Student) context.getBean("student3", Student.class);
 
 - XML配置类的依赖关系
 > Spring提供两种配置依赖关系的元素
-> 使用&ltproperty ref="目标类"&gt指定setter来设置值，前提是接受依赖的类必须有一个setter方法
-> 使用&ltconstructor-arg ref="目标类"&gt 调用构造方法设置值，在构造方法中需要接受并赋值给指定字段
+> 使用<property ref="目标类" />指定setter来设置值，前提是接受依赖的类必须有一个setter方法
+> 使用<constructor-arg ref="目标类" /> 调用构造方法设置值，在构造方法中需要接受并赋值给指定字段
 
 [例子](https://github.com/Dyinfalse/JavaLean/tree/master/springIocDemo)
 
