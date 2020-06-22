@@ -1,13 +1,57 @@
-# 阅读[《SpringMVC 学习指南》](http://152.136.139.89/center/java%E4%B9%A6/SpringMVC.pdf)写的一些练习例子
+# 阅读[《SpringMVC 学习指南》](http://152.136.139.89/book/SpringMVC.pdf)写的一些练习例子
 
 ## 目录
 
 ### 第一章 Spring 框架
 
-- 代码主要是使用 Spring 提供的 ClassPathXmlApplicationContext 类实现控制反转
+- 什么是Spring？
+> 是一个开源的企业级开发框架
+
+- 什么是SpringMvc？
+> Spring的一个子框架
+
+- 什么是控制反转（IoC）？
+> 将创建类实例的控制权移交给Spring容器，叫做控制反转
+
+- (1.2)如何使用Spring的控制反转？
+> Spring提供两种方式配置Spring控制反转：XML文件和注解，还需要一个ApplicationContext对象作为控制反转容器，ApplicationContext接口有两个实现 ClassPathXmlApplicationContext和FileSystemXmlApplicationContext，本书主要使用的是ClassPathXmlApplicationContext
+
 - 使用XML配置Bean 用来实例化类
+> 
+
+- 使用 Spring 提供的 ClassPathXmlApplicationContext 类实现控制反转
+
+```xml
+<beans xmlns="...">
+	<bean name="product" class="com.app.beans.Product" />
+</beans>
+```
+
+``` java
+ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
+Student student = (Student) context.getBean("student3", Student.class);
+```
+
 - 实例化XML时的钩子函数，Factory和 Destroy
-- XMl之前的引用，属性引入，实例化参数引入
+> factory-method: 指定一个工厂类，生成类的时候做一定的加工，有静态，动态的区别
+> destroy-method: 实例被销毁之前调用这个方法
+
+- 实例化时传递参数
+
+```xml
+<beans xmlns="...">
+	<bean name="product" class="com.app.beans.Product">
+		<constructor-arg name="name"  value="Bob"/>
+		<constructor-arg name="age"  value="18"/>
+		...
+	</bean>
+</beans>
+```
+
+- XML配置类的依赖关系
+> Spring提供两种配置依赖关系的元素
+> 使用&ltproperty ref="目标类"&gt指定setter来设置值，前提是接受依赖的类必须有一个setter方法
+> 使用&ltconstructor-arg ref="目标类"&gt 调用构造方法设置值，在构造方法中需要接受并赋值给指定字段
 
 [例子](https://github.com/Dyinfalse/JavaLean/tree/master/springIocDemo)
 
@@ -19,9 +63,15 @@
 - DispatcherServlet 分发请求动作
 - 一个SpringMVC应用配置方法
 - 主要介绍了三种实现SpringMVC的方式以及配置方法
- 1. 继承Controller类，使用doGet，doPost方法响应接口 *特点是：一个类的doGet或doPost方法响应一个请求（代码不包含该例子）*
- 2. 实现Controller接口，以及handleRequest方法响应接口，*特点是：一个类的handRequest响应一个请求，在SpringMVC配置XML文件中用bean指定请求地址与类的对应关系*
- 3. 使用@Controller注解和@RequestMapping注解实现，*特点是：一个类的每个带有@RequestMapping注解的方法响应一个请求，配置包路径，自动扫描注解*
+ > 1#继承Controller类，使用doGet，doPost方法响应接口 
+ > 特点：一个类的doGet或doPost方法响应一个请求（代码不包含该例子）
+ 
+ > 2#实现Controller接口，以及handleRequest方法响应接口
+ > 特点：一个类的handRequest响应一个请求，在SpringMVC配置XML文件中用bean指定请求地址与类的对应关系
+ 
+ > 3#使用@Controller注解和@RequestMapping注解实现
+ > 特点：一个类的每个带有@RequestMapping注解的方法响应一个请求，配置包路径，自动扫描注解
+ 
 - @Autowired 依赖注入（member例子）
 - 配合@Autowired 的 @Service 注解
 - 主要介绍了如何重定向，以及为什么要重定向
