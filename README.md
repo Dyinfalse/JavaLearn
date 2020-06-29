@@ -59,15 +59,18 @@ Student student = (Student) context.getBean("student3", Student.class);
 ### 第二章 模型2和SpringMVC模式
 
 - 模型1和模型2
+
 > 模型1是页面中心，简单的jsp应用，路由大多由文件系统处理，因此修改一个jsp文件名称，需要修改其他页面的链接，所以维护起来比较麻烦
-> 模型2是居于模型-视图-控制器（MVC）的模式，几乎所有现代web框架都是模型2的实现，在SpringMVC中一般使用`POJO(Plain Old Java Object)`作为模型，在实践中会使用一个JavaBean，配合Action支持持久化，`Servlet`或者`Filter`来作为控制器，`JSP`作为视图，一个提供了Action的对象称为action对象，一个action对象可支持多个action（一个action可以理解为一个动作，一个相应方式，根据请求地址，访问不同的action，做出不同的响应）
+> 模型2是居于模型-视图-控制器（MVC）的模式，几乎所有现代web框架都是模型2的实现，在SpringMVC中一般使用`POJO(Plain Old Java Object)`作为模型，在实践中会使用一个JavaBean，配合Action支持持久化，`Servlet`或者`Filter`来作为控制器，`JSP`作为视图，一个提供了Action的对象称为action对象，一个action对象可支持多个action（一个action可以理解为一个动作，一个响应方式，根据请求地址，访问不同的action，做出不同的响应）
 
 - 模型2之Servlet控制器
+
 > 本书介绍了一个产品表单的例子，其中包含
 > - 一个ProductForm类，封装HTML表单字段
 > - 一个ControllerServlet类，作为控制器
 > - 一个SaveProductAction类，作为action类
 > - 两个JSP文件作为view，存放在WEB-INF文件夹内，外部无法直接访问。
+
 
 
 
