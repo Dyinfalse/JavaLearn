@@ -64,14 +64,10 @@ Student student = (Student) context.getBean("student3", Student.class);
 
 - 模型2之Servlet控制器
 > 本书介绍了一个产品表单的例子，其中包含
-
->> 一个ProductForm类，封装HTML表单字段
-
->> 一个ControllerServlet类，作为控制器
-
->> 一个SaveProductAction类，作为action类
-
->> 两个JSP文件作为view，存放在WEB-INF文件夹内，外部无法直接访问。
+> - 一个ProductForm类，封装HTML表单字段
+> - 一个ControllerServlet类，作为控制器
+> - 一个SaveProductAction类，作为action类
+> - 两个JSP文件作为view，存放在WEB-INF文件夹内，外部无法直接访问。
 
 
 
