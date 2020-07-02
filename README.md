@@ -66,10 +66,15 @@ Student student = (Student) context.getBean("student3", Student.class);
 - 模型2之Servlet控制器
 
 > 本书介绍了一个产品表单的例子，其中包含
-> - 一个ProductForm类，封装HTML表单字段
+> - 一个Product类，包含产品相关字段
+> - 一个ProductForm类，封装HTML表单字段 因为要做成业务与代码的区分,虽然ProductForm和Product字段差不多,但是要区分开
 > - 一个ControllerServlet类，作为控制器
 > - 一个SaveProductAction类，作为action类
 > - 两个JSP文件作为view，存放在WEB-INF文件夹内，外部无法直接访问。
+> - 后续扩展ControllerServlet解耦, 路径分发(DispatcherServlet)以及两个针对action的Controll, InputProductController(表单输入)和SaveProductController(表单提交)
+> - 增加一个ProductValidator作为表单验证类, 返回一个ArrayList,存贮ProductFrom类每个字段的验证结果
+
+需要强调, ControllerServlet继承自HttpServlet类, 通过`HttpServletRequest`和`HttpServletResponse`来描述映射(uri与action), 并且作出返回(P17)
 
 
 
