@@ -65,45 +65,57 @@ Student student = (Student) context.getBean("student3", Student.class);
 
 - 模型2之Servlet控制器
 
-> 本书介绍了一个产品表单的例子，其中包含
+> 本书介绍了一个基于MVC模型2架构的产品表单的例子，其中包含
 > - 一个Product类，包含产品相关字段
 > - 一个ProductForm类，封装HTML表单字段 因为要做成业务与代码的区分,虽然ProductForm和Product字段差不多,但是要区分开
 > - 一个ControllerServlet类，作为控制器
 > - 一个SaveProductAction类，作为action类
 > - 两个JSP文件作为view，存放在WEB-INF文件夹内，外部无法直接访问。
-> - 后续扩展ControllerServlet解耦, 路径分发(DispatcherServlet)以及两个针对action的Controll, InputProductController(表单输入)和SaveProductController(表单提交)
-> - 增加一个ProductValidator作为表单验证类, 返回一个ArrayList,存贮ProductFrom类每个字段的验证结果
+> 后续扩展ControllerServlet解耦, 路径分发(DispatcherServlet)以及两个针对action的Controll, InputProductController(表单输入)和SaveProductController(表单提交)
+> 增加一个ProductValidator作为表单验证类, 返回一个ArrayList,存贮ProductFrom类每个字段的验证结果
 
-需要强调, ControllerServlet继承自HttpServlet类, 通过`HttpServletRequest`和`HttpServletResponse`来描述映射(uri与action), 并且作出返回(P17)
+需要强调, ControllerServlet继承自HttpServlet类, 通过`HttpServletRequest`和`HttpServletResponse`来描述映射(uri与action), 并且作出返回(P17), 这个例子只到了Controller层, 实际应用场景中还需要若干Service类用来处理后端的复杂逻辑, 需要DAO类来访问数据库
+
+---
+### 第三章 SpringMVC模式
+
+- SpringMVC的好处
+
+
+对比了MVC模式2和SpringMVC在Dispatcher Servlet的区别, 以下是使用SpringMVC的好处
+
+> SpringMVC提供一个Dispatcher Servlet, 无需开发
+> SpringMVC基于XML配置文件, 可以编辑, 不需要重新编译
+> SpringMVC实例化控制器, 并根据用户输入构造bean
+> SpringMVC自动绑定用户输入, 并正确的转换数据类型
+> SpringMVC可以校验用户输入, 支持编程方式声明, 并且内置常用校验
+> SpringMVC基于Spring, 可以使用其他Spring的功能
+> SpringMVC支持国际化和本地化, 根据用户所在区域显示不同语言
+> SpringMVC支持多种视图技术, 常用的JSP, Velocity和 FreeMarker
+
+- SpringMVC的DispatcherServlet
+
+> 要使用SpringMVC提供的DispatcherServlet, 需要一个`srevletName-servlet.xml`作为配置, 其中可以使用如下代码引入配置
+
+```xml
+	<servlet>
+		...
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>WEB-INF/config/simple-config.xml</param-value>
+		</init-param>
+
+		<!-- 下面的元素表示在程序启动时, 装载servlet -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+```
+
+> `<load-on-startup>1</load-on-startup>`下面的元素表示在程序启动时, 装载servlet, 并且调用init方法, 如果不存在, 则在该servlet的第一个请求是装载
+
+- Controller 接口
 
 
 
-
-- 主要介绍模式2，以及MVC概念
-- 举了一个简单的产品表单例子
-- DispatcherServlet 分发请求动作
-- 一个SpringMVC应用配置方法
-- 主要介绍了三种实现SpringMVC的方式以及配置方法
- > 1#继承Controller类，使用doGet，doPost方法响应接口 
- > 特点：一个类的doGet或doPost方法响应一个请求（代码不包含该例子）
- 
- > 2#实现Controller接口，以及handleRequest方法响应接口
- > 特点：一个类的handRequest响应一个请求，在SpringMVC配置XML文件中用bean指定请求地址与类的对应关系
- 
- > 3#使用@Controller注解和@RequestMapping注解实现
- > 特点：一个类的每个带有@RequestMapping注解的方法响应一个请求，配置包路径，自动扫描注解
- 
-- @Autowired 依赖注入（member例子）
-- 配合@Autowired 的 @Service 注解
-- 主要介绍了如何重定向，以及为什么要重定向
-- 重定向如何传递参数
- 1. 使用`RedirectAttributes.addFlashAttribute`增加一个Flash参数
- 2. 在被定向的方法内，使用`RequestContextUtils.getInputFlashMap`从`HttpServletRequest`上获取增加的参数
-- 请求时携带参数路径参数和请求体参数
- 1. 路径参数 -> 首先在方法上配置`@RequestMapping(value = {"/getParams/{pathParam}"}` 然后在方法参数上使用`@PathVariable String pathParam`注入
- 2. 请求体参数 -> 直接在方法参数上使用`@RequestParam(value = "httpParam", defaultValue = "default HttpParam", required = false) String httpParam` 进行配置，并注入到方法内
-
-[例子](https://github.com/Dyinfalse/JavaLean/tree/master/comservletweb)
 
 ---
 ### 第五章
