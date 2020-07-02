@@ -85,12 +85,19 @@ Student student = (Student) context.getBean("student3", Student.class);
 对比了MVC模式2和SpringMVC在Dispatcher Servlet的区别, 以下是使用SpringMVC的好处
 
 > SpringMVC提供一个Dispatcher Servlet, 无需开发
+>
 > SpringMVC基于XML配置文件, 可以编辑, 不需要重新编译
+>
 > SpringMVC实例化控制器, 并根据用户输入构造bean
+>
 > SpringMVC自动绑定用户输入, 并正确的转换数据类型
+>
 > SpringMVC可以校验用户输入, 支持编程方式声明, 并且内置常用校验
+>
 > SpringMVC基于Spring, 可以使用其他Spring的功能
+>
 > SpringMVC支持国际化和本地化, 根据用户所在区域显示不同语言
+>
 > SpringMVC支持多种视图技术, 常用的JSP, Velocity和 FreeMarker
 
 - SpringMVC的DispatcherServlet
