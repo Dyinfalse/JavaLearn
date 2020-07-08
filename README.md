@@ -121,11 +121,62 @@ Student student = (Student) context.getBean("student3", Student.class);
 
 - Controller 接口
 
+> SpringMVC 2.5 之前开发一个Controller的方式是实现`org.springframework.web.servlet.mvc.Controller`接口, 并且重写`handleRequest`方法, 下面是该方法的签名
 
+```JAVA
 
+ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
+
+```
+- 一个Controller例子
+
+[可以查看](https://github.com/Dyinfalse/JavaLearn/blob/master/comservletweb/src/main/java/com/servlet/web/controller/Home.java)
+
+- View Resolver
+
+使用XML可以配置在访问JSP文件的公共路径, 一般的配置方法如下
+
+```XML
+<!-- springmvc-config.xml -->
+<beans xmlns="..." xmlns:xsi="...">
+	<bean id=""viewResolver class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp">
+	</bean>
+</beans>
+```
+
+上述配置表示当在 Controller 中的 hadnleRequest 方法返回 ModelAndView 的时候,指定JSP文件的时候,可以省去前缀路径和文件后缀,写法如下
+
+```java
+import org.springframework.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
+// some import
+
+class Home implements Controller {
+	public ModelAndView handleRequest (HttpRequestServlet request, HttpResponseServlet response){
+		// some th ...
+		return new ModelAndView("home"); // -> 代替 return new ModelAndView("WEB-INF/jsp/home.jsp");
+	}
+}
+```
 
 ---
-### 第五章
+### 第四章 基于注解的控制器
+
+- SpringMVC的注解优点
+
+> 一个控制器可以处理多个请求, 这就允许了将多个相关动作写在一个控制器内部, 减少了类的数量
+
+> 请求映射不在需要专门的配置文件, 使用`RequestMapping`注解可以对一个方法进行请求处理
+
+- Controller注解类型
+
+
+
+
+
+
 
 - jsp提交表单，如果要使用jsp提供的表单组件，需要在jsp文件开头加上`<%@ taglib prefix="from" uri="http://www.springframework.org/tags/form" %>`，组件属性详细见5.2(p69-p78)
  1. 主要相关的属性:
