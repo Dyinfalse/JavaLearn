@@ -1,11 +1,32 @@
 body {
     margin: 0;
     padding: 0;
+    background: #79a2a0;
+}
+
+#loading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 300px;
+    box-sizing: border-box;
+    height: 10px;
+    color: #ffffff;
+    border: 2px solid;
+    animation: loading 1s ease-in-out .3s 1 normal;
+    -moz-animation: loading 1s ease-in-out .3s 1 normal;
+    -webkit-animation: loading 1s ease-in-out .3s 1 normal;
+    -o-animation: loading 1s ease-in-out .3s 1 normal;
+    animation-fill-mode : forwards;
 }
 
 .swiper-wrapper {
     background-repeat: no-repeat;
 }
+
 .swiper-container{
     --swiper-theme-color: #ff6600;
     --swiper-pagination-color: #ffffff;
@@ -23,35 +44,47 @@ body {
     background: rgba(0,0,0,.5);
     color: #ffffff;
 }
+
 img.hide {
     display: none;
 }
+
 @keyframes loading
 {
     from {
         border-left: 2px solid;}
-    to {border-left: 295px solid;}
+    to {
+        border-left: 295px solid;
+    }
 }
 
 @-moz-keyframes loading /* Firefox */
 {
     from {
         border-left: 2px solid;}
-    to {border-left: 295px solid;}
+    to {
+        border-left: 295px solid;
+    }
 }
 
 @-webkit-keyframes loading /* Safari 和 Chrome */
 {
     from {
-        border-left: 2px solid;}
-    to {border-left: 295px solid;}
+        border-left: 2px solid;
+    }
+    to {
+        border-left: 295px solid;
+    }
 }
 
 @-o-keyframes loading /* Opera */
 {
     from {
-        border-left: 2px solid;}
-    to {border-left: 295px solid;}
+        border-left: 2px solid;
+    }
+    to {
+        border-left: 295px solid;
+    }
 }
 
 .btn-list {

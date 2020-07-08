@@ -14,8 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 前端页面的数据接口
+ */
 @RestController
-@RequestMapping("home")
+@RequestMapping("api")
 public class Bing {
 
     @Autowired

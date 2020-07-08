@@ -1,5 +1,5 @@
 
-const BASE_URL = '';
+const BASE_URL = '/api';
 
 /**
  * image loading
@@ -38,7 +38,7 @@ function getBingImages (){
     let width = document.documentElement.offsetWidth;
     let height = document.documentElement.offsetHeight;
     request({
-        url: '/home/getBingImages',
+        url: '/getBingImages',
         data: { width, height, max: 8 },
         success(res){
             if(res.error === 0){

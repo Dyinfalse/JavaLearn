@@ -1,7 +1,6 @@
 package com.jgmt.blog.view;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -9,8 +8,10 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class Home {
 
+    /**
+     * 首页
+     */
     @RequestMapping("/")
-    @ResponseBody
     public ModelAndView home () {
 
         ModelAndView mv = new ModelAndView();
@@ -24,7 +25,6 @@ public class Home {
      * 书本页面
      */
     @RequestMapping("/bookList")
-    @ResponseBody
     public ModelAndView bookList () {
         ModelAndView mv = new ModelAndView();
 

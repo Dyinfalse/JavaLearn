@@ -43,8 +43,8 @@ public class Background {
         param.put("uhdwidth", width);
         param.put("uhdheight", height);
 
-        String Body = restTemplate.getForObject(uri, String.class, param);
+        String body = restTemplate.getForObject(uri, String.class, param);
 
-        return JSONObject.parseObject(Body);
+        return JSONObject.parseObject(body);
     }
 }

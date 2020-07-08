@@ -1,26 +1,7 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="author" content="击鼓卖糖">
-    <meta name="description" content="击鼓卖糖的博客，书，小理解，没有每周分享，或许一年？运气好一个月">
-    <meta name="twitter:site" content="@击鼓卖糖">
-    <meta name="twitter:creator" content="@击鼓卖糖">
-    <meta name="twitter:title" content="击鼓卖糖的博客，书，小理解">
-    <meta name="twitter:description" content="击鼓卖糖的博客，书，小理解，没有每周分享，或许一年？运气好一个月">
-    <meta property="og:url" content="http://152.136.139.89/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="击鼓卖糖的博客，书，小理解">
-    <meta property="og:site_name" content="击鼓卖糖的博客，书，小理解">
-    <meta property="og:locale" content="zh_CN">
-    <meta property="og:description" content="击鼓卖糖的博客，书，小理解">
-    <link rel="icon" href="/images/74afbe499aa6e6e01bd9d78f4f08f147.jpg" type="image/x-icon">
-    <link rel="stylesheet" href="/css/bookList.css">
-    <meta name="theme-color" content="#1890ff">
-    <title>击鼓卖糖的后院</title>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/header.html :: header(~{::title}, ~{::link}, ~{})">
+    <title>击鼓卖糖的博客</title>
+    <link rel="stylesheet" th:href="@{/css/bookList.css}">
 </head>
 <body>
     <div class="content">
