@@ -1,6 +1,6 @@
 package com.jgmt.blog.view;
 
-import com.jgmt.blog.service.Markdown;
+import com.jgmt.blog.service.MarkdownService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Blog {
 
     @Autowired
-    Markdown md;
+    private MarkdownService markdownService;
 
     @RequestMapping("/blog/{fileName}")
     public ModelAndView blog(@PathVariable String fileName) throws IOException {
@@ -24,11 +24,11 @@ public class Blog {
 
         File file = new File("src/main/resources/static/md/" + fileName + ".md");
 
-        String html = md.generateHtml(file);
+        String html = markdownService.generateHtml(file);
 
-        System.out.println(html);
+        mv.addObject("html", html);
 
-        mv.setViewName("home");
+        mv.setViewName("blog");
 
         return mv;
     }

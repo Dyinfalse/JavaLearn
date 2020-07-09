@@ -1,6 +1,6 @@
-# 阅读[《SpringMVC 学习指南》](http://152.136.139.89/book/SpringMVC.pdf)写的一些练习例子
+## 阅读[《SpringMVC 学习指南》](http://152.136.139.89/book/SpringMVC.pdf)
 
-## 目录
+*2020-07-09 Dyinfalse*
 
 ### 第一章 Spring 框架
 
@@ -21,12 +21,14 @@
 
 - 使用 Spring 提供的 ClassPathXmlApplicationContext 类实现控制反转
 
-```xml
+XML
+``` xml
 <beans xmlns="...">
 	<bean name="product" class="com.app.beans.Product" />
 </beans>
 ```
 
+java
 ``` java
 ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
 Student student = (Student) context.getBean("student3", Student.class);
@@ -38,7 +40,7 @@ Student student = (Student) context.getBean("student3", Student.class);
 
 - 实例化时传递参数
 
-```xml
+``` xml
 <beans xmlns="...">
 	<bean name="product" class="com.app.beans.Product">
 		<constructor-arg name="name"  value="Bob"/>
@@ -61,18 +63,19 @@ Student student = (Student) context.getBean("student3", Student.class);
 - 模型1和模型2
 
 > 模型1是页面中心，简单的jsp应用，路由大多由文件系统处理，因此修改一个jsp文件名称，需要修改其他页面的链接，所以维护起来比较麻烦
+
 > 模型2是居于模型-视图-控制器（MVC）的模式，几乎所有现代web框架都是模型2的实现，在SpringMVC中一般使用`POJO(Plain Old Java Object)`作为模型，在实践中会使用一个JavaBean，配合Action支持持久化，`Servlet`或者`Filter`来作为控制器，`JSP`作为视图，一个提供了Action的对象称为action对象，一个action对象可支持多个action（一个action可以理解为一个动作，一个响应方式，根据请求地址，访问不同的action，做出不同的响应）
 
 - 模型2之Servlet控制器
 
 > 本书介绍了一个基于MVC模型2架构的产品表单的例子，其中包含
-> - 一个Product类，包含产品相关字段
-> - 一个ProductForm类，封装HTML表单字段 因为要做成业务与代码的区分,虽然ProductForm和Product字段差不多,但是要区分开
-> - 一个ControllerServlet类，作为控制器
-> - 一个SaveProductAction类，作为action类
-> - 两个JSP文件作为view，存放在WEB-INF文件夹内，外部无法直接访问。
-> 后续扩展ControllerServlet解耦, 路径分发(DispatcherServlet)以及两个针对action的Controll, InputProductController(表单输入)和SaveProductController(表单提交)
-> 增加一个ProductValidator作为表单验证类, 返回一个ArrayList,存贮ProductFrom类每个字段的验证结果
+> 1.一个Product类，包含产品相关字段
+> 2.一个ProductForm类，封装HTML表单字段 因为要做成业务与代码的区分,虽然ProductForm和Product字段差不多,但是要区分开
+> 3.一个ControllerServlet类，作为控制器
+> 4.一个SaveProductAction类，作为action类
+> 5.两个JSP文件作为view，存放在WEB-INF文件夹内，外部无法直接访问。
+> 6.后续扩展ControllerServlet解耦, 路径分发(DispatcherServlet)以及两个针对action的Controll, InputProductController(表单输入)和SaveProductController(表单提交)
+> 7.增加一个ProductValidator作为表单验证类, 返回一个ArrayList,存贮ProductFrom类每个字段的验证结果
 
 需要强调, ControllerServlet继承自HttpServlet类, 通过`HttpServletRequest`和`HttpServletResponse`来描述映射(uri与action), 并且作出返回(P17), 这个例子只到了Controller层, 实际应用场景中还需要若干Service类用来处理后端的复杂逻辑, 需要DAO类来访问数据库
 
@@ -104,7 +107,7 @@ Student student = (Student) context.getBean("student3", Student.class);
 
 > 要使用SpringMVC提供的DispatcherServlet, 需要一个`srevletName-servlet.xml`作为配置, 其中可以使用如下代码引入配置
 
-```xml
+``` xml
 	<servlet>
 		...
 		<init-param>
@@ -123,7 +126,7 @@ Student student = (Student) context.getBean("student3", Student.class);
 
 > SpringMVC 2.5 之前开发一个Controller的方式是实现`org.springframework.web.servlet.mvc.Controller`接口, 并且重写`handleRequest`方法, 下面是该方法的签名
 
-```JAVA
+``` java
 
 ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
 
@@ -136,7 +139,7 @@ ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse respo
 
 使用XML可以配置在访问JSP文件的公共路径, 一般的配置方法如下
 
-```XML
+``` xml
 <!-- springmvc-config.xml -->
 <beans xmlns="..." xmlns:xsi="...">
 	<bean id=""viewResolver class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -148,7 +151,7 @@ ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse respo
 
 上述配置表示当在 Controller 中的 hadnleRequest 方法返回 ModelAndView 的时候,指定JSP文件的时候,可以省去前缀路径和文件后缀,写法如下
 
-```java
+``` java
 import org.springframework.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 // some import

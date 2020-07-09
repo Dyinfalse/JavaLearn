@@ -1,8 +1,8 @@
 package com.jgmt.blog.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.jgmt.blog.service.Background;
 import com.alibaba.fastjson.JSONObject;
+import com.jgmt.blog.service.BackgroundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,10 +19,10 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("api")
-public class Bing {
+public class BingController {
 
     @Autowired
-    private Background background;
+    private BackgroundService backgroundService;
 
     /**
      * bing获取的图片个数
@@ -44,7 +44,7 @@ public class Bing {
             /**
              * 从bing 获取最近20个图片
              */
-            JSONObject json = background.getBackground(width, height, GET_IMAGES_COUNT);
+            JSONObject json = backgroundService.getBackground(width, height, GET_IMAGES_COUNT);
 
             JSONArray jsonList = json.getJSONArray("images");
 
