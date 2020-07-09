@@ -2,13 +2,16 @@ package com.jgmt.blog.view;
 
 import com.jgmt.blog.service.MarkdownService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping("/")
@@ -22,13 +25,20 @@ public class Blog {
 
         ModelAndView mv = new ModelAndView();
 
-        File file = new File("src/main/resources/static/md/" + fileName + ".md");
+        try {
+            ClassPathResource resource = new ClassPathResource("static/md/"+fileName+".md");
 
-        String html = markdownService.generateHtml(file);
+            File file = resource.getFile();
 
-        mv.addObject("html", html);
+            String html = markdownService.generateHtml(file);
 
-        mv.setViewName("blog");
+            mv.addObject("html", html);
+
+            mv.setViewName("blog");
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+            mv.setViewName("redirect:/");
+        }
 
         return mv;
     }
