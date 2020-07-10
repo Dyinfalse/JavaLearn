@@ -3,12 +3,12 @@ package com.jgmt.blog.view;
 import com.jgmt.blog.service.MarkdownService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,16 @@ public class Blog {
     @Autowired
     private MarkdownService markdownService;
 
-    @RequestMapping("/blog/{fileName}")
+    @GetMapping("/blog")
+    public ModelAndView blogIndex () {
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("blogIndex");
+
+        return mv;
+    }
+
+    @GetMapping("/blog/{fileName}")
     public ModelAndView blog(@PathVariable String fileName) throws IOException {
 
         ModelAndView mv = new ModelAndView();
@@ -28,16 +37,19 @@ public class Blog {
         try {
             ClassPathResource resource = new ClassPathResource("static/md/"+fileName+".md");
 
-            File file = resource.getFile();
+            InputStream is = resource.getInputStream();
 
-            String html = markdownService.generateHtml(file);
+            String html = markdownService.generateHtml(is);
 
             mv.addObject("html", html);
 
             mv.setViewName("blog");
         } catch (FileNotFoundException e) {
+            /**
+             * 未找到文件返回博客首页
+             */
             System.out.println(e);
-            mv.setViewName("redirect:/");
+            mv.setViewName("redirect:/blog");
         }
 
         return mv;

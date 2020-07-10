@@ -15,8 +15,8 @@ public class MarkdownServiceImpl implements MarkdownService {
      * @return
      * @throws IOException
      */
-    public String generateHtml(File mdFile) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(mdFile), "UTF-8"));
+    public String generateHtml(InputStream is) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
         String line = null;
         String mdContent = "";
         while ((line = br.readLine()) != null) {
