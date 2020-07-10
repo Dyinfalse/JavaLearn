@@ -192,7 +192,7 @@ class Home implements Controller {
 >
 	<!-- 配置你的controller类包位置 -->
 	<context:compontent-scan base-package="com.example.controller">
-	<!-- 同时你也可以指定service -->
+	<!-- 同时你也可以指定Service -->
 	<context:compontent-scan base-package="com.example.service">
 </beans>
 ```
@@ -225,6 +225,7 @@ public class CustomerController {
 package com.example.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class CustomerController {
@@ -239,14 +240,117 @@ public class CustomerController {
 
 > 使用RequestMapping注解的value属性将URI映射到方法, 在上面的例子中, 我门将`customer_input`映射到`custromerInput`方法, 我们可以使用下面这个URL访问到custromerInput方法
 >
-> http://localhost:8080/custromer_input
+> `http://localhost:8080/custromer_input`
 
 - RequestMapping设置请求方法
 
 > 除了value属性以外, 我们还可以传递一个method属性, 用来指定什么样的HTTP方法可以被映射到当前的响应方法
 
+``` java
+@RequestMapping(value="/custromer_input", method=RequestMethod.POST)
+// 或者如果需要允许多个
+@RequestMapping(value="/custromer_input", method={RequestMethod.POST, RequestMethod.PUT})
+```
 
+> 如果没有指定`method`那么将允许任意HTTP方法
 
+- RequestMapping 在类上使用
+
+我们改写一下之前的CustomerController
+
+``` java
+package com.example.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/customer")
+public class CustomerController {
+	
+	@RequestMapping(value="/custromer_input", method=RequestMethod.POST)
+	public String custromerInput () {
+		
+		// do some th
+
+		return "custromerInputForm";
+	}
+}
+```
+
+> 由于控制器类的映射使用"/customer", 而customerInputForm方法映射是"/customer_input"
+> 所以要访问这个方法, URL应该是这样
+>
+> `http://localhost:8080/customer/customer_input`
+
+- 编写请求处理方法
+
+每个请求方法都会有不同类型的参数和不同类型的返回结果, 如果在请求方法中需要HttpSession对象, 则可以添加一个HttpSession作为参数, spring会将对象正确的传递给方法
+
+``` java
+
+@RequestMapping("/uri")
+public String CustomerInfo(HttpSession session){
+	...
+	session.addAttribute(key, value);
+	...
+}
+```
+
+- 可以在请求中出现的参数类型和返回类型
+	- javax.servlet.ServletRequest or javax.servlet.http.HttpServletRequest
+	- javax.servlet.ServletReponse or javax.servlet.http.HttpServletReponse
+	- javax.servlet.http.HttpSession
+	- org.springframework.web.context.request.WebRequest
+	- org.springframework.web.context.request.NativeWebRequest
+	- java.util.Locale
+	- java.io.InputStream or java.io.Reader
+	- java.io.OutputStream of java.io.Writer
+	- java.security.Principal
+	- HttpEntity<?>
+	- java.util.Map / org.springframework.ui.Model
+	- org.springframework.ui.ModelMap
+	- org.springframework.web.servlet.mvc.support.RedirectAttribures
+	- org,springframework.validation.Errors
+	- org.springframework.validation.BindingResult
+	- 命令或表单对象
+	- org.springframework.web.bind.support.SessionStatus
+	- org.springframework.web.util.UriComponentsBuilder
+	- 带有@PathVariable, @MatrixVariable 注解对象
+	- @RequestParam, @RequestHeader, @RequestBody, @RequestPart
+
+其中特别重要的是org.springframework.ui.Model类型, 这不是一个Servlet API类型, 而是一个包含Map 的SpringMVC类型, 每次请求处理方法的时候, SpringMVC都会创建Model对象, 并将其Map注入到各种对象
+
+- 可以在请求中返回的类型
+	- ModelAndView
+	- Model
+	- Map包含模型的属性
+	- View
+	- 代表逻辑视图的String(JSP, HTML文件名称)
+	- void
+	- 提供对Servlet的访问, 以响应HTTP头部和内容HttpEntity或者 ResponseEntity对象
+	- Callable
+	- DeferredResult
+	- 其他任意类型, Spring将其视为输出给View的对象模型
+
+- 一个基于注解的应用
+
+[可以查看](https://github.com/Dyinfalse/JavaLearn/blob/master/comservletweb/src/main/java/com/servlet/web/controller/Home.java)
+
+- @Autowried 和 @Service
+
+> 将依赖注入到SpringMVC容器里的最简单的办法是通过注解`@Autowrite`到字段或方法
+>
+> 为了能被作为依赖注入, 类必须要注明为`@Service`
+>
+> 还需要在配置文件中添加一个`<componte-scan/>`元素扫描基本依赖包(在@Controller的章节中有所提及)
+
+*值得一提的是在开发service的时候会先创建一个接口(interface), 在类中注入的interface, @Autowried会自动为注入一个该接口的实现类, 如果有多个实现类, 就需要使用`@Resource(name="实现类名")`指定其中一个实现类, 这样做是为了方便依赖的扩展*
+
+- 重定向和转发
+
+转发比重定向快
 
 
 

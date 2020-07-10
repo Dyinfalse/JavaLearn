@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jgmt.blog.service.BackgroundService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +27,7 @@ public class BingController {
      */
     private Integer GET_IMAGES_COUNT = 8;
 
-    @RequestMapping("getBingImages")
+    @RequestMapping(value = "getBingImages", method = RequestMethod.POST)
     @ResponseBody
     public HashMap getBingImages (
             @RequestParam(defaultValue = "3840") String width,
