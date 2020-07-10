@@ -180,7 +180,72 @@ class Home implements Controller {
 
 > 请求映射不在需要专门的配置文件, 使用`RequestMapping`注解可以对一个方法进行请求处理
 
-- Controller注解类型
+- 配置注解
+
+> 需要在springmvc的配置文件中增加`<compontent-scan />`元素, 还需要修改`beans`元素的属性,如下
+
+``` xml
+<!-- beans 需要增加一个xmlns:context属性, 链接是固定的 -->
+<beans
+	...
+	xmlns:context="http://www.springframework.org/schema/context"
+>
+	<!-- 配置你的controller类包位置 -->
+	<context:compontent-scan base-package="com.example.controller">
+	<!-- 同时你也可以指定service -->
+	<context:compontent-scan base-package="com.example.service">
+</beans>
+```
+这些配置告诉spring, 我需要在`com.example.controller`和`com.example.service`这两个包下使用注解
+
+- 使用Controller注解
+
+下面是一个例子
+
+``` java
+package com.example.controller;
+
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class CustomerController {
+	
+}
+```
+
+- RequestMapping 注解类型
+
+> 按照之前的例子, 我们有了controller之后还需要为这个controller的每个动作开发一个处理响应的方法,需要告诉spring方法和动作之间的映射(Mapping), `@RequestMapping`注解就是用来干这个的
+>
+> 一个采用`@RequestMapping`注解的方法将成为一个请求处理方法, 并由调度程序在接受到对应的URL请求时调用
+
+我们给CustromerController增加一个响应方法
+
+``` java
+package com.example.controller;
+
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class CustomerController {
+	
+	@RequestMapping(value="/custromer_input")
+	public String custromerInput () {
+		// do some th
+		return "custromerInputForm";
+	}
+}
+```
+
+> 使用RequestMapping注解的value属性将URI映射到方法, 在上面的例子中, 我门将`customer_input`映射到`custromerInput`方法, 我们可以使用下面这个URL访问到custromerInput方法
+>
+> http://localhost:8080/custromer_input
+
+- RequestMapping设置请求方法
+
+> 除了value属性以外, 我们还可以传递一个method属性, 用来指定什么样的HTTP方法可以被映射到当前的响应方法
+
+
 
 
 
