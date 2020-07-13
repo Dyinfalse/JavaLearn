@@ -20,6 +20,10 @@ public class Blog {
     @Autowired
     private MarkdownService markdownService;
 
+    /**
+     * 博客首页
+     * @return
+     */
     @GetMapping("/blog")
     public ModelAndView blogIndex () {
         ModelAndView mv = new ModelAndView();
@@ -29,6 +33,10 @@ public class Blog {
         return mv;
     }
 
+    /**
+     * 博客详情
+     * @return
+     */
     @GetMapping("/blog/{fileName}")
     public ModelAndView blog(@PathVariable String fileName) throws IOException {
 
