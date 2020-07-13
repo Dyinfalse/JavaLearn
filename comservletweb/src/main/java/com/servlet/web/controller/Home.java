@@ -2,7 +2,6 @@ package com.servlet.web.controller;
 
 //import org.springframework.stereotype.Controller;
 //import org.jetbrains.annotations.NotNull;
-import com.servlet.web.service.impl.getParamsData;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 //import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 ///**
@@ -107,15 +105,5 @@ public class Home {
         mv.setViewName("page/getParams");
 
         return mv;
-    }
-
-    /**
-     * post 返回json数据
-     */
-    @RequestMapping(value = {"/getParams"}, method = {RequestMethod.POST}, consumes = "application/json")
-    @ResponseBody
-    public getParamsData getParams (@RequestBody getParamsData data){
-        System.out.println(data.getHttpParam());
-        return data;
     }
 }

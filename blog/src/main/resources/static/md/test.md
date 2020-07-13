@@ -491,3 +491,61 @@ public void addProduct(@RequestParam String productId, Model model) {
 | option        | 渲染一个option元素                  |
 | options       | 渲染多个option元素                  |
 | errors        | 在span元素中渲染字段错误             |
+
+- 表单标签的属性
+
+> 为了更好的将表单标签渲染称HTML, 表单标签具备了很多属性, 并非HTML元素属性
+>
+> 其中最重要的是`commandName`属性(已被弃用, 使用`modelAttribute`替换), 因为它定义了模型属性的名称, 如果它存在, 则必须在返回包含该表单属兔的请求处理方法中添加对应的模型属性, 代码如下
+
+``` html
+<!-- bookAddForm.jsp -->
+<form:form commandName="book" action="book_save" method="post">
+	some HTML elements...
+</form:form>
+```
+
+> 这里的form绑定了一个book实例, 因此在该请求处理方法中必须在Model上增加一个book实例, 否则会抛出异常
+
+``` java
+@RequestMapping("/bookAdd")
+public String bookAdd () {
+	some java ...
+	model.addAttribute("book", new Book()); // 这是必须的
+	return "bookAdd";
+}
+```
+
+> 除此之外, 还是需要正常使用HTML的其他属性, 例如上面的form元素, 依然使用着action和method
+
+- 其他标签 (P71-P78, 各种html标签很多, 这把几个重点属性说一下, 不一一列举了)
+
+> 在form标签内部, 我们还需要很多内部的字段标签来对应绑定模型属性, 以input为例绑定方式如下
+
+``` html
+	<form:input id="productName" path="productName" cssClass="form-item"></form:input>
+	<!-- 被渲染成下面 -->
+	<input type="text" id="productName" class="form-item" />
+```
+
+还有一些其他属性
+
+
+| 属性名称	      | 描述                                                          |
+|---------------|---------------------------------------------------------------|
+| path          | 要绑定的属性路径                                                 |
+| cssClass      | 定义要应用到被渲染的元素的CSS类                                    |
+| cssStyle      | 定义要应用到元素的CSS样式                                         |
+| cssErrorClass | 定义要应用在元素的CSS类, 如果bound属性中有错误, 会覆盖cssClass        |
+| htmlEscape    | 接受true和false, 表示是否对被渲染值进行HTML转码                     |
+| showPassword  | 是否应该显示或遮挡密码, 默认false                                  |
+| label         | 作为label用于被渲染复选框的值                                      |
+| delimiter     | 定义两个input(批量渲染) 之间的分割符                                |
+| element       | 给每个被渲染的input元素都定义一个HTML元素, 默认"span"                |
+| items         | 用于生成input元素的对象的Collection, Map, Array                    |
+| itemLabel     | item属性中定义的Collection, Map, Array中对象属性, 为input提供label  |
+| itemValue     | item属性中定义的Collection, Map, Array中对象属性, 为input提供值     |
+| errors        | 在span元素中渲染字段错误                                           |
+
+- 一个数据绑定例子
+

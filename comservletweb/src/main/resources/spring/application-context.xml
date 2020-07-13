@@ -1,16 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://www.springframework.org/schema/context
-                        http://www.springframework.org/schema/context/spring-context.xsd">
-    <!-- 启用注解  -->
-    <context:annotation-config/>
-
-    <!-- 自动扫描web包 ,将带有注解的类 纳入spring容器管理 -->
-    <context:component-scan base-package="com.servlet.web.controller"/>
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+    <!--开启SpringMvc注解-->
+    <mvc:annotation-driven />
+    <!--配置扫面Controller控制器的包的范围，扫描@Controller 注解的类的位置-->
+    <context:component-scan base-package="com.servlet.web.controller" />
     <!--    配置扫描Service的范围-->
-    <context:component-scan base-package="com.servlet.web.service"/>
+    <context:component-scan base-package="com.servlet.web.service" />
+
+    <bean name="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+
+        <!--配置spring容器加载的默认路径的前缀-->
+        <property name="prefix" value="/WEB-INF/views/"/>
+
+        <!--配置spring容器加载的默认的后缀-->
+        <property name="suffix" value=".jsp"/>
+
+        <!--重定向的时候是否添加路径，如果true则自动写成/WEB-INF/views/index.jsp，否则全路径访问-->
+        <property name="redirectContextRelative" value="true"/>
+    </bean>
+
+    <!--
+        非注解类型，需要将请求映射到类上
+        而注解的方式，可以在方法上加上@RequestMapping 注解 自动映射到方法，所以不需要下面这个配置
+    -->
+    <!--    <bean name="/home" class="com.servlet.web.controller.Home" />-->
+
+
+    <!--配置spring的访问静态资源自动映射-->
+    <mvc:default-servlet-handler/>
 </beans>
