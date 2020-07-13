@@ -549,3 +549,10 @@ public String bookAdd () {
 
 - 一个数据绑定例子
 
+[Controller](https://github.com/Dyinfalse/JavaLearn/blob/master/comservletweb/src/main/java/com/servlet/web/controller/BookController.java)
+
+[Service](https://github.com/Dyinfalse/JavaLearn/blob/master/comservletweb/src/main/java/com/servlet/web/service/BookService.java)
+
+[添加表单JSP](https://github.com/Dyinfalse/JavaLearn/tree/master/comservletweb/src/main/webapp/WEB-INF/views/BookAddForm.jsp)
+
+[展示JSP](https://github.com/Dyinfalse/JavaLearn/tree/master/comservletweb/src/main/webapp/WEB-INF/views/BookList.jsp)
