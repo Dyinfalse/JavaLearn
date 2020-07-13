@@ -350,14 +350,122 @@ public String CustomerInfo(HttpSession session){
 
 - 重定向和转发
 
-转发比重定向快
+> 转发比重定向快, 因为重定向需要经过客户端, 而转发没有, 但是如果需要重定向到外部网址, 无法使用转发
 
+这是一个简单的重定向写法, 将这句代码加载响应方法的最后一行,就会被重定向到`/product_view/${productId}`页面
 
+``` java
+ return "redirect:/product_view/" + product.getId();
+```
 
+- Flash属性
 
+重定向的一个不便地方在于无法轻松的给目标传值, 由于经过客户端所有Model中额一切都在重定向时丢失, 幸运的是, Spring 3.1中通过Flash属性提供了一种重定向传值的方法.
 
+> 要使用Flash属性, 必须在Spring MVC配置文件中增加一个`<annotation-driven/>`元素, 然后在响应方法上添加一个参数类型`org.springframework.web.servlet.mvc.support.RedirectAttributes`
 
-- jsp提交表单，如果要使用jsp提供的表单组件，需要在jsp文件开头加上`<%@ taglib prefix="from" uri="http://www.springframework.org/tags/form" %>`，组件属性详细见5.2(p69-p78)
- 1. 主要相关的属性:
- 2. `commandName` form标签的属性，用来指明该表单映射的对象(之前在Controller里使用`ModelAndView.addObject()`方法传入jsp的对象)
- 3. `path` 单个表单标签的属性，指明当前标签对应的是commandName对象上的哪一个字段
+``` java
+
+@RequestMapping("/product_save")
+public String saveProduct (RedirectAttributes redirectAttributes){
+
+	// ...
+	// 给重定向增加参数
+	redirectAttributes.addFlashAttribute("message", "This's a Flash attribute message");
+
+	return "redirect:/product_view" + product.getId();
+}
+
+```
+
+- 请求参数
+
+> 请求参数是URL的一部分,用来携带数据发送给服务器, 类似这样`http://localhost:8080/product?productId=3`, 这是一个访问产品的URL, 包含请求参数`productId`, 它的值是3
+>
+> SpringMVC有一个简单的方式接受它, 使用`org.springframework.web.bind.annotation.RequestParam` 注解修饰参数
+
+这段代码可以正确的接受到上面URL中携带来的productId参数
+
+``` java
+
+@RequestMapping("/product")
+public String product (@RequestParam int productId) {
+
+	return "product_view";
+}
+```
+
+- 路径变量
+
+> 与请求参数相似, 但是路径变量没有key的部分, 只是一个值, 类似这样`http://localhost:8080/product/3`, SpringMVC会尽量吧值转化为非String类型, 它的接受方式如下
+
+``` java
+
+@RequestMapping("/product/{id}")
+public String product (@PathVariable Long id) {
+
+	return "product";
+}
+
+```
+
+- @ModelAttribute
+
+> SpringMVC每次调用请求处理方法的时候, 都会穿件一个Model类型的实例, 如果要使用这个实例, 可以在请求方法上增加一个Model类型参数, 或者在方法中添加`@ModelAttribute`注解来访问Model实例
+
+@ModelAttribute 可以用来注释方法或者方法参数, 当注释到参数时如下
+
+```java
+@RequestMapping("/product")
+public String product (@ModelAttribute("newOrder") Order order, Model model) {
+	// 在这里使用Model时, Model会自动添加一个newOrder属性, 值就是order
+	return "product"
+}
+```
+
+如果没有指定newOrder, 那么会使用对象类型名称, 如下
+
+```java
+@RequestMapping("/product")
+public String product (@ModelAttribute Order order, Model model) {
+	// 在这里使用Model时, Model会自动添加一个order属性, 值就是order
+	return "product"
+}
+```
+
+> 当@ModelAttribute注释到一个非请求处理方法时, 会在每次调用该控制器类的请求处理方法时被调用, 因此带有@ModelAttribute注解的方法会被频繁调用
+> 
+> SpringMVC在调用请求处理方法之前, 会调用带有@ModelAttribute注解的方法, 这个方法返回Model或者void类型, 如果返回一个对象, 则返回的对象会自动添加到请求处理方法的Model实例中
+
+``` java
+@ModelAttribute("productKey")
+public Product addProduct(@RequestParam String productId) {
+	return productService.get(productId);
+}
+```
+
+> 有了这个方法, 那么在这个类中的所有请求处理方法的Model都会被提前添加一个product实例, key=productKey;
+>
+> 如果方法返回void, 那么方法必须接受一个Model类型参数, 并且自行添加属性到Model中 
+
+``` java
+@ModelAttribute
+public void addProduct(@RequestParam String productId, Model model) {
+	model.addAttribute("productKey", productService.get(productId))
+}
+```
+
+---
+### 第五章 数据绑定和表单标签库
+
+- 数据绑定是什么?
+
+> 数据绑定是将用户输入绑定到领域模型的一种特性
+
+- 数据绑定有什么用?
+
+> 有了数据绑定, 类型总是String的HTTP请求参数, 可以用于不同类型的对象属性, 数据绑定使得form bean(之前章节的ProductForm实例)变得多余
+
+- Spring数据绑定的好处
+
+> 不用创建form类, 也不用单独去处理类上的各种类型并且当输入验证失败的时候, 它会重新生成一个HTML, 手工编写的时候, 必须记住之前输入的值, 重新填充输入字段, 有了Spring数据绑定和表单标签库, 它们就会替你完成这些工作
