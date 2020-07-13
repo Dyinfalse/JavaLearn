@@ -27,7 +27,7 @@ public class BingController {
      */
     private Integer GET_IMAGES_COUNT = 8;
 
-    @RequestMapping(value = "getBingImages", method = RequestMethod.POST)
+    @RequestMapping(value = "getBingImages", method = RequestMethod.GET)
     @ResponseBody
     public HashMap getBingImages (
             @RequestParam(defaultValue = "3840") String width,

@@ -415,7 +415,7 @@ public String product (@PathVariable Long id) {
 
 @ModelAttribute 可以用来注释方法或者方法参数, 当注释到参数时如下
 
-```java
+``` java
 @RequestMapping("/product")
 public String product (@ModelAttribute("newOrder") Order order, Model model) {
 	// 在这里使用Model时, Model会自动添加一个newOrder属性, 值就是order
@@ -425,11 +425,11 @@ public String product (@ModelAttribute("newOrder") Order order, Model model) {
 
 如果没有指定newOrder, 那么会使用对象类型名称, 如下
 
-```java
+``` java
 @RequestMapping("/product")
 public String product (@ModelAttribute Order order, Model model) {
 	// 在这里使用Model时, Model会自动添加一个order属性, 值就是order
-	return "product"
+	return "product";
 }
 ```
 
@@ -469,3 +469,25 @@ public void addProduct(@RequestParam String productId, Model model) {
 - Spring数据绑定的好处
 
 > 不用创建form类, 也不用单独去处理类上的各种类型并且当输入验证失败的时候, 它会重新生成一个HTML, 手工编写的时候, 必须记住之前输入的值, 重新填充输入字段, 有了Spring数据绑定和表单标签库, 它们就会替你完成这些工作
+
+- 表单标签库
+
+> 表单标签库包含了可以用在JSP页面中渲染HTML元素的标签, 为了使用这些标签, 必须在JSP页面开头处声明这个taglib	 `<%taglib prefix="form" uri="http://www.springframework.org/tags/form" %>`
+
+- 表单标签库的标签
+
+| 标签	         | 描述                              |
+|---------------|-----------------------------------|
+| form          | 渲染一个表单元素                     |
+| input         | 渲染一个<input type="text">元素     |
+| password      | 渲染一个<input type="password">元素 |
+| hidden        | 渲染一个<input type="hidden">元素   |
+| textarea      | 渲染一个textarea元素                |
+| checkbox      | 渲染一个<input type="checkbox">元素 |
+| checkboxes    | 渲染多个<input type="checkbox">元素 |
+| raadiobutton  | 渲染一个<input type="radio">元素    |
+| raadiobuttons | 渲染多个<input type="radio">元素    |
+| select        | 渲染一个select元素                  |
+| option        | 渲染一个option元素                  |
+| options       | 渲染多个option元素                  |
+| errors        | 在span元素中渲染字段错误             |

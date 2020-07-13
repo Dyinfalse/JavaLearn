@@ -217,3 +217,7 @@ pre,
 code {
     background-color: #fafafa;
 }
+
+table th, table tr:nth-child(even) {
+    background: #fafafa;
+}
