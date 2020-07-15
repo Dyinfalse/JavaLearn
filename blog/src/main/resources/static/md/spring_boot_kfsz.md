@@ -1,4 +1,4 @@
-## 阅读[《Spring Boot 开发实战》](http://152.136.139.89/book/springbootkfsz.pdf)
+## 阅读Spring发展
 ### 第一部分 SpringBoot框架基础
 #### 第一章 SpringBoot简介
 
@@ -61,6 +61,7 @@ J2EE
 
 COC
 > COC，全称：Convention Over Configuration，中文：约定优于配置，按约定编程，是一种软件设计范式，旨在减少软件开发人员需要做决定的数量，获得简单的好处，而又不失灵活性
+
 
 
 
