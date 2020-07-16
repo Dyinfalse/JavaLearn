@@ -1,7 +1,5 @@
 package com.jgmt.blog.view;
 
-import java.lang.reflect.ParameterizedType;
-
 public class Pair<T> {
     private T first;
     private T last;
@@ -14,6 +12,8 @@ public class Pair<T> {
     }
     public T getFirst() { return this.first; }
     public T getLast() { return this.last; }
+    public void setFirst(T first) {this.first = first;}
+    public void setLast(T last) {this.last = last;}
 
     // 静态泛型方法应该使用其他类型区分:
     public static <K> Pair<K> create(K first, K last) {

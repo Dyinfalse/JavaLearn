@@ -14,4 +14,8 @@ public class BlogApplication {
         System.out.println("=====");
         new Pair<Integer>(1,2);
     }
+
+//    public void add(Pair<? extends Number> p){
+//        p.setFirst(new Integer(100));
+//    }
 }
