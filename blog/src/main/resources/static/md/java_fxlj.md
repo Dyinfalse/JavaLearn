@@ -22,7 +22,7 @@ public class ArrayList<T> {
 ArrayList<String> stringArrayList = new ArrayList<String>();
 ```
 
-`T`可以是任意class，但不能是基本数据类型，所以这个ArrayList就成了一个模版，可以创建任意类型的ArrayList，由编译器对类型作出检查
+`T`可以是任意`class`，但不能是基本数据类型，所以这个`ArrayList`就成了一个模版，可以创建任意类型的`ArrayList`，由编译器对类型作出检查
 
 #### **泛型有什么用？**
 
@@ -42,7 +42,7 @@ numberList.add(new Float(100.1);
 Integer n = intArrayList.get(1););
 ```
 
-这段代码先创建了一个Integer类型的ArrayList，添加了一个Integer数字，接着又转型成为Number类型的ArrayList，此时intArrayList和numberList两者的引用其实指向同一个地址，因此`numberList.add(new Float(100.1))`是合法的，但是`Integer n = intArrayList.get(1)`就会抛出类型转换异常`ClassCastException`，所以java编译器会在你写到向上转型的时候也就是`ArrayList<Number> numberList = intArrayList`，就会直接提示你`incompatible type`，类型不匹配
+这段代码先创建了一个`Integer`类型的`ArrayList`，添加了一个`Integer`数字，接着又转型成为`Number`类型的`ArrayList`，此时`intArrayList`和`numberList`两者的引用其实指向同一个地址，因此`numberList.add(new Float(100.1))`是合法的，但是`Integer n = intArrayList.get(1)`就会抛出类型转换异常`ClassCastException`，所以java编译器会在你写到向上转型的时候也就是`ArrayList<Number> numberList = intArrayList`，就会直接提示你`incompatible type`，类型不匹配
 
 #### **泛型接口**
 
@@ -163,7 +163,7 @@ Pair<String, Integer> pair = new Pair<>("String", "Integer");
 Java 在实现泛型的时候采用的是擦拭法，当我们开发一个泛型类 `Pair<T>` 的时候，虚拟机根部不知道泛型这回事
 因为编译器会把所有 `<T>` 都擦拭成 `Object`，只在需要转型的时候编译器会根据`<T>`类型自动安全转型，所以这也导致了一些问题，比如
 - 泛型类型不能是基本数据类型，`Pair<int> p = new Pair<>(1,2);`， 类似这样的代码会编译错误。
-- 无法获取带有泛型的`Class`， 因为`Pair<String> p1 = new Pair<>()`和`Pair<Integer> p2 = new Pair<>()`其实是统一个类，`p1.getClass() == p2.getClass()`显示结果为true。
+- 无法获取带有泛型的`Class`， 因为`Pair<String> p1 = new Pair<>()`和`Pair<Integer> p2 = new Pair<>()`其实是统一个类，`p1.getClass() == p2.getClass()`显示结果为`true`。
 - 不能直接实例化`<T>`因为`new T()`会被擦拭成`new Object()`, 这样无法区分类型，所以会被编译器阻止，只能通过`Class.newInstance`来实现实例化泛型类(其实是利用反射)
 - 导致不正确的覆写比如下面这个例子
 ```java
@@ -193,7 +193,7 @@ class Pair<T> {
 
 子类
 
-```java
+``` java
 class IntPair extends Pair <Integer> {
     public IntPair(Integer first, Integer last) {
         super(first, last);
@@ -203,7 +203,7 @@ class IntPair extends Pair <Integer> {
 
 从子类中获取父类泛型类型
 
-```java
+``` java
 public class Main {
     public static void main(String[] args){
         Class<IntPair> clazz = IntPair.Class;
@@ -234,7 +234,7 @@ static void add(Pair<Number> p){
 
 泛型类
 
-```java
+``` java
 class Pair<T> {
     private T first;
     private T last;
@@ -311,11 +311,11 @@ Pair<String> p = new Pair<>("test"); // 编译错误
 
 #### **super通配符**
 
-`super`和`extends`相反，`<? super Number>`只允许传入`Number`和`Number`的父类，并且`<? super T>`签名的参数方法内部，只能调用`set`方法，但不允许使用`get`方法获取，与`extends`正好相反，原因在于在方法内部，无法使用子类接收不确定的父类(除了使用Object接收，Object是顶级父类)，所以在编译阶段阻止此类用法。
+`super`和`extends`相反，`<? super Number>`只允许传入`Number`和`Number`的父类，并且`<? super T>`签名的参数方法内部，只能调用`set`方法，但不允许使用`get`方法获取，与`extends`正好相反，原因在于在方法内部，无法使用子类接收不确定的父类(除了使用`Object`接收，`Object`是顶级父类)，所以在编译阶段阻止此类用法。
 
 对比`Collections`类的`copy`方法
 
-```java
+``` java
 public class Collection {
     public static <T> void copy (List<? super T> dest, List<? extends T> src) {
         for(int i = 0; i < src.size(); i++){
@@ -338,7 +338,7 @@ void sample (Pair<?> p) {}
 
 但是这样的方法内部，`set`和`get`都不允许，也就是说不允许读也不允许写（除了写入`null`，和获取`Object`），此外`?`还有一个特点就是`Pair<?>` 是所有 `Pair<T>`的超类，也就是说所有的`Pair<T>`都可一向上转型为`Pair<?>`。
 
-```java
+``` java
 Pair<Integer> intP = new Pair<>(123);
 Pair<?> p = intP; // 可以安全转型
 ```
@@ -384,7 +384,56 @@ String s = p.getFirst(); // ClassCastException
 Pair<String>[] ps = (Pair<String>[]) new Pair[2];
 ```
 
-这样写就不存在`arr`引用，因此所有操作都是在`ps`上操作，编译器能够追踪到正确的类型从而进行检查
+这样写就不存在`arr`引用，因此所有操作都是在`ps`上操作，编译器能够追踪到正确的类型从而进行检查。
+
+想实例化泛型一样，我们也不能直接泛型创建泛型数组，下面代码会报出编译错误
+
+``` java
+public class myArray {
+    T[] createArray(){
+        return new T[5]; // 编译出错
+    }
+}
+```
+
+如果想创建泛型数组，必须借助`Class<T>`来实现，代码如下
+
+``` java
+T[] createArray(Class<T> cls){
+    return (T[]) Array.newInstance(cls, 5);
+}
+```
+
+由此可见，`T`不能直接用来实例化，只能用于转型，泛型数组还可以应用到函数的参数，如下代码
+
+``` java
+static <T> T[] asArry(T... objs) {
+    return objs;
+}
+```
+
+这段代码似乎创建了一个泛型数组，但实际上这样的做法是很危险的，检查下面的例子
+
+``` java
+public class Main {
+    public static void main(String[] args){
+        String[] arr = asArray("one", "tow", "three");
+        System.out.println(Arrays.toString(arr));
+        String[] firstString = pickTow("1", "2", "3"); // ClassCastException
+        System.out.println(Arrays.toString(firstString));
+    }
+    
+    static <K> K[] pickTow (K k1, K k2, K k3) {
+        return asArray(k1, k2, k3);
+    }
+    
+    static <T> T[] asArray (T... objs) {
+        return objs;
+    }
+}
+```
+
+原因在于`pickTow`方法内部无法确定`K[]`的类型因此返回了`Object[]`， 但是`Object[]`不能被`String[]`接收，所以会抛出异常。
 
 
 
