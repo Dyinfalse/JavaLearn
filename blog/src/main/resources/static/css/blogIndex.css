@@ -1,0 +1,10 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+body a {
+    color: #444444;
+    display: block;
+    text-decoration: none;
+}
