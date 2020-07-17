@@ -2,7 +2,7 @@
 
 #### **什么是泛型？**
 
-一种模版类型，可以把类型想参数一样传递，下面是一个泛型类的示例
+一种模版类型，可以把类型像参数一样传递，下面是一个泛型类的示例
 
 定义
 
@@ -30,7 +30,7 @@ ArrayList<String> stringArrayList = new ArrayList<String>();
 
 #### **泛型的向上转型**
 
-泛型的参数类型和继承没有关系，向上转型也不会收到参数类型的影响，比如`ArrayList<T>`可以向上转型`List<T>`，但是`ArrayList<Integer>`不能向上转型为`ArrayList<Number>`或者`List<Number>`。
+泛型的参数类型和继承没有关系，向上转型也不会受到参数类型的影响，比如`ArrayList<T>`可以向上转型`List<T>`，但是`ArrayList<Integer>`不能向上转型为`ArrayList<Number>`或者`List<Number>`。
 
 试想一下
 
@@ -39,7 +39,7 @@ ArrayList<Integer> intArrayList = new ArrayList<>();
 intArrayList.add(new Integer(100));
 ArrayList<Number> numberList = intArrayList;
 numberList.add(new Float(100.1);
-Integer n = intArrayList.get(1););
+Integer n = intArrayList.get(1);); // ClassCastException
 ```
 
 这段代码先创建了一个`Integer`类型的`ArrayList`，添加了一个`Integer`数字，接着又转型成为`Number`类型的`ArrayList`，此时`intArrayList`和`numberList`两者的引用其实指向同一个地址，因此`numberList.add(new Float(100.1))`是合法的，但是`Integer n = intArrayList.get(1)`就会抛出类型转换异常`ClassCastException`，所以java编译器会在你写到向上转型的时候也就是`ArrayList<Number> numberList = intArrayList`，就会直接提示你`incompatible type`，类型不匹配
@@ -100,7 +100,7 @@ class Parson implements Comparable<Parson> {
 
 #### **静态方法**
 
-泛型类型不能用于静态方法，例如下代码会编译错误
+泛型类型不能直接用于静态方法，例如下代码会编译错误
 
 ``` java
 public class Pair<T> {
@@ -160,7 +160,7 @@ Pair<String, Integer> pair = new Pair<>("String", "Integer");
 
 #### **擦拭法**
 
-Java 在实现泛型的时候采用的是擦拭法，当我们开发一个泛型类 `Pair<T>` 的时候，虚拟机根部不知道泛型这回事
+Java 在实现泛型的时候采用的是擦拭法，当我们开发一个泛型类 `Pair<T>` 的时候，虚拟机根本不知道泛型这回事
 因为编译器会把所有 `<T>` 都擦拭成 `Object`，只在需要转型的时候编译器会根据`<T>`类型自动安全转型，所以这也导致了一些问题，比如
 - 泛型类型不能是基本数据类型，`Pair<int> p = new Pair<>(1,2);`， 类似这样的代码会编译错误。
 - 无法获取带有泛型的`Class`， 因为`Pair<String> p1 = new Pair<>()`和`Pair<Integer> p2 = new Pair<>()`其实是统一个类，`p1.getClass() == p2.getClass()`显示结果为`true`。
