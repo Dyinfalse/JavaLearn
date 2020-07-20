@@ -1,6 +1,6 @@
 package com.jgmt.blog;
 
-import com.jgmt.blog.view.Pair;
+import com.jgmt.blog.practice.Pair;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

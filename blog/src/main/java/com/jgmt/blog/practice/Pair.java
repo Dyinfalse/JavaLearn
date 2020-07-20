@@ -1,4 +1,4 @@
-package com.jgmt.blog.view;
+package com.jgmt.blog.practice;
 
 public class Pair<T> {
     private T first;

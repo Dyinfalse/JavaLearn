@@ -9,8 +9,9 @@
 ```java
 public class StringArray {
     public static void main(String[] args){
-      String[] ss = new String[10];
-      ss[0] = "Hello";
+        String[] s = new String[10];
+        s[0] = "Hello";
+        System.out.println(s[0]);
     }
 }
 ```
@@ -134,6 +135,7 @@ public class Main {
 任何实现了`Iterable`的集合都可以使用`for each`来遍历，因为`Iterable`接口定义了`Iterator<E> iterator()`方法，强迫集合返回一个`Iterator`实例
 
 #### **List和ArrayList的转换**
+
 第一种转换方法，使用`toArray()`
 ```java
 public class Main {
@@ -205,18 +207,146 @@ public class Main {
     }
 }
 ```
-如果在JDK 11之前，还可以使用`Array.asList(T...)`
+如果在JDK 11之前，还可以使用`Array.asList(T...)`把数组转成`List`，值得一提的是因为`Link`只是一个接口，所以我们调用`Link.of()`的时候，返回的实际上是一个只读数组，在对只读数组操作的时候例如`add()`，`remove()`就会抛出`UnsupportedOperationException`
 
+#### **List查找元素**
 
+既然`List`是个容器，能存储当然也可以获取和对比，`List`提供了`boolean cantains(Object)`方法判断数组是否包含某个元素和`int indexOf(Object)`来查找元素在数组中的索引，下面介绍一个用法
 
+```java
+public class Main {
+    public static void main(String[] args){
+        List<String> list = List.of("H", "E", "L", "L", "O");
+        System.out.println(list.contains("C")); // false
+        System.out.println(list.contains("E")); // true
+        System.out.println(list.indexOf("C"));  // -1
+        System.out.println(list.indexOf("E"));  // 1
+    }
+}
+```
+在`contains`和`indexOf`内部，对比元素的时候，并不是使用的`==`，而是使用`equals`，包括我们在以后的Java开发中，也要使用`equals`来判断引用数据类型，数组中的元素必须正确实现`equals`才可以正确使用`contains`，`indexOf`方法，基本包装类型如`String`，`Integer`都已经帮我们实现了，所以可以直接用，如果数组中的元素是我们自己定义的呢?
 
+```java
+public class Main {
+    public static void main(String[] args){
+        List<Person> list = List.of(
+            new Person("Mike"),
+            new Person("Mary"),
+            new Person("Bob")
+        );
+        list.contains(new Person("Bob")); // false
+    }
+}
 
+public class Person {
+    String name;
+    public Person (String name) {
+        this.name = name;
+    }
+}
+```
 
+如果数组中元素是我们自己定义的，那么就需要我们自己去实现一个`equals`，编写`equals`方法，有以下几点需要注意：
+- 自反性(Reflexive)，对于非`null`的元素来说，`x.equals(x)`，必须返回`true`
+- 对称性(Symmetric)，对于非`null`的元素来说，如果`x.equals(y)`等于`true`，那么`y.equals(x)`也必须为`true`
+- 传递性(Transitive)，对于非`null`的元素来说，如果想`x.equals(y)`是`true`，并且`y.equals(z)`也是`true`，那么`x.equals(z)`也必须是`true`
+- 一致性(Consistent)，对于非`null`的元素来说，只要`x`，`y`状态不变，则`x.equals(y)`，总是一致返回`true`或`false`
 
+在给`Person`编写`equals`方法之前，要先明确相等的逻辑含义，及什么样的两个`Person`可以视为相等？所以我们假设，`name`和`age`都相等的两个`Person`类是相等的，于是可以编写下面这样的`equals`
 
+```java
+public class Person {
+    String name;
+    Integer age;
+    public Person (String name, Integer age){
+        this.name = name;
+        this.age = age;
+    }
 
+    @Override
+    public boolean equals (Object o){
+        if(o instanceof Person){
+            Person p = (Person) o;
+            return this.name.equals(p.name) && this.age.equals(p.age);
+        }
+        return false;
+    }   
+}
+```
 
+如果`this.name`或`this.age`是`null`的时候，上面的方法会报错，所以需要使用`Object.equals`静态方法继续修改
 
+``` java
+@Override
+public boolean equals (Object o){
+    if(o instanceof Person){
+        Person p = (Person) o;
+        return Object.equals(this.name, p.name) && Object.equals(this.age, p.age);
+    }
+    return false;
+}
+```
+
+如果不需要使用`List`的`contains()`和`indexOf()`的时候，不需要实现放入元素的`equals`
+
+#### **使用Map**
+
+我们已经知道`List`是一种顺序列表，如果有一组`Student`，我们需要根据名字快速查找对应的学生成绩，如果使用`List`，那么代码如下
+
+```java
+public class Main {
+    public static void main(String[] args){
+        List<Student> list = List.of(new Student("XiaoMing", 60), new Student("XiaoHong", 80), new Student("XiaoHua", 90));
+        Student target;
+        for(Student s: list){
+            if("XiaoMing".equals(s.name)){
+                target = s;
+                break;
+            }
+        }
+        System.out.println(target.score);
+    }
+}
+
+public class Student {
+    public String name;
+    public Integer score;
+    public Student (String name, Integer score) {
+        this.name = name;
+        this.score = score;
+    }
+}
+```
+
+这个需求非常常见，但是使用`List`的话，平均查询次数是数组长度的一般，而这种时候就需要使用`Map`，`Map`是一种通过键值映射表的数据结构，作用就是高效的通过`key`快速查找`value`，下面使用`Map`重写这个需求
+
+```java
+public class Main {
+    public static void main(String[] args){
+        Map<String, Student> map = new HashMap<>();
+        // 建立映射关系
+        map.put("XiaoMing", new Student("XiaoMing", 60)); 
+        map.put("XiaoHong", new Student("XiaoHong", 80));
+        map.put("XiaoHua", new Student("XiaoHua", 90));
+        
+        System.out.println(map.get("Xiaohua").score);
+    }
+}
+```
+
+当使用`Map.get(K key)`方法时，如果`key`不存在，则返回`null`，和`List`类似，`Map`也只是一个接口，最常用的实现类是`HashMap`，另外如果想查找一个`key`是否在`Map`中存在，使用`boolean containsKey(K key)`方法，`Map`中的`key`是唯一的，也就是不存在重复的`key`
+
+```java
+public class Main {
+    public static void main(String[] args){
+        Map<String, Integer> map = new HashMap<>();
+        map.put("Mick", 100);
+        map.put("Mick", 200);
+        System.out.println(map.get("Mick")); // 200
+    }
+}
+```
+上面代码`put`了两个`Mick`，可以看出，第二次`put`的`value`把第一`put`的给冲掉了，也就是说，在`Map`中重复添加相同`key`的映射，`value`以最后一次添加的为准
 
 
 
