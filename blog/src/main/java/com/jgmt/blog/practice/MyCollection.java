@@ -15,6 +15,8 @@ public class MyCollection {
                 new Person("Bob", 30)
         );
         System.out.println(list.contains(new Person("Bob", 30)));
+        System.out.println("位与运算符");
+        System.out.println(11000010 & 0xf);
     }
 
 }
