@@ -418,7 +418,7 @@ public class Main {
     - 如果两个对象相等，则两个对象的`hashCode()`结果必须相等
     - 如果两个对象不想等，则两个对象的`hashCode()`结果尽量不要相等
 
-如何正确覆写equals之前已经已经讲过，把需要比较的字段抽出来，引用类型使用equasl()，基本类型使用==，在这个基础上，我们还需要正确的覆写hashCode()，以Person类为例
+如何正确覆写`equals()`之前已经已经讲过，把需要比较的字段抽出来，引用类型使用`Objects.equals()`，基本类型使用`==`，在这个基础上，我们还需要正确的覆写`hashCode()`，以`Person`类为例
 
 ```java
 public class Person {
@@ -437,9 +437,9 @@ public class Person {
 }
 ```
 
-因为String类已经正确实现了hashCode()方法，所以在实现Person类的hashCode()的时候，反复使用31 * h，目的是为了把不同的Person实例均匀的存贮在int范围内。
+因为`String`类已经正确实现了`hashCode()`方法，所以在实现`Person`类的`hashCode()`的时候，反复使用`31 * h`，目的是为了把不同的`Person`实例均匀的存贮在`int`范围内。
 
-观察到，如果上面的firstName，lastName是null的时候，方法会报错，所以我们使用Objects.hash()来方便我们处理
+观察到，如果上面的`firstName`，`lastName`是`null`的时候，方法会报错，所以我们使用`Objects.hash()`来方便我们处理
 
 ```java
 public class Person {
@@ -454,30 +454,30 @@ public class Person {
 }
 ```
 
-编写equals()和hashCode()的时候，需要遵循一个原则，equals()中用到的每一个字段，都需要在hashCode()中计算，equals()没有用到的字段，绝不能放进hashCode()中计算。
+编写`equals()`和`hashCode()`的时候，需要遵循一个原则，`equals()`中用到的每一个字段，都需要在`hashCode()`中计算，`equals()`没有用到的字段，绝不能放进`hashCode()`中计算。
 
 #### **HashMap扩展**
 
-hashMap返回的int范围是在±21亿，那么HashMap存贮value的数组有多大？
+`hashMap`返回的`int`范围是在±21亿，那么`HashMap`存贮`value`的数组有多大？
 
-实际上初始化HashMap的时候，它的数组长度是16，任何key，无论你的hashCode()有多大，最终都可以通过
+实际上初始化`HashMap`的时候，它的数组长度是`16`，任何`key`，无论你的`hashCode()`有多大，最终都可以通过
 
 ``` java
 int index = key.hashCode() & 0xf; 
 ```
 
-转化成0-15之间的数字，所以不会超出数组长度，那么场景中的确有超过16个value需要存储怎么结局？
+转化成`0-15`之间的数字，所以不会超出数组长度，那么场景中的确有超过16个`value`需要存储怎么办？
 
-当添加到一定量的key-value的时候，HashMap会和ArrayList一样进行自动翻倍扩容，频繁的扩容对HashMap的性能影响很大，所以我们可以在一开就直接指定HashMap的存贮容量
+当添加到一定量的`key-value`的时候，`HashMap`会和`ArrayList`一样进行自动翻倍扩容，频繁的扩容对`HashMap`的性能影响很大，所以我们可以在一开就直接指定HashMap的存贮容量
 
 ``` java
 Map<String, Integer> map = new HashMap<>(1000);
 ```
-虽然明确指定了HashMap的长度是1000，但是由于HashMap内部的数组长度总是2^n，所以实际初始化的数组长度是比1000要大的1024（2^10）
+虽然明确指定了`HashMap`的长度是`1000`，但是由于`HashMap`内部的数组长度总是2^n，所以实际初始化的数组长度是比`1000`要大的`1024（2^10）`
 
-如果不同的两个key，它们的hashCode()结果相同，那么相当于我们向同一个索引位置put两次，先放入的元素会不会被后放入的元素给替换掉呢？
+如果不同的两个`key`，它们的`hashCode()`结果相同，那么相当于我们向同一个索引位置`put`两次，先放入的元素会不会被后放入的元素给替换掉呢？
 
-答案是不会，只要key不相同，它们映射的value就互不相干，不过这种key不同计算的hashCode()结果相同的场景确实存在，这种情况称为哈希冲突，例如"a"，"b"两个key计算的索引都是5，那么在HashMap中，存贮在索引5位置的就不是一个Person实例，而是一个List，它包含两个Entry，一个是"a"映射，一个是"b"的映射，看起来像这样
+答案是不会，只要key不相同，它们映射的value就互不相干，不过这种key不同计算的hashCode()结果相同的场景确实存在，这种情况称为`哈希冲突`，例如`"a"`，`"b"`两个`key`计算的索引都是`5`，那么在`HashMap`中，存贮在索引`5`位置的就不是一个`Person`实例，而是一个`List`，它包含两个`Entry`，一个是`"a"`映射，一个是`"b"`的映射，看起来像这样
 
 ```
       ┌───┐
@@ -498,8 +498,125 @@ Map<String, Integer> map = new HashMap<>(1000);
  7 -> │   │
       └───┘
 ```
+因此在获取的时候，`HashMap`通过`"a"`计算出来的实际上是`List<Entry<String, Person>>`类型的数组，所以还要再遍历一遍这个数组，才能拿到`"a"`的`value`，如果这种冲突的概率很高，那么数组的长度就很长，进而导致`HashMap`的`get`方法效率变低，相反的`hashCode()`方法编写的越好，`HashMap`工作效率就越高，这就是为什么要：
 
+> 如果两个对象不想等，则两个对象的`hashCode()`尽量不要相等
 
+#### **使用EnumMap**
+
+我们已经知道了，`Map`的`key`可以存储任意类型，并且通过`hashCode()`计算`value`所存储的索引位置，那么如果`key`的对象是`enum`类型，我们还可以使用`EnumMap`，它的内部是非常紧凑的数组存储`value`，即节省空间，查询效率也非常高，不需要计算`hashCode()`，没有额外的浪费。
+
+```java
+public class EnumMapClass {
+    public static void main(String[] args){
+        Map<DayOfWeek, String> map = new EnumMap<>(DayOfWeek.class);
+        map.put(DayOfWeek.MONDAY, "周一");
+        map.put(DayOfWeek.TUESDAY, "周二");
+
+        System.out.println(map.get(DayOfWeek.MONDAY)); // 周一
+    }
+}
+```
+需要注意的是，在实例化`EnumMap`的时候，需要传入枚举类型的反射
+
+#### **使用TreeMap**
+
+`HashMap`的`key`是无序的，那么有没有一种`Map`的`key`是有序的呢？那就是`SortedMap`，`SortedMap`是继承自`Map`的一个接口，其实现类是`TreeMap`，`SortedMap`保证遍历时以`key`的顺序来排序
+```java
+public class TreeMapClass {
+    public static void main(String[] args){
+        Map<String, Integer> map = new TreeMap<>();
+        map.put("banana", 200);
+        map.put("apple", 100);
+        map.put("pear", 300);
+        for(String s: map.keySet()){
+            System.out.println(s);
+        }
+        // apple, banana, pear // String默认按照字母排序
+    }
+}
+```
+使用`TreeMap`的时候，放入的`key`必须实现`Comparable`接口才能实现排序，`String`和`Integer`已经实现，所以可以直接拿来当`key`，如果`key`没有实现`Comparable`接口，必须在实例化`TreeMap`的时候，指定一个`Comparator`自定义排序算法
+
+> 注意，`Comparable`和`Comparator` 都是接口，在实现排序的时候，如果在作为`key`的类上实现时，需要让类实现`Comparable`接口，在单独传递给`TreeMap`的时候，需要单独实现并实例化`Comparator`接口，它们对应要实现的方法名字也不同，不过内容相同，`Comparable`需要实现的是`compareTo`，而`Comparator`需要实现的是`compare`
+
+```java
+public class TreeMapClassComparable {
+    public static void main(String[] args){
+        Map<Person, Integer> map = new TreeMap<>(new Comparator<Person>(){
+            public int compare(Person p1, Person p2){
+                return p1.name.compareTo(p2.name);
+            }
+        });
+    }
+}
+
+public class Person {
+    public String name;
+    public Person (String name){
+        this.name = name;
+    }
+}
+```
+实现`Comparator`接口时需要实现一个比较方法，它负责比较传入的两个元素`"a"`和`"b"`，如果`a < b`，则返回负数`-1`，如果相等则返回`0`，如果`a > b`则返回正数`1`，`TreeMap`内部根据比较结果对`key`进行排序。
+
+可以看到`Person`并没有实现`equals()`和`hashCode()`，因为`TreeMap`不使用这两个方法，观察下面的例子
+
+```java
+public class TreeMapStudentEx {
+    public static void main(String[] args){
+        Map<Student, Integer> map = new TreeMap<>(new Comparator<Student>(){
+            public int compare(Student s1, Student s2){
+                return s1.score > s2.score ? -1 : 1;
+            }
+        });
+        map.put(new Student("Tom", 60), 1);
+        map.put(new Student("Bob", 80), 2);
+        map.put(new Student("Mary", 90), 3);
+        for(Student s: map.keySet()){
+            System.out.println(s.name);
+        }
+        System.out.println(map.get(new Student("Bob", 80))); // null
+    }
+}
+
+public class Student {
+    public String name;
+    public Integer score;
+
+    public Student (String name, Integer score){
+        this.name = name;
+        this.score = score;
+    }
+}
+```
+
+明明已经添加了一个`key`是`new Student("Bob", 80)`的映射，为什么还会返回`null`呢？
+
+原因就是`Comparator`
+``` java
+new Comparator<Student>(){
+    public int compare(Student s1, Student s2){
+         return s2.score > s2.score ? -1 : 1;
+     }
+}
+``` 
+并没有处理相等的情况，也就是说，`TreeMap`在比较两个`key`相等的时候，依赖的就是`Comparator.compare`或者作为`key`的类型实现的`compareTo()`，因此在两个`key`相等的时候，一定要返回`0`，代码改写如下
+
+``` java
+new Comparable<Student>(){
+    public int compare(Student s1, Studente s2){
+        if(s1.score.equals(s2.score)){
+            return 0;
+        }
+        return s1.score > s2.score ? -1 : 1;
+    }
+}
+```
+
+也可以使用`Integer.compare(Integer, Integer)`静态方法
+
+#### **使用Properties**
 
 
 

@@ -2,7 +2,11 @@ package com.jgmt.blog.practice;
 
 import com.sun.tools.javac.util.List;
 
+import java.time.DayOfWeek;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * java 集合部分练习类
@@ -17,6 +21,15 @@ public class MyCollection {
         System.out.println(list.contains(new Person("Bob", 30)));
         System.out.println("位与运算符");
         System.out.println(11000010 & 0xf);
+        System.out.println(DayOfWeek.MONDAY);
+        /**
+         * 实例化一个TreeMap
+         */
+        Map<Person, Integer> map = new TreeMap<>(new Comparator<Person>(){
+            public int compare(Person s1, Person s2){
+                return s1.age > s2.age ? -1 : 1;
+            }
+        });
     }
 
 }
