@@ -618,7 +618,15 @@ new Comparable<Student>(){
 
 #### **使用Properties**
 
+下面是一个标准的properties文件
 
+```properties
+#应用名称
+application=my_blog
+#作者
+author=dwy
+```
+配置文件的特点是它的key-value总是String-String类型，因此我们完全可以使用Map<String, String>来表示，因为配置文件非常常用，所以Java库提供了一个Properties来表示一组配置，因为这个技术比较久远，所以Properties内部本质是一个HashTable，不过我们只需要一些关于Properties一些读写的接口
 
 
 
