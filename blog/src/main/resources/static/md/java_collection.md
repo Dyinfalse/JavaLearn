@@ -621,7 +621,7 @@ new Comparable<Student>(){
 
 #### **使用Properties**
 
-下面是一个标准的properties文件
+下面是一个标准的`properties`文件
 
 ```properties
 #应用名称
@@ -629,7 +629,90 @@ application=my_blog
 #作者
 author=dwy
 ```
-配置文件的特点是它的key-value总是String-String类型，因此我们完全可以使用Map<String, String>来表示，因为配置文件非常常用，所以Java库提供了一个Properties来表示一组配置，因为这个技术比较久远，所以Properties内部本质是一个HashTable，不过我们只需要一些关于Properties一些读写的接口
+配置文件的特点是它的`key-value`总是`String-String`类型，因此我们完全可以使用`Map<String, String>`来表示，因为配置文件非常常用，所以Java库提供了一个`Properties`来表示一组配置，因为这个技术比较久远，`Properties`内部本质是一个`HashTable`，不过我们只需要一些关于`Properties`一些读写的接口，可以从文件系统读取一个`.properties`文件
+
+```java
+public class PropertiesRead {
+    public static void main(String[] args){
+        String f = "绝对路径/application.properties";
+        Properties p = new Properties():
+        p.load(new FileInputStream(f));
+        
+        String bingImageUrl = p.getProperty("bingImageUrl");
+        String hymeleafCache = p.getProperty("spring.hymeleaf.cache", "true");
+        System.out.println(bingImageUrl, hymeleafCache);
+    }
+}
+```
+使用`Properties`读取配置文件分三个步骤
+
+- 创建`Properties`实例
+- 使用`load()`载入文件
+- 调用`getProperty(String)`获取配置信息
+
+调用`getProperty()`的时候，如果`key`不存在，将返回`null`，所以我们可以提供一个默认值，当`key`不存在的时候，就会返回默认值，使用方法
+
+``` java
+properties.getProperty("unKey", "defaultValue");
+```
+除了文件系统，还可以从`classpath`读取`.properties`文件，因为`load(InputStream)`，接收一个`InputStream`实例，表示一个字节流，它不一定是文件流，也可以是从jar包读取的资源流
+
+```java
+public class PropertiesReadByClassPath {
+    public static void main(String[] args){
+        Properties pro = new Properties();
+        // 如果是在静态方法里，可直接使用 类名.class.getResourceAsStream()
+        // 当前路径是在 resource包下
+        pro.load(getClass().getResourceAsStream("/application.properties"));
+    }
+}
+```
+
+还可以从内从中直接读取
+
+```java
+public class PropertiesReadByByteArray {
+    public static void main(String[] args){
+        String f = "# 注释\nlang=Java\nyear=2020";
+        ByteArrayInputStream bais = new ByteArrayInputStream(f.getBytes("UTF-8"));
+        Properties pro = new Properties();
+        pro.load(bais);
+        System.out.println(pro.getProperty("lang") + pro.getProperty("year")); // Java2020
+    }
+}
+```
+
+一个`Properties`实例，可以反复调用`laod()`方法，将多个配置文件的信息加载过来，如果`key`相同，后读取的`.properties`文件会覆盖前面读取的`value`，除了`getProperty()`方法，当然就有`setProperty()`方法，下面看一个写入配置文件的例子
+
+```java
+public class PropertiesWrite {
+    public static void main(String[] args){
+        Properties pro = new Properties();
+        pro.setProperty("set_test_value", "一个测试的属性");
+        pro.store(new FileOutputStream("绝对路径/application.properties"));
+    }
+}
+```
+
+早期的`.properties`文件编码是`ASCII编码(ISO8859-1)`，如果涉及到中文，就必须使用`Unicode`来表示，非常麻烦，为了解决这个，可以使用下面的写法
+
+```java
+public class PropertiesDecode {
+    public static void main(String[] args){
+        Properties props = new Properties();
+        props.load(new FileReader("settings.properties", StandardCharsets.UTF_8));
+        // 写入使用下面的 FileWriter
+        // props.store(new FileWriter("..."));
+    }
+}
+```
+
+`InputStream`和`Reader`的区别在于一个是字符流，一个是字节流，字符流在内存中已经是以`char`类型存储，所以不涉及编码问题。
+
+除了上面说的，因为`Properties`是`HashTable`的派生类，所以继承了`HashTable`的`get()`，`put()`方法，但是不可以使用这两个方法，因为这两个方法的入参类型和`Map`一样，可以使用泛型自由指定类型，但是`Properties`的存贮格式是`String-String`，因此如果你把一个非`String`类型的变量给到`put()`方法，加到了`Properties`类里，当你再调用`Properties.store()`方法进行保存的时候，就会抛出一个`ClassCastException`，告诉你这个类型不能转化成`String`类型。所以为了保证安全，如果要操作`.properties`文件就必须使用`getProperty()`和`setProperty()`。
+
+
+
 
 
 
