@@ -711,7 +711,9 @@ public class PropertiesDecode {
 
 除了上面说的，因为`Properties`是`HashTable`的派生类，所以继承了`HashTable`的`get()`，`put()`方法，但是不可以使用这两个方法，因为这两个方法的入参类型和`Map`一样，可以使用泛型自由指定类型，但是`Properties`的存贮格式是`String-String`，因此如果你把一个非`String`类型的变量给到`put()`方法，加到了`Properties`类里，当你再调用`Properties.store()`方法进行保存的时候，就会抛出一个`ClassCastException`，告诉你这个类型不能转化成`String`类型。所以为了保证安全，如果要操作`.properties`文件就必须使用`getProperty()`和`setProperty()`。
 
+#### **使用Set**
 
+我们已经知道，`Map`用来存贮`key-value`的映射，并且要覆写`equals()`和`hashCode()`方法，但是如果我们不需要映射，只要保存一组不重复的`key`，那么就可以使用`Set`
 
 
 
