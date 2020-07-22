@@ -1,6 +1,6 @@
 ## java集合知识点
 
-*2020-07-19 Dyinfalse*
+*2020-07-19 Dyinfalse* 本篇是阅读[廖雪峰文章](https://www.liaoxuefeng.com/wiki/1252599548343744)的总结
 
 #### **什么是集合？**
 
@@ -301,7 +301,10 @@ public boolean equals (Object o){
 ```java
 public class Main {
     public static void main(String[] args){
-        List<Student> list = List.of(new Student("XiaoMing", 60), new Student("XiaoHong", 80), new Student("XiaoHua", 90));
+        List<Student> list = List.of(
+                new Student("XiaoMing", 60),
+                new Student("XiaoHong", 80),
+                new Student("XiaoHua", 90));
         Student target;
         for(Student s: list){
             if("XiaoMing".equals(s.name)){
@@ -314,8 +317,8 @@ public class Main {
 }
 
 public class Student {
-    public String name;
-    public Integer score;
+    String name;
+    Integer score;
     public Student (String name, Integer score) {
         this.name = name;
         this.score = score;
@@ -552,7 +555,7 @@ public class TreeMapClassComparable {
 }
 
 public class Person {
-    public String name;
+    String name;
     public Person (String name){
         this.name = name;
     }
@@ -581,8 +584,8 @@ public class TreeMapStudentEx {
 }
 
 public class Student {
-    public String name;
-    public Integer score;
+    String name;
+    Integer score;
 
     public Student (String name, Integer score){
         this.name = name;
@@ -617,6 +620,7 @@ new Comparable<Student>(){
 也可以使用`Integer.compare(Integer, Integer)`静态方法
 
 #### **使用Properties**
+
 
 
 
