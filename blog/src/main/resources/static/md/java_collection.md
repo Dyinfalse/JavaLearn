@@ -623,7 +623,7 @@ new Comparable<Student>(){
 
 下面是一个标准的`properties`文件
 
-```properties
+``` properties
 #应用名称
 application=my_blog
 #作者
@@ -713,7 +713,23 @@ public class PropertiesDecode {
 
 #### **使用Set**
 
-我们已经知道，`Map`用来存贮`key-value`的映射，并且要覆写`equals()`和`hashCode()`方法，但是如果我们不需要映射，只要保存一组不重复的`key`，那么就可以使用`Set`
+我们已经知道，`Map`用来存贮`key-value`的映射，并且要覆写`equals()`和`hashCode()`方法，但是如果我们不需要映射，只要保存一组不重复的`key`，那么就可以使用`Set`，Set的主要方法如下：
+
+- 将元素添加进`Set<E>`: boolean add(E e)
+- 将元素从集合中删除`Set<E>`删除：boolean remove(Object o)
+- 判断集合中是否存在某个元素 boolean contains(Object o)
+
+```java
+public class HashSetClass {
+    public static void main(String[] args){
+        Set<String> set = new HashSet<>();
+        set.add("java");
+        set.add("spring");
+        set.add("boot");
+        set.remove("BOOT");
+    }
+}
+```
 
 
 
