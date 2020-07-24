@@ -221,3 +221,7 @@ code {
 table th, table tr:nth-child(even) {
     background: #fafafa;
 }
+
+table {
+    width: 100%;
+}

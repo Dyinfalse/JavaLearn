@@ -713,11 +713,11 @@ public class PropertiesDecode {
 
 #### **使用Set**
 
-我们已经知道，`Map`用来存贮`key-value`的映射，并且要覆写`equals()`和`hashCode()`方法，但是如果我们不需要映射，只要保存一组不重复的`key`，那么就可以使用`Set`，Set的主要方法如下：
+我们已经知道，`Map`用来存贮`key-value`的映射，并且要覆写`equals()`和`hashCode()`方法，但是如果我们不需要映射，只要保存一组不重复的`key`，那么就可以使用`Set`，和`Map`一样，`Set`只是个接口，其常用实现类是`HashSet`，的主要方法如下：
 
-- 将元素添加进`Set<E>`: boolean add(E e)
-- 将元素从集合中删除`Set<E>`删除：boolean remove(Object o)
-- 判断集合中是否存在某个元素 boolean contains(Object o)
+- 将元素添加进`Set<E>`: `boolean add(E e)`
+- 将元素从集合中删除`Set<E>`删除：`boolean remove(Object o)`
+- 判断集合中是否存在某个元素 `boolean contains(Object o)`
 
 ```java
 public class HashSetClass {
@@ -726,10 +726,143 @@ public class HashSetClass {
         set.add("java");
         set.add("spring");
         set.add("boot");
-        set.remove("BOOT");
+        set.remove("BOOT"); //false 删除失败
+        set.remove("boot"); // true 删除成功
+        set.contains("aaa"); // false 没找到
+        set.contains("java"); // true 找到了
+        set.size(); // 2 该Set包含两个元素
     }
 }
 ```
+
+`Set`就相当于`Map`的`key`部分，不存贮`value`，经常使用`Set`是为了元素去重复，`Set`在存放的时候也需要元素实现`equals()`和`hashCode()`，如果我们观察源码会发现，`HashSet`的内部，其实还是利用`HashMap`来实现的，只不过不允许你传入`value`而已，下面观察`HashSet`核心源码
+
+```java
+import java.util.HashMap;
+import java.util.Object;
+public class HashSet<E> implements Set<E> {
+    
+    private HashMap<E, Object> map = new HashMap<>();
+    
+    private static final Object PRESENT = new Object();
+
+    public boolean add (E e) {
+        return map.put(e, PRESENT) == null;
+    }
+    
+    public boolean remove(Object o) {
+        return map.remove(o) == PRESENT;
+    }
+    
+    public boolean contains (Object o) {
+        return map.containsKey(o);
+    }
+}
+```
+
+`Set`接口不保证顺序，但是`SortedSet`可以保证顺序，和`Map`类似
+
+- `HashSet`不保证顺序，因为它实现了`Set`接口没有实现`SortedSet`接口
+- `TreeSet`可以保证顺序，它实现了`SortedSet`接口
+
+`HashSet`的`key`排列顺序既不是写入顺序，也不任何排序顺序，甚至在不同JDK版本下顺序也不相同，所以在Java开发时假定`Set`或`Map`的`key`有序是非常危险的
+
+在给`TreeSet`添加元素的时候，和`TreeMap`的要求一样，`key`的元素必须实现`Comparable`接口，或者在创建`TreeSet`的时候，指定一个`Comparator`对象
+
+```java
+public class TreeSetClass {
+    public static void main(String[] args){
+        Set<Student> set = new TreeSet<>(new Comparator<Student>(){
+            public int compare (Student s1, Student s2) {
+                return s1.name.compareTo(s2.name);
+            }
+        });
+    }
+}
+```
+
+#### **使用Queue**
+
+队列(Queue)是一种非常常用的集合，Queue实现了一个先进先出(FIFO)的有序表，它和List的区别在于List可以在任意位置添加和删除元素，而Queue只有两个操作
+
+- 把元素添加到末尾
+- 从队列头部取出元素
+
+Java标准库中，Queue定义了一下几个方法
+
+- int size() 获取队列长度
+- boolean add(E)/boolead offer(E) 添加元素到末尾
+- E remove()/E poll() 获取队首并从队列中删除
+- E element()/E peek() 获取队首但不从队列中删除
+
+对于集体的实现类，有的Queue有最大队列长度限制，有的没有
+
+我们注意到上面说的每种操作都对应着两个方法，这是因为元素在添加获取失败的时候，其反馈不同
+
+|操作|throw Exception|返回 false or null|
+|---|---|---|
+|添加元素到队尾|add(E e)|boolean offer(E e)|
+|取队首元素并删除|E remove()|E poll()|
+|取队首元素不删除|E element()|E peek()|
+
+这套方法可以根据需求来使用，有一点需要注意的是，不要往队列中添加null，因为你无法确定使用使用poll()方法时，取到的是null元素还是空队列
+
+Queue的实现类非常多，分为阻塞队列和非阻塞队列
+
+三个非阻塞队列包括
+- LinkedList // 常用
+- PriorityQueue // 常用
+- ConcurrentLinkedQueue
+
+七个阻塞队列包括
+
+- ArrayBlockingQueue
+- LinkedBlockingQueue
+- PriorityBlockingQueue
+- DelayQueue
+- SynchronouseQueue
+- LinkedTrnsferQueue
+- LinkedBlockingDeque
+
+每个实现类之间都存在差异，后面我会专门总结一篇队列知识点
+
+我们会发现，在List篇我们也同样介绍了LinkedList类，因为LinkedList既实现了List，也实现了Queue，所以依照面向对象多态原则，使用List引用它就是List，使用Queue引用，它就是Queue
+
+``` java
+// 这是一个List
+List<String> list = new LinkedList<>();
+
+// 这是一个Queue
+Queue<String> queue = new LinkedList<>();
+```
+
+#### **使用PriorityQueue**
+
+思考一个银行柜台案例，每个人取一个号A1，A2，A3...然后按照号码顺序依次办理实际上就是一个Queue。
+
+但是如果这是来了一个客户，好吗是V1，虽然当前排队的是A10，A11，A12但是柜台下一个喊得却是V1。
+
+我们发现使用普通的Queue队列就无法实现"VIP插队"业务，所以就要使用优先队列：PriorityQueue。
+
+PriorityQueue和Queue的区别是什么？PriorityQueue的出队顺序与元素的优先级有关，PriorityQueue在调用remove()或poll()方法的时候，返回的总是优先级最高的元素。
+
+因此，我们在使用PriorityQueue的时候，需要给每个元素指定优先级（排序），观察以下代码：
+
+```java
+public class PriorityQueueClass {
+    public static void main(String[] args){
+        Queue<String> q = new PriorityQueue<>();
+        q.offer("apple");
+        q.offer("pear");
+        q.offer("banana");
+        System.out.println(q.poll()); // apple
+        System.out.println(q.poll()); // banana
+        System.out.println(q.poll()); // pear
+        System.out.println(q.poll()); // null 队列已经空了
+    }
+}
+```
+观察到，我们入队的顺序是`"apple"`，`"pear"`，`"banana"`，出对的顺序确实`"apple"`，`"banana"`，`"pear"`，这是因为从字符串的排序来看，`"apple"`在最前面，`"pear"`在最后面，所以放入
 
 
 

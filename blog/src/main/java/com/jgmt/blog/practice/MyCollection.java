@@ -77,6 +77,15 @@ public class MyCollection {
         }
         System.out.println(bingImageUrl +" "+ hymeleafCache);
 //        System.out.println(pro.getProperty("lang") + pro.getProperty("year")); // Java2020
+
+        /**
+         * Set
+         */
+        Set<String> set = new HashSet<>();
+        /**
+         * Queue
+         */
+        Queue<String> q = new LinkedList<>();
     }
 
 }
