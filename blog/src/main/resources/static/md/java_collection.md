@@ -862,9 +862,75 @@ public class PriorityQueueClass {
     }
 }
 ```
-观察到，我们入队的顺序是`"apple"`，`"pear"`，`"banana"`，出对的顺序确实`"apple"`，`"banana"`，`"pear"`，这是因为从字符串的排序来看，`"apple"`在最前面，`"pear"`在最后面，所以放入
+观察到，我们入队的顺序是`"apple"`，`"pear"`，`"banana"`，出对的顺序确实`"apple"`，`"banana"`，`"pear"`，这是因为从字符串的排序来看，`"apple"`在最前面，`"pear"`在最后面，所以放入`PriorityQueue`集合的元素必须实现`Comparable`接口，或者传入一个`Comparator`对象来判断元素顺序，改写上面的代码，使他可以用在银行排队业务
 
+```java
+public class PriorityQueueVIPClass {
+    public static void main(String[] args){
+        Queue<User> q = new PriorityQueue<>(new UserComparable());
+        q.offer(new User("Bob", "A1"));
+        q.offer(new User("Alice", "A2"));
+        q.offer(new User("Boss", "V1"));
+        System.out.println(q.poll()); // Boss
+        System.out.println(q.poll()); // Bob
+    }
+}
 
+public class UserComparable implements Comparator<User> {
+    public int compare(User u1, User u2) {
+        if(u1.number.charAt(0) == u2.number.charAt(0)){
+            // 如果两个同级，就比较号码大小
+            return (Integer) Integer.parseInt(u1.number.substring(1)).compareTo((Integer) u2.number.substring(1));
+        }
+        // 如果不一样，就V优先
+        if(u1.number.charAt(0) == "V"){
+            return -1;
+        }else {
+            return 1;
+        }
+    }
+}
+```
+
+#### **使用Deque**
+
+除了`PriorityQueue`队列之外，还有一种双端队列`Deque`，与之前的队列不同，双端队列就是两端都可以操作，既可以添加元素到队尾，也可以添加到队首，既可以从队首获取，也可以从队尾获取
+
+下面比较一下`Queue`和`Deque`的入队出队方法
+
+|操作|Queue|Deque|
+|---|---|---|
+|添加元素到队尾|add(E)/offer(E e)|addLast(E e)|
+|取队首元素并删除|E remove()/E poll()|E removeFirst()/E pollFirst()|
+|取队首元素不删除|E element()/E peek()|E getFirst()/E peekFirst()|
+|添加元素到队首|无|addFirst(E e)|
+|取队尾元素并删除|无|E removeLast()/E pollLast()|
+|取队尾元素不删除|无|E getLast()/E peekLast()|
+
+事实上，Deque是一个继承自Queue的接口，所以Queue包含的offer()和add()方法在Deque上也是可以使用，只是不建议使用，应为使用offerLast()和addLast()更加明确作用。
+
+Deque的实现类有ArrayDeque和LinkedList，又有LinkedList，它即是List，有事Queue，还是Deque，所以在使用的时候，我们总是以特定接口来引用，因为持有接口说明代码的抽象层次更高，而接口本身定义的方法代表了特定的用途。
+
+```java
+public class LinkedListClass {
+    public static void main(String[] args){
+        // 不推荐的写法
+        LinkedList<String> d1 = new LinkedList<>();
+        d1.offerLast("z");
+
+        Deque<String> d2 = new LinkedList<>();
+        d2.offerLast("z");
+    }
+}
+```
+
+#### **使用Stack**
+
+栈(Stack)是一种后进先出，先进后出（LIFO）的数据结构，Stack只能不断的压入(push)元素，最后压进去的必须最早弹出(pop)来，下面是Stack的入栈出栈的方法
+
+- 把元素压栈：push(E e);
+- 把栈顶的元素弹出：E pop();
+- 取栈顶元素但不弹出：E peek();
 
 
 
