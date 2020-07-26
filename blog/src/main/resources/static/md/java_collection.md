@@ -783,50 +783,50 @@ public class TreeSetClass {
 
 #### **使用Queue**
 
-队列(Queue)是一种非常常用的集合，Queue实现了一个先进先出(FIFO)的有序表，它和List的区别在于List可以在任意位置添加和删除元素，而Queue只有两个操作
+队列(Queue)是一种非常常用的集合，`Queue`实现了一个先进先出(FIFO)的有序表，它和`List`的区别在于`List`可以在任意位置添加和删除元素，而`Queue`只有两个操作
 
 - 把元素添加到末尾
 - 从队列头部取出元素
 
-Java标准库中，Queue定义了一下几个方法
+Java标准库中，`Queue`定义了一下几个方法
 
-- int size() 获取队列长度
-- boolean add(E)/boolead offer(E) 添加元素到末尾
-- E remove()/E poll() 获取队首并从队列中删除
-- E element()/E peek() 获取队首但不从队列中删除
+- `int size()` 获取队列长度
+- `boolean add(E)`/`boolead offer(E)` 添加元素到末尾
+- `E remove()`/`E poll()` 获取队首并从队列中删除
+- `E element()`/`E peek()` 获取队首但不从队列中删除
 
-对于集体的实现类，有的Queue有最大队列长度限制，有的没有
+对于集体的实现类，有的`Queue`有最大队列长度限制，有的没有
 
 我们注意到上面说的每种操作都对应着两个方法，这是因为元素在添加获取失败的时候，其反馈不同
 
 |操作|throw Exception|返回 false or null|
 |---|---|---|
-|添加元素到队尾|add(E e)|boolean offer(E e)|
-|取队首元素并删除|E remove()|E poll()|
-|取队首元素不删除|E element()|E peek()|
+|添加元素到队尾|`add(E e)`|`boolean offer(E e)`|
+|取队首元素并删除|`E remove()`|`E poll()`|
+|取队首元素不删除|`E element()`|`E peek()`|
 
-这套方法可以根据需求来使用，有一点需要注意的是，不要往队列中添加null，因为你无法确定使用使用poll()方法时，取到的是null元素还是空队列
+这套方法可以根据需求来使用，有一点需要注意的是，不要往队列中添加`null`，因为你无法确定使用使用`poll()`方法时，取到的是`null`元素还是空队列
 
-Queue的实现类非常多，分为阻塞队列和非阻塞队列
+`Queue`的实现类非常多，分为阻塞队列和非阻塞队列
 
 三个非阻塞队列包括
-- LinkedList // 常用
-- PriorityQueue // 常用
-- ConcurrentLinkedQueue
+- `LinkedList` // 常用
+- `PriorityQueue` // 常用
+- `ConcurrentLinkedQueue`
 
 七个阻塞队列包括
 
-- ArrayBlockingQueue
-- LinkedBlockingQueue
-- PriorityBlockingQueue
-- DelayQueue
-- SynchronouseQueue
-- LinkedTrnsferQueue
-- LinkedBlockingDeque
+- `ArrayBlockingQueue`
+- `LinkedBlockingQueue`
+- `PriorityBlockingQueue`
+- `DelayQueue`
+- `SynchronouseQueue`
+- `LinkedTrnsferQueue`
+- `LinkedBlockingDeque`
 
 每个实现类之间都存在差异，后面我会专门总结一篇队列知识点
 
-我们会发现，在List篇我们也同样介绍了LinkedList类，因为LinkedList既实现了List，也实现了Queue，所以依照面向对象多态原则，使用List引用它就是List，使用Queue引用，它就是Queue
+我们会发现，在`List`篇我们也同样介绍了`LinkedList`类，因为`LinkedList`既实现了`List`，也实现了`Queue`，所以依照面向对象多态原则，使用`List`引用它就是`List`，使用`Queue`引用，它就是`Queue`
 
 ``` java
 // 这是一个List
@@ -838,15 +838,15 @@ Queue<String> queue = new LinkedList<>();
 
 #### **使用PriorityQueue**
 
-思考一个银行柜台案例，每个人取一个号A1，A2，A3...然后按照号码顺序依次办理实际上就是一个Queue。
+思考一个银行柜台案例，每个人取一个号`A1`，`A2`，`A3...`然后按照号码顺序依次办理实际上就是一个`Queue`。
 
-但是如果这是来了一个客户，好吗是V1，虽然当前排队的是A10，A11，A12但是柜台下一个喊得却是V1。
+但是如果这是来了一个客户，好吗是`V1`，虽然当前排队的是`A10`，`A11`，`A12`但是柜台下一个喊得却是`V1`。
 
-我们发现使用普通的Queue队列就无法实现"VIP插队"业务，所以就要使用优先队列：PriorityQueue。
+我们发现使用普通的`Queue`队列就无法实现"VIP插队"业务，所以就要使用优先队列：`PriorityQueue`。
 
-PriorityQueue和Queue的区别是什么？PriorityQueue的出队顺序与元素的优先级有关，PriorityQueue在调用remove()或poll()方法的时候，返回的总是优先级最高的元素。
+`PriorityQueue`和`Queue`的区别是什么？`PriorityQueue`的出队顺序与元素的优先级有关，`PriorityQueue`在调用`remove()`或`poll()`方法的时候，返回的总是优先级最高的元素。
 
-因此，我们在使用PriorityQueue的时候，需要给每个元素指定优先级（排序），观察以下代码：
+因此，我们在使用`PriorityQueue`的时候，需要给每个元素指定优先级（排序），观察以下代码：
 
 ```java
 public class PriorityQueueClass {
@@ -907,9 +907,9 @@ public class UserComparable implements Comparator<User> {
 |取队尾元素并删除|无|E removeLast()/E pollLast()|
 |取队尾元素不删除|无|E getLast()/E peekLast()|
 
-事实上，Deque是一个继承自Queue的接口，所以Queue包含的offer()和add()方法在Deque上也是可以使用，只是不建议使用，应为使用offerLast()和addLast()更加明确作用。
+事实上，`Deque`是一个继承自`Queue`的接口，所以`Queue`包含的`offer()`和`add()`方法在`Deque`上也是可以使用，只是不建议使用，因为使用`offerLast()`和`addLast()`更加明确作用。
 
-Deque的实现类有ArrayDeque和LinkedList，又有LinkedList，它即是List，有事Queue，还是Deque，所以在使用的时候，我们总是以特定接口来引用，因为持有接口说明代码的抽象层次更高，而接口本身定义的方法代表了特定的用途。
+`Deque`的实现类有`ArrayDeque`和`LinkedList`，又有`LinkedList`，它即是`List`，有事`Queue`，还是`Deque`，所以在使用的时候，我们总是以特定接口来引用，因为持有接口说明代码的抽象层次更高，而接口本身定义的方法代表了特定的用途。
 
 ```java
 public class LinkedListClass {
@@ -926,11 +926,298 @@ public class LinkedListClass {
 
 #### **使用Stack**
 
-栈(Stack)是一种后进先出，先进后出（LIFO）的数据结构，Stack只能不断的压入(push)元素，最后压进去的必须最早弹出(pop)来，下面是Stack的入栈出栈的方法
+栈(Stack)是一种后进先出，先进后出（LIFO）的数据结构，`Stack`只能不断的压入(push)元素，最后压进去的必须最早弹出(pop)来，下面是`Stack`的入栈出栈的方法
 
-- 把元素压栈：push(E e);
-- 把栈顶的元素弹出：E pop();
-- 取栈顶元素但不弹出：E peek();
+- 把元素压栈：`push(E e)`;
+- 把栈顶的元素弹出：`E pop()`;
+- 取栈顶元素但不弹出：`E peek()`;
+
+在Java中，我们也可以使用`Deque`实现和`Stack`一样的功能：
+
+- 把元素压入栈：`push(E e)`/`addFirst(E e)`
+- 把栈顶元素弹出：`E pop()`/`E removeFirst()`
+- 读取栈顶元素：`E peek()`/`E peekFirst()`
+
+为什么没有`Stack`接口呢？因为有一个遗留类就叫`Stack`，为了兼容性考虑，所以没办法创建`Stack`接口，只能用`Deque`来模拟一个`Stack`，当使用`Deque`作为`Stack`的时候，注意只使用`push()`/`pop()`/`peek()`方法，不要使用`addFirst()`/`removeFirst()`/`peekFirst()`方法，这样更符合`Stack`的调用方法。
+
+`Stack`在计算机中使用非常广泛，JVM在处理Java方法调用的时候就会通过栈这种数据结构维护方法调用的层次，例如：
+
+```java
+public class StackFunctionClass {
+    public static void main(String[] args){
+        foo(123);
+    }
+    
+    static String foo(int x){
+        return "F-" + bar(x + 1);
+    }
+    
+    static int bar(int x){
+        return x << 2;
+    }
+}
+```
+
+JVM会创建方法调用栈，每调用一个方法，先将参数压栈，然后执行对应的方法；当方法返回时，返回值压栈，调用方法通过栈操作获得返回值。
+
+因为方法调用栈有容量限制，嵌套调用层数过多后导致栈溢出，就会引发`StackOverFlowError`；
+
+再看一个`Stack`的用途，对整数进行进制转换就可以利用栈
+
+例如我们吧一个`int`整数`12500`转换为十六进制表示的字符串
+
+首先准备一个空栈
+
+``` java
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+└───┘
+```
+
+然后计算`12500 / 16 = 781...4`，余数是`4`，我们把`4`压栈；
+
+``` java
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+│ 4 │
+└───┘
+```
+
+然后计算`781 / 16 = 48...13`，余数是`13`，`13`的16进制用字母`D`表示，我们把`D`压栈
+
+``` java
+│   │
+│   │
+│   │
+│   │
+│   │
+│ D │
+│   │
+│ 4 │
+└───┘
+```
+
+然后计算`48 / 16 = 3...0`，余数是`0`，我们把`0`压栈
+
+``` java
+│   │
+│   │
+│   │
+│ 0 │
+│   │
+│ D │
+│   │
+│ 4 │
+└───┘
+```
+
+最后计算`3 / 16 = 0...3`，余数是`3`，我们再把`3`压栈
+
+``` java
+│   │
+│ 3 │
+│   │
+│ 0 │
+│   │
+│ D │
+│   │
+│ 4 │
+└───┘
+```
+
+当商是`0`的时候，计算结束，把栈的所有元素一次弹出，组成字符串`"30D4"`，这就是十进制整数`12500`的`16`进制表示的字符串。
+
+计算中辍表达式
+
+在编写程序的时候，我们使用带括号的数学表达式实际上是中缀表达式，即运算符在中间，例如`1 + 2 * (9 - 5)`，但是计算机执行表达式的时候，它并不能直接计算中缀表达式，而是通过编译器吧中缀表达式转换为后缀表达式，像这样`1 2 9 5 - * +`，在这个编译过程中就会用到栈，我们先看看如何通过栈计算后缀表达式。
+
+计算后缀表达式不必考虑优先级，直接从左到右一次计算，因此计算起来很简单，首先是一个空栈：
+
+``` java
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+│   │
+└───┘
+```
+
+然后一次扫描后缀表达式`1 2 9 5 - * +`，遇到数字`1`，直接压栈，然后`2`，直接压栈...
+
+然后我们得到一个栈
+
+``` java
+│   │
+│ 5 │
+│   │
+│ 9 │
+│   │
+│ 2 │
+│   │
+│ 1 │
+└───┘
+```
+
+然后遇到了一个减号，弹出栈顶的两个元素`9` 和 `5`，并计算 `9 - 5 = 4`，把结果压栈
+
+``` java
+│   │
+│   │
+│   │
+│ 4 │
+│   │
+│ 2 │
+│   │
+│ 1 │
+└───┘
+```
+
+然后遇到乘号，弹出栈顶的两个元素`2`和`4`，并计算 `2 * 4 = 8`，把结果压栈
+
+ ``` java
+ │   │
+ │   │
+ │   │
+ │   │
+ │   │
+ │ 8 │
+ │   │
+ │ 1 │
+ └───┘
+ ```
+ 
+ 然后遇到`+`号，再弹出栈顶两个元素`1`和`8`，计算`1 + 8 = 9`，把结果`9`压栈
+ 
+ 扫描结束，弹出栈的唯一一个元素，得到计算结果`9`。
+ 
+ [查看一个10进制转换16进制的例子](https://github.com/Dyinfalse/JavaLearn/blob/master/blob/src/main/java/com/jgmt/blog/practice/StackTest.java)
+ 
+ #### **使用Iterator**
+ 
+ Java的集合都可以使用`for each`循环，`List`，`Set`，`Queue`会迭代每个元素，`Map`会迭代每个`Key`，以List为例
+ 
+ ```java
+public class IterratorListEXClass {
+    public static void main(String[] args){
+        List<String> list = List.of("apple", "orange", "pear");
+        for(String s : list){
+            System.out.println(s);
+        }
+    }
+}
+```
+
+实际上，java编译器不知道如何遍历`List`，上述代码能够编译通过，是因为编译器把`for each`循环通过`Iterator`改写成了普通`for`循环：
+
+``` java
+for (Iterator<String> it = list.iterator(); it.hasNext();){
+    String s = it.next();
+    System.out.println(s);
+}
+```
+
+我们把这种通过`Iterator`对象遍历集合的模式成为迭代器。
+
+使用迭代器的好处在于，调用方总是以统一的方式遍历各种集合类型，而不必关心它们内部的存储结构。
+
+例如，我们虽然知道`ArrayList`在内部是以数组形式存贮元素，而且还提供了`get(int)`方法，我们可以使用普通的`for`循环遍历：
+
+``` java
+for (int i = 0; i < list.size(); i++){
+    Object value = list.get(i);
+    
+}
+```
+
+但是这样一来调用方就必须知道集合内部的存储结构，而且不够通用，如果`ArrayList`换成`LinkedList`，方法的耗时就会随着索引的增加而增加，或者把`ArrayList`换成`Set`，那么就会编译出错，这也是`Iterator`的优势。
+
+使用`Iterator`就不存在上面描述的问题，因为`Iterator`对象就是集合内部自己创建的，它自己知道如何高效的遍历内部数据集合，调用方则获得统一的代码，编译器才能把标准的`for each`循环自动转换成`Iterator`迭代器。
+
+如果我们自己编写一个集合类，想要使用`for each`循环，只需要满足下面的条件
+
+- 集合类实现`Iterable`接口，该接口要求返回一个`Iterator`对象
+- 用`Iterator`对象迭代集合内部数据
+
+这里的关键在于，集合类通过调用`iertator()`方法返回一个`Iterator`对象，这个对象必须自己知道如何遍历集合
+
+下面是一个简单的`Iterator`示例，它以倒序遍历集合：
+
+```java
+public class Main {
+    public static void main(String[] args){
+        ReverseList<String> rlist = new ReverseList<>();
+        
+        rlist.add("apple");
+        rlist.add("orange");
+        rlist.add("pear");
+        
+        for(String s : rlist){
+            System.out.println(s);
+        }
+    }
+}
+
+public class ReverseList<T> implements Iterable<T> {
+    private List<T> list = new ArrayList<>();
+    
+    public void add(T t) {
+        list.add(t);
+    }
+    
+    @Override
+    public Iterator<T> iterator () {
+        return new ReverIterator(list.size());
+    }
+    
+    class ReverseIterator implements Iterator<T> {
+        int index;
+        
+        ReverIterator(int index) {
+            this.index = index;
+        }
+        
+        @Override
+        public boolean hasNext() {
+            return index > 0;
+        }
+        
+        @Override
+        public T next () {
+            index --;
+            return ReverseList.this.list.get(index);
+        }
+    }
+}
+```
+
+虽然`ReverseList`和`ReverseIterator`实现比较麻烦，但是这是底层的集合库，是需要实现一遍，而调用方完全不需要知道内部实现方式，只需要调用`for each`循环就可以。
+
+在编写`Iterator`的时候，我们通常可以用一个内部类实现接口`Iterator`，这个内部类可以直接访问对应的外部类的所有字段和方法，例如上面的内部类`ReverseIterator`可以使用`ReverList.this`获得当前外部类的`this`引用，然后通过`this`，就可以访问`ReverseList`的所有字段和方法。
+
+
+
+
+
+
+
+
+
+
+
 
 
 
