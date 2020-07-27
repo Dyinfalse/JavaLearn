@@ -1,6 +1,6 @@
 ## java集合知识点
 
-*2020-07-19 Dyinfalse* 本篇是阅读[廖雪峰文章](https://www.liaoxuefeng.com/wiki/1252599548343744)的总结
+*2020-07-27 Dyinfalse* 本篇是阅读[廖雪峰文章](https://www.liaoxuefeng.com/wiki/1252599548343744)的总结
 
 #### **什么是集合？**
 
@@ -1104,7 +1104,7 @@ JVM会创建方法调用栈，每调用一个方法，先将参数压栈，然�
  
  扫描结束，弹出栈的唯一一个元素，得到计算结果`9`。
  
- [查看一个10进制转换16进制的例子](https://github.com/Dyinfalse/JavaLearn/blob/master/blob/src/main/java/com/jgmt/blog/practice/StackTest.java)
+ [查看一个10进制转换16进制的例子](https://github.com/Dyinfalse/JavaLearn/blob/master/blog/src/main/java/com/jgmt/blog/practice/StackTest.java)
  
  #### **使用Iterator**
  
@@ -1208,16 +1208,116 @@ public class ReverseList<T> implements Iterable<T> {
 
 在编写`Iterator`的时候，我们通常可以用一个内部类实现接口`Iterator`，这个内部类可以直接访问对应的外部类的所有字段和方法，例如上面的内部类`ReverseIterator`可以使用`ReverList.this`获得当前外部类的`this`引用，然后通过`this`，就可以访问`ReverseList`的所有字段和方法。
 
+#### **使用Collections**
 
+`Collections`是JDK提供的工具类，同样位于`java.util`包中，它提供一系列静态方法，能够方便地操作各种集合。
 
+> `Collections`结尾有一个s，不是`Collection`。
 
+我们看到方法名和参数就可以大概确定`Collections`提供的该方法的功能，例如：
 
+``` java
+public static boolean addAll (Collections<? super T> c, T...elements){ ... }
+```
 
+`addAll()`方法可以给一个`Collection`类型的集合添加若干元素。因为方法签名是`Collection`，所以我们可以传入`List`，`Set`等各种集合类型。
 
+创建空集合
 
+`Collections`提供一系列方法来创建空集合
 
+- 创建空`List`：`List<T> emptyList()`
+- 创建空`Map`：`Map<K, V> emptyMap()`
+- 创建空`Set`：`Set<T> emptySet()`
 
+需要注意，空集合是不可变集合，无法向空集合添加或删除元素。
 
+此外，也可以用各个集合接口提供的`of(T...)`方法，创建空集合。下面两种创建空`List` 的方式是等价的
+
+- `List<String> list1 = List.of();`
+- `List<String> list2 = Collections.emptyList();`
+
+创建单一元素集合
+
+`Collections`提供一系列方法创建一个单元素集合。
+
+- 创建一个元素的`List`：`List<T> singletonList(T 0)`
+- 创建一个元素的`Map`：`Map<K, V> singletonMap(K key, V value)`
+- 创建一个元素的`Set`：`Set<T> singletonSet(T o)`
+
+同样返回的单元素集合也是不可变的，无法向其中添加或删除元素
+
+实际上使用`List.of()`更方便，因为`List.of()`方法不仅可以创建空集合和单一元素集合，事实上可以创建任意个元素的集合。
+
+`Collections`排序
+
+`Collections`可以对`List`排序，因为要涉及修改元素在`List`中的位置，所以必须传入可变的`List`
+
+```java
+public class CollectionsSortClass {
+    public static void main(String[] args){
+        List<String> list = new ArrayList<>();
+        list.add("apple");
+        list.add("pear");
+        list.add("orange");
+        
+        Collections.sort(list);
+        System.out.println(list); // "apple" "orange" "pear"
+    }
+}
+```
+
+`Collections`洗牌
+
+`Collections`不仅有排序还有洗牌功能，即传入一个有序的`List`，可以随机打乱顺序
+
+```java
+public class CollectionsShuffleClass {
+    public static void main(String[] args){
+        List<Integer> list = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            list.add(i);
+        }
+        System.out.println(list); // 0,1,2,3,4,5...9
+        Collections.shuffle(list);
+        System.out.println(list); // 8,2,7,1,3,4,..5
+    }
+}
+```
+
+不可变集合
+
+`Collections`还提供了一组方法把可变集合封装成不可变集合
+
+- 封装成不可变`List`：`List<T> unmodifiableList(List<? extends T> list)`
+- 封装成不可变`Set`：`Set<T> unmodifiableSet(Set<? extends T> set)`
+- 封装成不可变`Map`：`Map<K, V> unmodifiable(Map<? extends K, ? extends V> map)`
+
+这种封装实际上是通过创建一个代理对象，拦截掉所有修改方法实现的。
+
+```java
+public class CollectionsUnmodifiableClass {
+    public static void main(String[] args){
+        List<String> list = new ArrayList<>();
+        list.add("apple");
+        list.add("pear");
+        List<String> immuntable = Collections.unmodifiableList(list);
+        immuntable.add("orange"); // UnsupportedOperationException
+    }
+}
+```
+
+但是虽然`immuntable`是不可变得，但是`list`依然可以修改，并且会影响到`immuntable`，因为二者实际指向同一个数组，所以如果我们希望把一个数组封装成不可变数组，那么在返回的`List`后，就要立即扔掉原先可变数组的引用，这样才能保证不会意外改变愿数组，避免发生不可变数组`List`，发生了改变
+
+线程安全集合
+
+`Collections`还提供了一组方法，可以把线程不安全的集合变为线程安全的集合
+
+- 变为线程安全的`List`：`List<T> synchronizedList(List<T> list)`
+- 变为线程安全的`Set`：`Set<T> synchronizedSet(Set<T> set)`
+- 变为线程安全的`Map`：`Map<K, V> synchronizedMap(Map<K, V> map)`
+
+不过在Java 5开始，引入了更高效的多线程并发集合类，所以上述的几个同步方法已经弃用了。
 
 
 
