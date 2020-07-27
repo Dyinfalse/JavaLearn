@@ -55,9 +55,9 @@ public class MyCollection {
          * 写入文件
          */
         pro.setProperty("test_set", "是个测试");
-        pro.put(new Integer(100), "测试Integer");
+//        pro.put(new Integer(100), "测试Integer");  //ClassCastException
         pro.put(new String("String"), "测试Integer");
-        pro.put(new HashMap<String, Integer>(), "测试HashMap");
+//        pro.put(new HashMap<String, Integer>(), "测试HashMap"); //ClassCastException
         try{
             String testFile = "/Users/yanjietu/Documents/java/JavaLearn/blog/src/main/resources/static/test.properties";
             /**
@@ -83,6 +83,16 @@ public class MyCollection {
          * Queue
          */
         Queue<String> q = new LinkedList<>();
+        /**
+         * 测试while循环
+         */
+        int j = 3,i = 2;
+        while(--i!=i/j){
+            j=j+2;
+        }
+        System.out.println("测试while循环测试while循环测试while循环测试while循环");
+        System.out.println(j);
+        System.out.println(i);
     }
 
 }
