@@ -8,7 +8,7 @@ import java.util.*;
  * java 集合部分练习类
  */
 public class MyCollection {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        List<Person> list = List.of(
 //                new Person("Mick", 20),
 //                new Person("Mary", 18),
@@ -93,6 +93,11 @@ public class MyCollection {
         System.out.println("测试while循环测试while循环测试while循环测试while循环");
         System.out.println(j);
         System.out.println(i);
+
+//        try (OutputStream os = new FileOutputStream("out/readme.md")) {
+//            FileNotFoundException
+//            os.write("Hello".getBytes());
+//        }
     }
 
 }

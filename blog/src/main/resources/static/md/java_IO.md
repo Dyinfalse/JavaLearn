@@ -133,7 +133,7 @@ public class FileTempClass {
 
 遍历文件和目录
 
-当File对象表示一个目录时，可以使用list()和listFiles()列出目录下的文件和子目录名，listFiles()提供了一系列重载方法，可以过滤不想要的文件和目录
+当`File`对象表示一个目录时，可以使用`list()`和`listFiles()`列出目录下的文件和子目录名，`listFiles()`提供了一系列重载方法，可以过滤不想要的文件和目录
 
 ```java
 public class ListFilesClass {
@@ -166,15 +166,15 @@ public class ListFilesClass {
 }
 ```
 
-和文件操作类似，File对象如果表示一个目录，可以通过下面的方法创建和删除目录
+和文件操作类似，`File`对象如果表示一个目录，可以通过下面的方法创建和删除目录
 
-- boolean mkdir()：创建当前file对象表示的目录
-- boolean mkdirs()：创建当前File对象表示的目录，并在必要时将不存在的父目录也创建出来
-- boolean delete()：删除当前File对象表示的目录，当前目录必须为空才能删除成功
+- `boolean mkdir()`：创建当前`File`对象表示的目录
+- `boolean mkdirs()`：创建当前`File`对象表示的目录，并在必要时将不存在的父目录也创建出来
+- `boolean delete()`：删除当前`File`对象表示的目录，当前目录必须为空才能删除成功
 
 Path
 
-Java标准库还提供了一个Path对象，它在java.nio.file包下，Path和File对象类似，但操作更加简单
+Java标准库还提供了一个`Path`对象，它在`java.nio.file`包下，`Path`和`File`对象类似，但操作更加简单
 
 ```java
 public class PathClss {
@@ -194,26 +194,23 @@ public class PathClss {
         for(Path p : Paths.get("..").toAbsolutePath()){
             System.out.println(p);
         }
-
-
-   
     }
 }
 ```
 
 #### **InputStream**
 
-InputStream就是Java标准库提供的最基本的输入流。它属于java.io包下，这个包提供了所有同步IO的功能。
+`InputStream`就是Java标准库提供的最基本的输入流。它属于`java.io`包下，这个包提供了所有同步IO的功能。
 
-要特别注意的是，InputStream不是接口，而是一个抽象类，它是所有输入流的超类，这个抽象类定义了一个最重要的方法就是int read()，签名如下
+要特别注意的是，`InputStream`不是接口，而是一个抽象类，它是所有输入流的超类，这个抽象类定义了一个最重要的方法就是`int read()`，签名如下
 
 ```java
 public abstract int read () throws IOException
 ```
 
-这个方法就读取输入里的下一个字节，并返回表示的int值（0-255），如果已经读到末尾，返回-1，表示不能继续读取了。
+这个方法就读取输入里的下一个字节，并返回表示的`int`值（0-255），如果已经读到末尾，返回`-1`，表示不能继续读取了。
 
-FileInputStraem是InputStream的一个子类，顾名思义，FileInputStream是从文件流中读取数据，下面十一个读取文件流的例子
+`FileInputStraem`是`InputStream`的一个子类，顾名思义，`FileInputStream`是从文件流中读取数据，下面是一个读取文件流的例子
 
 ```java
 public class FileInputStreamEXClass {
@@ -233,11 +230,11 @@ public class FileInputStreamEXClass {
 
 在计算机中，类似文件，网络端口这些资源，都是由操作系统统一管理的，应用程序在运行的过程中，如果打开一个文件进行读写，完成后要及时的关闭，以便让操作系统把资源释放掉，否则应用程序占用的资源会越来越多，不但白白占用内存，还会影响其他应用程序的运行。
 
-InputStream和OutputStream，都使用close()方法关闭流，关闭流就会释放底层的对应资源。
+`InputStream`和`OutputStream`，都使用`close()`方法关闭流，关闭流就会释放底层的对应资源。
 
-我们还特别需要注意在读取或者写入IO流的过程中，可能会发生错误，例如，文件不存在导致无法读取，没有写入权限导致写入失败，等等，这些底层错误由Java虚拟机自动封装成IOException异常抛出，因此，所有与IO操作相关代码都必须正确处理IOException。
+我们还特别需要注意在读取或者写入IO流的过程中，可能会发生错误，例如，文件不存在导致无法读取，没有写入权限导致写入失败，等等，这些底层错误由Java虚拟机自动封装成`IOException`异常抛出，因此，所有与IO操作相关代码都必须正确处理`IOException`。
 
-因此我们使用try...finally来保证InputStream无论是否发生IO错误的时候都能正确的关闭
+因此我们使用`try...finally`来保证`InputStream`无论是否发生IO错误的时候都能正确的关闭
 
 ```java
 
@@ -262,7 +259,7 @@ public class FileInputStreamEXClass {
 }
 ```
 
-使用try...finally来编写感觉会比价麻烦，更好的写法是利用Java 7引入的try(resource)的语法，只要编写try语句，就让编译器自动为我们关闭资源，写法如下
+使用`try...finally`来编写感觉会比价麻烦，更好的写法是利用Java 7引入的`try(resource)`的语法，只要编写`try`语句，就让编译器自动为我们关闭资源，写法如下
 
 ```java
 public class TryResourceClass {
@@ -277,16 +274,16 @@ public class TryResourceClass {
 }
 ```
 
-实际上，编译器并不会特地给InputStream自动加上关闭，编译器只看try(resource = ...)中的对象是否实现了java.lang.AutoCloseable接口，如果实现了，就会自动加上finally语句并调用close()，InputStream和OutputStream都已经正确实现了这个接口，所以可以用在try(resource)中。
+实际上，编译器并不会特地给`InputStream`自动加上关闭，编译器只看`try(resource = ...)`中的对象是否实现了`java.lang.AutoCloseable`接口，如果实现了，就会自动加上`finally`语句并调用`close()`，`InputStream`和`OutputStream`都已经正确实现了这个接口，所以可以用在`try(resource)`中。
 
 缓冲
 
-在读取流的时候，一次读取一个字节不是最高效的方法，很多流支持一次性读取多个字节到缓冲区，对于文件和网络流来说，利用缓冲区一次性读取多个字节效率往往要高很多。InputStream提供两个重载方法来支持读取多个字节：
+在读取流的时候，一次读取一个字节不是最高效的方法，很多流支持一次性读取多个字节到缓冲区，对于文件和网络流来说，利用缓冲区一次性读取多个字节效率往往要高很多。`InputStream`提供两个重载方法来支持读取多个字节：
 
-- int read(byte[] b)：读取若干字节并填充到byte[]数组，返回读取的字节数
-- int read(byte[] b. int off, int len)：指定byte[]数组偏移量和最大填充数
+- `int read(byte[] b)`：读取若干字节并填充到`byte[]`数组，返回读取的字节数
+- `int read(byte[] b. int off, int len)`：指定`byte[]`数组偏移量和最大填充数
 
-利用上面一次读取多个字节时，需要先定义一个byte[]数组，作为缓冲区，read()方法会尽可能多读取字节到缓冲区，但不回超过缓冲区的大小，read()方法返回值不再是int值，而是返回实际读取了多少个字节，如果返回 -1，表示没有更多的数据了
+利用上面一次读取多个字节时，需要先定义一个`byte[]`数组，作为缓冲区，`read()`方法会尽可能多读取字节到缓冲区，但不回超过缓冲区的大小，`read()`方法返回值不再是`int`值，而是返回实际读取了多少个字节，如果返回`-1`，表示没有更多的数据了
 
 利用缓冲区一次读取多个字节的代码如下
 
@@ -306,7 +303,7 @@ public class ReadBufferClass {
 
 阻塞
 
-在调用InputStream的read()方法读取数据时，我们说read()方法是阻塞(Blocking)的，他的意思是说，对于下面的代码
+在调用`InputStream`的`read()`方法读取数据时，我们说`read()`方法是阻塞(Blocking)的，他的意思是说，对于下面的代码
 
 ``` java
 int n;
@@ -314,11 +311,11 @@ n = input.read();
 int m = n;
 ```
 
-执行到第二行的时候，就必须等待read()方法返回后才能继续。因为读取IO流相比执行普通代码，速度会慢很多，因此，无法确定read()方法调用到底要花多长时间。
+执行到第二行的时候，就必须等待`read()`方法返回后才能继续。因为读取IO流相比执行普通代码，速度会慢很多，因此，无法确定`read()`方法调用到底要花多长时间。
 
 InputStream的实现类
 
-用FileInputStream可以从文件获取输入流，这是InputStream常用的一个实现类，此外还有，ByteArrayInputStream可以在内存中模拟一个InputStream
+用`FileInputStream`可以从文件获取输入流，这是`InputStream`常用的一个实现类，此外还有，`ByteArrayInputStream`可以在内存中模拟一个`InputStream`
 
 ```java
 public class ByteArrayInputStreamClass {
@@ -335,9 +332,9 @@ public class ByteArrayInputStreamClass {
 } 
 ```
 
-ByteArrayInputStream实际上是把一个byte[]数组在内存中变成一个InputStream，虽然实际应用不多，但在测试的时候，可以用它来狗仔一个InputStream。
+`ByteArrayInputStream`实际上是把一个`byte[]`数组在内存中变成一个`InputStream`，虽然实际应用不多，但在测试的时候，可以用它来构造一个`InputStream`。
 
-下面是一个例子，我们想从文件中读取所有字节，并转换成char然后滨城一个字符串，可以这么写
+下面是一个例子，我们想从文件中读取所有字节，并转换成`char`然后滨城一个字符串，可以这么写
 
 ```java
 public class InputStreamToChar {
@@ -356,7 +353,7 @@ public class InputStreamToChar {
 }
 ```
 
-如果要测试上面的程序，就真的需要在本地硬盘上放一个真实的文本文件，如果我们把代码稍微修改一下，提取一个readAsString()方法：
+如果要测试上面的程序，就真的需要在本地硬盘上放一个真实的文本文件，如果我们把代码稍微修改一下，提取一个`readAsString()`方法：
 
 ```java
 public class InputStreamToChar {
@@ -380,7 +377,7 @@ public class InputStreamToChar {
 }
 ```
 
-那么对String readAsString(InputStream input)方法进行测试就相当简单了，因为不一定要传入一个真的FileInputStream
+那么对`String readAsString(InputStream input)`方法进行测试就相当简单了，因为不一定要传入一个真的`FileInputStream`
 
 ```java
 public class InputStreamToChar {
@@ -401,11 +398,119 @@ public class InputStreamToChar {
         }
         return sb.toString();
     }
-
 }
 ```
 
-这也属于面向抽象编程的应用：接收InputStream抽象类型，而不是具体的FileInputStream，从而使得代码可以处理InputStream的任意实现类。
+这也属于面向抽象编程的应用：接收`InputStream`抽象类型，而不是具体的`FileInputStream`，从而使得代码可以处理`InputStream`的任意实现类。
+
+#### **OutputStream**
+
+和`InputStream`相反，OutputStream是Java标准库提供的最基本输出流。
+
+和InputStream类似，OutputStream也是抽象类，它是所有输出流的超类。这个抽象类定义了一个最重要的方法就是void write(int b)，签名如下
+
+```java
+public abstract void write (int b) throws IOException
+```
+
+这个方法会写入一个字节到输出流，注意，虽然传入的是int参数，但是只会写一个字节，即自写入int最低8位表示字节的部分(相当于b & 0xff)
+
+和InputStream类似，OutputStream也提供了close()方法，用来关闭输出流，以便释放系统资源。要特别注意：OutputStream还提供一个flush()方法，它的目的是将缓冲区内容真正的输出到目的地。
+
+为什么会有flush()方法？因为在向磁盘网络写入的时候，处于效率的考虑，操作系统并不是输出一个字节就立刻写入到文件或者发送网络，而是把输出的字节先放到内存中的一个缓冲区里（本质上就是一个byte[]数组），等到缓冲区满了，再一次性写入文件或问阿圭罗，对于很多IO设备来说，一次写一个字节，和一次写1000个字节，话费的时间几乎完全一样，所以OutputStream有个flush()方法，能强制把缓冲区内容输出/
+
+通常情况下，我们不需要使用这个flush()方法，因为缓冲区写满了，OutputStream会自动调用它，并且在调用close()方法关闭之前OutputStream之前，也会自动调用flush()方法。
+
+但是，某些情况下，我们必须手动调用flush()方法，下面是一个例子
+
+小明正在开发一款在线聊天程序，当用户输入一句话之后，就通过OutputStream的write()方法写入网络，但是测试的时候发现，发送出去之后，接收方收不到任何消息，原因就是在写入网络流的时候是先写入内存缓冲区，等缓冲区满了之后，就会一次性发送到网络。如果缓冲区大小是4k，则发送放需要发送几千个字之后，操作系统才会把缓冲区的内容发送出去，这个时候，接收方就会一次性收到大量的消息。
+
+解决的办法就是在每输入一句话之后，就立刻调用flush()方法，强制操作系统把缓冲区的内容发送出去。
+
+实际上，InputStream也有缓冲区，例如，从FileInputStream读取一个字节的时候，操作系统往往会一次性读取若干字节到缓冲区，并维护一个指针指向未读的缓冲区。然后我们每次调用int read()读取下一个字节的时候，可以直接返回缓冲区的下一个字节，避免每次读一个字节都导致IO操作，当缓冲区全部读完之后继续调用read()，则会触发操作系统的下一次读取，再次把缓冲区填满。
+
+FileOutputStream
+
+和InputStream对应的，OutputStream也有一个实现类叫`FileOutputStream`，用来将若干字节写入文件，并且也支持try(resource)，下面查看一个完整例子
+
+```java
+public class OutputStreamClass {
+    public static void main(String[] args){
+        try (OutputStream os = new FileOutputStream("out/readme.md")) {
+            output.write("Hello".getBytes());        
+        }
+    }
+}
+```
+
+和InputStream一样，OutputStream的write()方法也是阻塞的
+
+OutputStream实现类
+
+BytArrayOutputStream是OutputStream的一个实现类，它可以在内存中模拟一个OutputStream，大部分是用来测试
+
+```java
+public class ByteArrayOutputStreamClass {
+    public static void main(String[] args){
+        byte[] data;
+        try(ByteArrayOutputStream output = new ByteArrayOutputStream()){
+            output.write("Hello".getBytes("UTF-8"));
+            output.write("world!".getBytes("UTF-8"));
+            data = output.toByteArray();
+            
+            System.out.println(new String(data, "UTF-8"));
+        }
+    }
+}
+```
+
+ByteArrayOutputStream实际上是把一个byte[]数组在内存中编程一个OutputStream，虽然应用场景不多，但是可以用它来构造一个OutputStream来测试。
+
+同时操作多个AutoCloseable资源时，在try(resource){ ... }语句中可以同时写出多个资源，使用;隔开。例如下面同时读写两个文件
+
+```java
+    try(
+        InputStream input = new FileInputStream("input.txt");
+        OutputStream output = new FileOutputStream("output.txt")
+    ) {
+        input.transferTo(output);
+    }
+```
+
+transferTo方法是InputStream类在Java 9版本提供的方法，其作用是从输入流中读取所有字节，然后按照顺序将字节写入给定的输出流。返回时，此输入流将在流的末尾。此方法不会关闭任何一个流。
+
+签名如下
+
+```
+public long transferTo(OutputStream out) throws IOException
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
