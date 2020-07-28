@@ -405,33 +405,33 @@ public class InputStreamToChar {
 
 #### **OutputStream**
 
-和`InputStream`相反，OutputStream是Java标准库提供的最基本输出流。
+和`InputStream`相反，`OutputStream`是Java标准库提供的最基本输出流。
 
-和InputStream类似，OutputStream也是抽象类，它是所有输出流的超类。这个抽象类定义了一个最重要的方法就是void write(int b)，签名如下
+和`InputStream`类似，`OutputStream`也是抽象类，它是所有输出流的超类。这个抽象类定义了一个最重要的方法就是`void write(int b)`，签名如下
 
 ```java
 public abstract void write (int b) throws IOException
 ```
 
-这个方法会写入一个字节到输出流，注意，虽然传入的是int参数，但是只会写一个字节，即自写入int最低8位表示字节的部分(相当于b & 0xff)
+这个方法会写入一个字节到输出流，注意，虽然传入的是`int`参数，但是只会写一个字节，即自写入`int`最低8位表示字节的部分(相当于`b & 0xff`)
 
-和InputStream类似，OutputStream也提供了close()方法，用来关闭输出流，以便释放系统资源。要特别注意：OutputStream还提供一个flush()方法，它的目的是将缓冲区内容真正的输出到目的地。
+和`InputStream`类似，`OutputStream`也提供了`close()`方法，用来关闭输出流，以便释放系统资源。要特别注意：`OutputStream`还提供一个`flush()`方法，它的目的是将缓冲区内容真正的输出到目的地。
 
-为什么会有flush()方法？因为在向磁盘网络写入的时候，处于效率的考虑，操作系统并不是输出一个字节就立刻写入到文件或者发送网络，而是把输出的字节先放到内存中的一个缓冲区里（本质上就是一个byte[]数组），等到缓冲区满了，再一次性写入文件或问阿圭罗，对于很多IO设备来说，一次写一个字节，和一次写1000个字节，话费的时间几乎完全一样，所以OutputStream有个flush()方法，能强制把缓冲区内容输出/
+为什么会有`flush()`方法？因为在向磁盘网络写入的时候，处于效率的考虑，操作系统并不是输出一个字节就立刻写入到文件或者发送网络，而是把输出的字节先放到内存中的一个缓冲区里（本质上就是一个`byte[]`数组），等到缓冲区满了，再一次性写入文件或问阿圭罗，对于很多IO设备来说，一次写一个字节，和一次写`1000个字节，话费的时间几乎完全一样，所以`OutputStream`有个`flush()`方法，能强制把缓冲区内容输出/
 
-通常情况下，我们不需要使用这个flush()方法，因为缓冲区写满了，OutputStream会自动调用它，并且在调用close()方法关闭之前OutputStream之前，也会自动调用flush()方法。
+通常情况下，我们不需要使用这个`flush()`方法，因为缓冲区写满了，`OutputStream`会自动调用它，并且在调用`close()`方法关闭之前`OutputStream`之前，也会自动调用`flush()`方法。
 
-但是，某些情况下，我们必须手动调用flush()方法，下面是一个例子
+但是，某些情况下，我们必须手动调用`flush()`方法，下面是一个例子
 
-小明正在开发一款在线聊天程序，当用户输入一句话之后，就通过OutputStream的write()方法写入网络，但是测试的时候发现，发送出去之后，接收方收不到任何消息，原因就是在写入网络流的时候是先写入内存缓冲区，等缓冲区满了之后，就会一次性发送到网络。如果缓冲区大小是4k，则发送放需要发送几千个字之后，操作系统才会把缓冲区的内容发送出去，这个时候，接收方就会一次性收到大量的消息。
+小明正在开发一款在线聊天程序，当用户输入一句话之后，就通过`OutputStream`的`write()`方法写入网络，但是测试的时候发现，发送出去之后，接收方收不到任何消息，原因就是在写入网络流的时候是先写入内存缓冲区，等缓冲区满了之后，就会一次性发送到网络。如果缓冲区大小是4k，则发送放需要发送几千个字之后，操作系统才会把缓冲区的内容发送出去，这个时候，接收方就会一次性收到大量的消息。
 
-解决的办法就是在每输入一句话之后，就立刻调用flush()方法，强制操作系统把缓冲区的内容发送出去。
+解决的办法就是在每输入一句话之后，就立刻调用`flush()`方法，强制操作系统把缓冲区的内容发送出去。
 
-实际上，InputStream也有缓冲区，例如，从FileInputStream读取一个字节的时候，操作系统往往会一次性读取若干字节到缓冲区，并维护一个指针指向未读的缓冲区。然后我们每次调用int read()读取下一个字节的时候，可以直接返回缓冲区的下一个字节，避免每次读一个字节都导致IO操作，当缓冲区全部读完之后继续调用read()，则会触发操作系统的下一次读取，再次把缓冲区填满。
+实际上，`InputStream`也有缓冲区，例如，从`FileInputStream`读取一个字节的时候，操作系统往往会一次性读取若干字节到缓冲区，并维护一个指针指向未读的缓冲区。然后我们每次调用`int read()`读取下一个字节的时候，可以直接返回缓冲区的下一个字节，避免每次读一个字节都导致IO操作，当缓冲区全部读完之后继续调用`read()`，则会触发操作系统的下一次读取，再次把缓冲区填满。
 
 FileOutputStream
 
-和InputStream对应的，OutputStream也有一个实现类叫`FileOutputStream`，用来将若干字节写入文件，并且也支持try(resource)，下面查看一个完整例子
+和`InputStream`对应的，`OutputStream`也有一个实现类叫`FileOutputStream`，用来将若干字节写入文件，并且也支持`try(resource)`，下面查看一个完整例子
 
 ```java
 public class OutputStreamClass {
@@ -443,11 +443,11 @@ public class OutputStreamClass {
 }
 ```
 
-和InputStream一样，OutputStream的write()方法也是阻塞的
+和`InputStream`一样，`OutputStream`的`write()`方法也是阻塞的
 
 OutputStream实现类
 
-BytArrayOutputStream是OutputStream的一个实现类，它可以在内存中模拟一个OutputStream，大部分是用来测试
+`BytArrayOutputStream`是`OutputStream`的一个实现类，它可以在内存中模拟一个`OutputStream`，大部分是用来测试
 
 ```java
 public class ByteArrayOutputStreamClass {
@@ -464,9 +464,9 @@ public class ByteArrayOutputStreamClass {
 }
 ```
 
-ByteArrayOutputStream实际上是把一个byte[]数组在内存中编程一个OutputStream，虽然应用场景不多，但是可以用它来构造一个OutputStream来测试。
+`ByteArrayOutputStream`实际上是把一个`byte[]`数组在内存中编程一个`OutputStream`，虽然应用场景不多，但是可以用它来构造一个`OutputStream`来测试。
 
-同时操作多个AutoCloseable资源时，在try(resource){ ... }语句中可以同时写出多个资源，使用;隔开。例如下面同时读写两个文件
+同时操作多个`AutoCloseable`资源时，在`try(resource){ ... }`语句中可以同时写出多个资源，使用`;`隔开。例如下面同时读写两个文件
 
 ```java
     try(
@@ -477,7 +477,7 @@ ByteArrayOutputStream实际上是把一个byte[]数组在内存中编程一个Ou
     }
 ```
 
-transferTo方法是InputStream类在Java 9版本提供的方法，其作用是从输入流中读取所有字节，然后按照顺序将字节写入给定的输出流。返回时，此输入流将在流的末尾。此方法不会关闭任何一个流。
+`transferTo`方法是`InputStream`类在Java 9版本提供的方法，其作用是从输入流中读取所有字节，然后按照顺序将字节写入给定的输出流。返回时，此输入流将在流的末尾。此方法不会关闭任何一个流。
 
 签名如下
 
@@ -485,7 +485,13 @@ transferTo方法是InputStream类在Java 9版本提供的方法，其作用是�
 public long transferTo(OutputStream out) throws IOException
 ```
 
+#### **Filter模式**
 
+Java标准库提供的`InputStream`根据来源可以分为
+
+- `FileInputStream`：从文件读取数据，是最终数据源
+- `ServletInputStream`：从HTTP请求读取数据，是最终数据源
+- `Socket.getInputStream`：从TCP链接读取数据，是最终数据源
 
 
 
