@@ -417,7 +417,7 @@ public abstract void write (int b) throws IOException
 
 和`InputStream`类似，`OutputStream`也提供了`close()`方法，用来关闭输出流，以便释放系统资源。要特别注意：`OutputStream`还提供一个`flush()`方法，它的目的是将缓冲区内容真正的输出到目的地。
 
-为什么会有`flush()`方法？因为在向磁盘网络写入的时候，处于效率的考虑，操作系统并不是输出一个字节就立刻写入到文件或者发送网络，而是把输出的字节先放到内存中的一个缓冲区里（本质上就是一个`byte[]`数组），等到缓冲区满了，再一次性写入文件或问阿圭罗，对于很多IO设备来说，一次写一个字节，和一次写`1000个字节，话费的时间几乎完全一样，所以`OutputStream`有个`flush()`方法，能强制把缓冲区内容输出/
+为什么会有`flush()`方法？因为在向磁盘网络写入的时候，处于效率的考虑，操作系统并不是输出一个字节就立刻写入到文件或者发送网络，而是把输出的字节先放到内存中的一个缓冲区里（本质上就是一个`byte[]`数组），等到缓冲区满了，再一次性写入文件或问阿圭罗，对于很多IO设备来说，一次写一个字节，和一次写`1000`个字节，花费的时间几乎完全一样，所以`OutputStream`有个`flush()`方法，能强制把缓冲区内容输出/
 
 通常情况下，我们不需要使用这个`flush()`方法，因为缓冲区写满了，`OutputStream`会自动调用它，并且在调用`close()`方法关闭之前`OutputStream`之前，也会自动调用`flush()`方法。
 
@@ -637,13 +637,135 @@ public class CountInputStream extends FilterInputStream {
 
 #### **操作ZIP**
 
+`ZipInputStream`是一种`FilterInputStream`，它可以直接读取zip包的内容：
 
+```
+┌───────────────────┐
+│    InputStream    │
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│ FilterInputStream │
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│InflaterInputStream│
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│  ZipInputStream   │
+└───────────────────┘
+          ▲
+          │
+┌───────────────────┐
+│  JarInputStream   │
+└───────────────────┘
+```
 
+另一个`JarInputStream`是从`ZipInputStream`派生的，它增加的主要功能是直接读取`jar`文件里面的`MANIFEST.MF`文件。因为本质上jar包就是zip包，只是额外加了一些固定的描述文件。
 
+读取zip包
 
+我们看一个`ZipInputStream`的基本用法我们要创建`ZipInputStream`，通常是传入一个`FileInputStream`，作为数据源，然后，循环调用`getNextEntry()`方法，直到返回`null`，表示zip流结束。
 
+一个`ZipEntry`表示一个压缩文件或目录，如果是压缩文件，我们就直接用`read()`方法不断读取，直到返回`-1`:
 
+```java
+public class ZipInputStreamClass {
+    public static void main(String[] args){
+        try(ZipInputStream zip = new ZipInputStream(new FileInputStream("/test.zip"))){
+            ZipEntry entry = null;
+            while ((entry = zip.getNextEntry()) != null) {
+                String name = entry.getName();
+                if(!entry.isDirectory()){
+                    int n;
+                    while ((n = zip.read()) != -1){
+                        ...
+                    }
+                }
+            }
+        }
+    }
+}
+```
 
+写入zip包
+
+`ZipOutputStream`是一种`FilterOutputStream`，它可以直接写入内容到zip包，我们先创建一个`ZipOutputStream`，通常是包装一个`FileOutputStream`，然后每写一个文件前，先调用`putNextEntry()`，然后用`write()`写入`byte[]`数据，写入完毕之后，调用`closeEntry()`结束这个文件的打包。
+
+```java
+public class ZipOutputStreamClass {
+    public static void main(String[] args){
+        try(ZipOutputStream zip = new ZipOutputStream(new FileOutputStream("/test.zip"))){
+            File[] files = new File("C:\\test").listFiles(); // 文件夹读取多个文件
+
+            for(File f : files){
+                zip.putNextEntry(new ZipEntry(file.getName())); // 设置Entry
+                zip.write(getFileDataAsBytes(file)); // 写入文件byte
+                zip.closeEntry(); // 关闭Entry
+            }
+        }
+    }
+}
+```
+
+这个例子中没有考虑文件的目录结构，如果要实现目录层次结构，`new ZipEntry(name)`传入的`name`要用相对路径。
+
+#### **classpath**
+
+很多Java城区启动的时候，都需要读取配置文件，例如从一个.properties文件读取配置：
+
+```java
+String conf = "C:\\conf\\default.properties";
+try (InputStream input = new FileInputStream(conf)){
+    // TODO
+}
+```
+
+这段代码要正常执行，必须在C盘创建conf目录，然后在目录里创建default.properties文件，但是在Linux洗头膏中，路径和Windows的又不一样。
+
+因此，从磁盘的固定目录读取配置文件不是一个好办法。
+
+这个时候，我们就要使用classpath来读取文件
+
+我们知道，Java存放.class的目录或jar包也可以包含任意其他类型的文件，例如：
+
+- 配置文件，properties
+- 图片文件，jpg，png
+- 文本文件，txt，csv
+
+从classpath读取文件就可以避免不同环境下路径不一致的问题：如果我们把default.properties文件放到classpath中，就不用关心它的实际路径。
+
+在classpath中的资源文件，路径总是以/开头，我们先过去当前的Class对象，然后嗲用getResourceAsStream()方法，就可以从classpath中读取任意源文件：
+
+```java
+try(InputStream input = getClass().getResourceAsStream("/default.properties")){
+    // TODO
+}   
+```
+
+调用getResourceAsStream()方法需要注意的一点是，如果资源文件不在，它会返回null，因此我们需要检查返回的InputStream是不是null，如果是null，表示资源文件在classpath中没有找到：
+
+```java
+try(inputStream input = getClass().getResourceAsStream()){
+    if(input != null) {
+        // TODO
+    }
+}
+```
+
+如果我们把默认的配置放到jar包中，再从外部文件系统读取一个可选的配置文件，就可以做到既又默认的配置文件，又可以让用户自己修改配置：
+
+```java
+Properties props = new Properties();
+props.load(inputStreamFromClassPath("/default.properties"));
+props.load(inputStreamFromFile("./conf.properties"));
+```
+
+这样读取配置文件，应用程序就更加灵活。
 
 
 
