@@ -716,7 +716,7 @@ public class ZipOutputStreamClass {
 
 #### **classpath**
 
-很多Java城区启动的时候，都需要读取配置文件，例如从一个.properties文件读取配置：
+很多Java城区启动的时候，都需要读取配置文件，例如从一个`.properties`文件读取配置：
 
 ```java
 String conf = "C:\\conf\\default.properties";
@@ -725,21 +725,21 @@ try (InputStream input = new FileInputStream(conf)){
 }
 ```
 
-这段代码要正常执行，必须在C盘创建conf目录，然后在目录里创建default.properties文件，但是在Linux洗头膏中，路径和Windows的又不一样。
+这段代码要正常执行，必须在C盘创建conf目录，然后在目录里创建`default.properties`文件，但是在Linux系统中，路径和Windows的又不一样。
 
 因此，从磁盘的固定目录读取配置文件不是一个好办法。
 
 这个时候，我们就要使用classpath来读取文件
 
-我们知道，Java存放.class的目录或jar包也可以包含任意其他类型的文件，例如：
+我们知道，Java存放`.class`的目录或`jar`包也可以包含任意其他类型的文件，例如：
 
-- 配置文件，properties
-- 图片文件，jpg，png
-- 文本文件，txt，csv
+- 配置文件，`properties`
+- 图片文件，`jpg`，`png`
+- 文本文件，`txt`，`csv`
 
-从classpath读取文件就可以避免不同环境下路径不一致的问题：如果我们把default.properties文件放到classpath中，就不用关心它的实际路径。
+从classpath读取文件就可以避免不同环境下路径不一致的问题：如果我们把`default.properties`文件放到classpath中，就不用关心它的实际路径。
 
-在classpath中的资源文件，路径总是以/开头，我们先过去当前的Class对象，然后嗲用getResourceAsStream()方法，就可以从classpath中读取任意源文件：
+在classpath中的资源文件，路径总是以`/`开头，我们先获取当前的Class对象，然后调用`getResourceAsStream()`方法，就可以从classpath中读取任意源文件：
 
 ```java
 try(InputStream input = getClass().getResourceAsStream("/default.properties")){
@@ -747,7 +747,7 @@ try(InputStream input = getClass().getResourceAsStream("/default.properties")){
 }   
 ```
 
-调用getResourceAsStream()方法需要注意的一点是，如果资源文件不在，它会返回null，因此我们需要检查返回的InputStream是不是null，如果是null，表示资源文件在classpath中没有找到：
+调用`getResourceAsStream()`方法需要注意的一点是，如果资源文件不在，它会返回`null`，因此我们需要检查返回的`InputStream`是不是`null`，如果是`null`，表示资源文件在classpath中没有找到：
 
 ```java
 try(inputStream input = getClass().getResourceAsStream()){
@@ -757,7 +757,7 @@ try(inputStream input = getClass().getResourceAsStream()){
 }
 ```
 
-如果我们把默认的配置放到jar包中，再从外部文件系统读取一个可选的配置文件，就可以做到既又默认的配置文件，又可以让用户自己修改配置：
+如果我们把默认的配置放到`jar`包中，再从外部文件系统读取一个可选的配置文件，就可以做到既又默认的配置文件，又可以让用户自己修改配置：
 
 ```java
 Properties props = new Properties();
@@ -767,26 +767,302 @@ props.load(inputStreamFromFile("./conf.properties"));
 
 这样读取配置文件，应用程序就更加灵活。
 
+#### **序列化**
 
+序列化是指吧一个Java对象变成二进制内容，本质上就是一个`byte[]`数组。
 
+为什么要把Java对象序列化？因为序列化后可以把`byte[]`保存到文件中，或者把`byte[]`通过网络传输到远程，这样就相当于把Java对象存储到文件或者通过网络传输出去。
 
+有序列化就有反序列化，既把一个二进制内容（`byte[]`）变回Java对象。有了反序列化，保存到文件中的`byte[]`数组又可以变回Java对象，或者从网络上读取`byte[]`并把它把它变回Java对象。
 
+我们来看如何把一个Java对象序列化
 
+一个Java对象想要能够序列化，必须实现一个特殊的`java.io.Serializable`接口，它的定义如下：
 
+```java
+public interface Serializable { }
+```
 
+`Serializable`接口没有定义任何方法， 它是一个空接口。我们把这样的空接口称为"标记接口"（`Marker Interface`），实现了标记接口的类仅仅是给自身贴了个"标记"，并没有增加任何方法。
 
+把一个Java对象变成`byte[]`数组，需要使用`ObjectOutputStream`。它负责把一个Java对象写入一个字节流：
 
+```java
+public class SerializableClass {
+    public static void main(String[] args){
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try(ObjectOutputStream oos = new ObjectOutputStream(buffer)){
+            oos.writeInt(123);
+            oos.writeUTF("HELLO");
+            oos.writeObject(Double.valueOf(123.22));
+        }
+        System.out.println(Array.toString(buffer.toByteArray()));
+    }
+}
+```
 
+`ObjectOutputStream`既可以写入基本类型，如`int`，`boolean`，也可以写入`String`（以UTF-8编码），还可以写入实现了`Serializable`接口的`Object`。
 
+因为写入`Object`时需要大量的类型信息，所以写入的内容很大。
 
+反序列化
 
+和`ObjectOutputStream`相反，`ObjectInputStream`负责把一个字节流读取为Java对象。
 
+```java
+try(ObjectInputStream input = new ObjectInputStream(/** 二进制流 */)){
+    int n = input.readInt();
+    String s = input.readUTF();
+    Double d = (Double) input.readObject();
+}
+```
 
+除了能读取基本类型和`String`类型外，调用`readObject()`可以直接返回一个`Object`对象。要把它变成特定类型，必须强制转型，强制转型过程中，`readObject()`可能会抛出异常。
 
+- `ClassNotFoundException`：没有找到对应的Class
+- `InvalidClassException`：Class不匹配
 
+对于`ClassNotFoundException`，这种情况常见于一个电脑上的Java程序把一个Java对象，例如，`Person`对象序列化之后，通过网络传输给另一台电脑上的另一个Java程序，但是这台电脑的Java程序并没有定义`Person`类，所以无法反序列化。
 
+对于`InvalidClassException`，这种情况常见于序列化的`Person`对象了一个`int`类型的`age`字段，但是反序列化的时候，`Person`类定义的`age`字段被改成了`long`类型，所以导致class不兼容。
 
+为了避免这种class定义变动导致的不兼容，Java序列化允许class定义一个特殊的`serialVersionUID`静态变量，用于标识Java类的序列化版本，通常可以由IDE自动生成。如果增加了或修改了字段，可以改变`serialVersionUID`的值，这样就能自动组织不匹配的class版本。
 
+```java
+public class Person implements Serializable {
+    private static final long serialVersionUID = 28392710930992783L;
+}
+```
+
+特别要注意反序列化的几个重要特点：
+
+反序列化，由JVM直接构造出Java对象，不调用构造方法，构造方法内部的代码在反序列化时不可能执行。
+
+安全性
+
+因为Java的系列化可以导致一个实例直接从`bytep[]`数组创建，而不通过构造方法，因此，它存在一定的安全隐患。一个精心构造的`byte[]`数组反序列化后可以执行特定的Java代码，从而导致严重的安全漏洞。
+
+实际上，Java本身提供的基于对象的序列化和反序列化机制既存在安全性问题，也存在兼容性问题。更好的序列化方法是通过`JSON`这样的通用数据结构来实现，只输出基本类型（包括`String`）的内容，而不存储任何与代码相关信息。
+
+#### **Reader**
+
+`Reader`是Java的IO库提供的另一个输入接口。和`InputStream`的区别是，`InputStream`是一个字节流，即以`byte`为单位读取，而`Reader`是一个字符流，即以`char`为单位读取：
+
+|InputStream|Reader|
+|---|---|
+|字节流，以byte为单位|字符流，以char为单位|
+|读取字节(-1, 0~255)：int read()|读取字符(-1, 0~65535)：int read()|
+|读到字节数组：int read(byte[] b)|读到字符串：int read(char[] c)|
+
+`java.io.Reader`是所有字符输入流的超类，它的主要方法是：
+
+```java
+public int read() throws IOException
+```
+
+这个方法读取字符流的下一个字符，并返回字符表示的`int`，范围是`0~65535`。如果已经读到末尾，返回`-1`。
+
+FileReader
+
+`FileReader`是`Reader`的一个子类，它可以打开文件并获取`Reader`。下面的代码演示了如何完整的读取一个`FileReader`的所有字符：
+
+```java
+public class FileReaderClass {
+    public static void main(String[] args){
+        Reader reader = new FileReader("src/readme.md");
+        for(;;){
+            int n = reader.read();
+            if(n == -1){
+                break;
+            }
+            System.out.println((char) n);
+        }
+        reader.close();
+    }
+}
+```
+
+实际使用方法和`InputStream`的`FileInputStream`非常类似，也需要使用`close()`方法关闭流
+
+如果我们读取一个纯`ASCII`编码的文件，上述代码工作是没有问题的。但如果文件中包含中文，就会出现乱码，因为`FileReader`默认的编码与系统相关，在Windows下的默认编码可能是`GBK`，打开一个`UTF-8`的文件就会出现乱码。
+
+```java
+Reader reader = new FileReader("src/readme.md", StandarCharsets.UTF_8);
+```
+
+和`InputStream`类似，`Reader`也是一种资源，需要保证出错的时候也能正确关闭，所以我们需要使用`try(resource)`来保证`Reader`在无论有没有IO错误的时候都能正确关闭：
+
+```java
+try(Reader reader = new FileReader("src/readme.md", StandarCharsets.UTR_8)){
+    // some code    
+}
+```
+
+`Reader`还提供了一次性读取若干字符并填充到`char[]`数组的方法：
+
+它返回实际读取的字符个数，最大不超过`char[]`长度，返回`-1`表示读取完成。
+
+利用这个方法我们可以先设置一个缓冲区，然后每次尽可能填充缓冲区。
+
+```java
+public void readFile () throws IOException {
+    try(Reader reader = new FileReader("src/readme.md"), StandarCharsets.UTF_8){
+        char[] buffer = new char[1000];
+        int n;
+        while((n = reader.read(buffer)) != -1){
+            System.out.println("read "+n+" chars");
+        }
+    }
+}
+```
+
+CharArrayReader
+
+`CharArrayReader`可以在内存中模拟一个`Reader`，它的作用实际上是把一个`char[]`数组变成一个`Reader`，这和`ByteArrayInputStream`非常类似。
+
+```java
+try(Reader reader = new CharArrayReader("Hello".toCharArray())){
+    // some code
+}
+```
+
+StringReader
+
+`StringReader`可以直接把`String`作为数据源，它和`CharArrayReader`几乎一样：
+
+```java
+try(Reader reader = new StringReader("Hello")) {
+    // some code
+}
+```
+
+InputStreamReader
+
+`Reader`和`InputStream`有什么关系？
+
+除了特殊的`CharArrayReader`和`StringReader`，普通的`Reader`实际上是基于`InputStream`构造的，因为`Reader`需要从`InputStream`中读取字节流(`byte`)，然后根据编码设置，再转成`char`就可以实现字节流。如果我们查看`FileReader`的源码，它在内部实际上持有一个`FileInputStream`。
+
+既然`Reader`本质上是基于`InputStream`的`byte`到`char`的转换器，那么，如果我们已经有了一个`InputStream`，想把它转换为`Reader`，是完全可行的。`InputStreamReader`就是这样一个转换器，它可以把任何一个`InputStream`转换为`Reader`。实例代如下：
+
+```java
+InputStream input = new FileInputStream("src/readme.md");
+Reader read = new InputStreamReader(input, "UTF-8");
+```
+
+构造`InputStreamReader`的时候，我们需要传入一个`InputStream`，还需要指定编码，就可以得到一个`Reader`对象，上述代码可以通过`try(resource)`更简洁改写如下：
+
+```java
+try(Reader reader = new InputStreamReader(new FileInputStream("src/readme.md"), "UTF-8")){
+    // some code
+}
+```
+
+上述代码实际上就是`FileReader`的一种实现方式。
+
+使用`try(resource)`结构的时候，当我们关闭`Reader`时，它会在内部自动顺带调用`InputStream`的`close()`方法，所以只需要关闭最外层的`Reader`对象即可。
+
+> 使用InputStreamReader，可以把一个InputStream转换成一个Reader。
+
+#### **Writer**
+
+`Reader`是自带编码转换器的`InputStream`，它把`byte`转换为`char`，而`Writer`就是自带编码转换器的`OutputStream`，它把`char`转换为`byte`并输出。
+
+`Writer`和`OutputStream`的对比如下
+
+|OutputStream|Writer|
+|---|---|
+|字节流，以byte为单位|字符流，以char为单位|
+|写入字节(-1, 0~255)：int write()|写入字符(-1, 0~65535)：void write(int c)|
+|写入字节数组：void write(byte[] b)|写入字符串：void write(char[] c)|
+|无应对方法|写入String：void write(String s)|
+
+`Writer`是所有输出字符流的超类，它日共主要方法有：
+
+- 写入一个字符(0~65535)：void write(int c);
+- 写入字符组的所有字符：void write(char[] c);
+- 写入String表示的所有字符：void write(String s);
+
+FileWriter
+
+`FileWriter`就是向文件中写入字符流的`Writer`。它的使用方法和`FileReader`类似：
+
+```java
+try(Writer writer = new FileWriter("src/readme.md", "UTF-8")) {
+    writer.write('H');
+    writer.write("Hello".toCharArray());
+    writer.write("Hello");
+}
+```
+
+CharArrayWriter
+
+`CharArrayWriter`可以在内存中创建一个`Writer`，它的作用实际上构造一个缓冲区，可以写入`char`，最后得到写入的`char[]`数组，这和`ByteArrayOutputStream`非常类似：
+
+```java
+try(Writer writer = new CharArrayWriter()) {
+    writer.write(65);
+    writer.write(66);
+    writer.write(67);
+    char[] data = writer.toCharArray(); // {'A', 'B', 'C'}
+}
+```
+
+StringWriter
+
+`StringWriter`也是一个基于内存的`Writer`，它和`CharArrayWriter`类似，实际上`StringWriter`在内部维护了一个`StringBuffer`，并对外提供了`Writer`接口。
+
+OutputStreamWriter
+
+除了`CharArrayWriter`，和`StringWriter`之外，不同的`Writer`实际上是基于`OutputStream`构造的，它接收`char`，然后在内部自动转换成一个或多个`byte`，并写入`OutputStream`。因此，`OutputWriter`就是一个将任意的`OutputStream`转换为`Writer`的转换器：
+
+```java
+try(Writer writer = new OutputStreamWriter(new FileOutputStream("readme.md"), "UTF-8")){
+    // some code
+}
+```
+
+上面的代码实际上就是`FileWriter`的一种实现方式，这和上一节的`InputStreamReader`是一样的。
+
+#### **PrintStream和PrintWriter**
+
+`PrintStream`是一种`FilterOutputStream`，它在`OutputStream`的接口上，额外提供了一些写入各种数据类型的方法：
+
+- 写入int：print(int)
+- 写入boolean：print(boolean)
+- 写入String：print(String)
+- 写入Object：print(Object)
+
+以及应对的一组`println()`方法，他会自动加上换行。
+
+我们经常使用的`System.out.println()`方法实际上就是使用`PrintStream`打印各种数据，其中，`System.out`是系统默认提供的`PrintStream`，表示标准输出：
+
+```java
+System.out.print(12345); // 12345
+System.out.print(new Object()); // @3c732a
+System.out.println("Hello"); // Hello\n 
+```
+
+`System.err`是系统默认提供的标准错误输出。
+
+`PrintStream`和`OutputStream`相比，除了添加了一组`print()/println()`方法，可以打印各种属类型，比较方便外，它还有一个额外的有点，就是不会抛出IOException，这样我们在编写代码的时候，就不必捕获`IOException`。
+
+PrintWriter
+
+`PrintStream`最终输出总是`byte`数据，而`PrintWriter`则是扩展了`Writer`接口，它的`print()/println()`方法最终输出是`char`数据。两者使用方法几乎一摸一样：
+
+```java
+public class Main {
+    public static void main(String[] args){
+        StringWriter buffer = new StringWriter();
+        try(PrintWriter pw = new PrintWriter(buffer)) {
+            pw.println("Hello");
+            pw.println(12345);
+            pw.println(true);
+        }
+        System.out.println(buffer.toString());
+    }
+}
+```
 
 
 

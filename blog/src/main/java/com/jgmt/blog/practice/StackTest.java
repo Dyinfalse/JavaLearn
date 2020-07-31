@@ -5,6 +5,9 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 栈实现进制转换类
+ */
 public class StackTest {
 
     public static void main(String[] args) {
