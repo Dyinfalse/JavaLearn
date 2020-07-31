@@ -1,6 +1,6 @@
 ## java IO 知识点
 
-*2020-07-27 Dyinfalse* 本篇是阅读[廖雪峰文章](https://www.liaoxuefeng.com/wiki/1252599548343744/1298069154955297)的总结
+*2020-07-31 Dyinfalse* 本篇是阅读[廖雪峰文章](https://www.liaoxuefeng.com/wiki/1252599548343744/1298069154955297)的总结
 
 #### **File对象**
 
