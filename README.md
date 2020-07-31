@@ -256,4 +256,4 @@ public class CustomerController {
 - jsp提交表单，如果要使用jsp提供的表单组件，需要在jsp文件开头加上`<%@ taglib prefix="from" uri="http://www.springframework.org/tags/form" %>`，组件属性详细见5.2(p69-p78)
  1. 主要相关的属性:
  2. `commandName` form标签的属性，用来指明该表单映射的对象(之前在Controller里使用`ModelAndView.addObject()`方法传入jsp的对象)
- 3. `path` 单个表单标签的属性，指明当前标签对应的是commandName对象上的哪一个字段
+ 3. `path` 单个表单标签的属性，指明当前标签对应的是commandName对象上的哪一个字段。
