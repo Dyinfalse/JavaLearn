@@ -933,7 +933,7 @@ public class Counter {
 
 一个线程可以获取一个锁后，再继续获取另一个锁，例如：
 
-```java
+``` java
 public void add (int m) {
     synchronized (lockA){
         this.value += m;
@@ -982,13 +982,111 @@ public void dec(int m) {
 }
 ```
 
+#### **使用wait和notify**
 
+在Java程序中，synchronized解决了对哦线程竞争的问题，例如，对于一个任务管理器，多个线程同时往队列中添加任务，可以用synchronized加锁。
 
+```java
+public class TaskQueue {
+    Queue<String> queue = new LinkedList<>();
+    public synchronized void addTask (String s) {
+        this.queue.add(s);
+    }
+}
+```
 
+但是synchronized并没有解决多线程协调问题。
 
+仍然以上面的TaskQueue为例，我们再编写一个getTask()方法取出队列的第一个任务：
 
+```java
+public class TaskQueue {
+    Queue<String> queue = new LinkedList<>();
+    public synchronized void addTask(String s) {
+        this.queue.add(s);
+    }
+    
+    public synchronized Sring getTask() {
+        while (queue.isEmpty()){
+            
+        }
+        return queue.remove();
+    }
+}
+```
 
+上述代码看上去没有问题：getTask()内部先判断队列是否为空，如果为空，就等待循环，直到另一个线程往队列中放如任务，while()循环退出，就可以返回队列的元素了。
 
+但实际上while()循环永远不会退出。因为线程在执行while()循环时，已经在getTask()入口获取了this锁，其他线程根本无法调用addTask()，因为addTask()执行条件也是获取this锁。
+
+因此，执行上述代码，线程会在getTask()中因死循环而100%占用CPU资源。
+
+如果我们深入思考一下，我们想要的执行效果是：
+
+- 线程1可以调用addTask()不断往队列中添加任务；
+- 线程2可以调用getTask()从队列中获取任务。如果队列为空，则getTask()应该等待，直到队列中至少有一个任务再返回。
+
+因此，多线程协调运行的原则就是：当条件不满足时，线程进入等待状态；当条件满足时，线程被唤醒，继续执行任务。
+
+对于上述TaskQueue，我们改造getTask()方法，在条件不满足时，线程进入等待状态。
+
+``` java
+public synchronized String getTask() {
+    while(queue.isEmpty()) {
+        this.wait();
+    }
+    return queue.remove();
+}
+```
+
+当一个线程执行到getTask()方法内部的while循环时，它必定已经获得到了this锁，此时，线程执行while条件判断，如果条件成立(队列为空)，线程将执行this.wait()方法，进入等待状态。
+
+这里的关键是：wait()方法必须在当前获取的锁的对象上调用，这里获取的是this锁，因此调用this.wait()。
+
+那么即使线程在getTask()内部等待，其他线程如果拿不到this锁，照样无法执行addTask()方法，怎么办？
+
+这个问题的关键就在于wait()方法的执行机制非常复杂，首先，它不是一个普通的Java方法，而是定义在Object类的一个native方法，也就是由JVM的C代码实现，其次，必须在synchronized块中才能使用wait()，因为wait()方法调用时，会释放线程获得的锁，wait()方法返回之后，线程又会重新试图获取锁。
+
+因此，只能在锁的对象上调用wait()方法，因为在getTask()中，我们获得this锁，所以只能在this对象上调用wait()方法。
+
+当一个线程在this.wait()等待时，它就会释放this锁，从而使得其他线程能够在addTask()方法获得this锁。
+
+现在我们面临第二个问题：如何让等待的线程被重新唤醒，然后从wait()方法返回？答案就是在相同锁对象上调用notify()方法，我们修改addTask()如下：
+
+```java
+public synchronized void addTask(String s) {
+    this.queue.add(s);
+    this.notify();
+}
+```
+
+注意到现在往队列中添加了任务后，线程立刻对this锁对象调用notify()方法，这个方法会唤醒一个正在this锁等待的线程（就是在getTask()中位于this.wait()的线程）从而使得等待线程从this.wait()方法返回。
+
+我们来看一个完整的例子：
+
+```java
+public class Main {
+    public static void main(String[] args){
+        var q = new TaskQueue();
+        var ts = new ArrayList<Thread>();
+        for (int i = 0; i < 5; i++){
+            var t = new Thread(){
+                public void run () {
+                    while (true) {
+                        try {
+                            String s = q.getTask();
+                            System.out.println("execute task: " + s);
+                        } catch () {
+                            
+                        }
+                    }
+                }
+            }           
+        }
+    
+    }
+}
+```
 
 
 
