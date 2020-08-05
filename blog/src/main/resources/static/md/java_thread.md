@@ -4,7 +4,7 @@
 
 #### **多线程基础**
 
-现代的操作系统（Windows，macOS，Linux）都可以执行多任务。多任务就是同时运行多个任务
+现代的操作系统（Windows，macOS，Linux）都可以执行多任务。多任务就是同时运行多个任务。
 
 CPU执行代码都是一条一条顺序执行的，但是，即使是单核cpu也可以同时运行多个任务。因为操作系统执行多任务实际上就是让CPU对多个任务轮流交替执行。
 
@@ -14,9 +14,9 @@ CPU执行代码都是一条一条顺序执行的，但是，即使是单核cpu�
 
 #### **进程**
 
-在计算机中，我们把一个任务称为一个进程，浏览器就是一个进程，视频播放器是另一个进程，类似的，音乐播放器核Word都是进程。
+在计算机中，我们把一个任务称为一个进程，浏览器就是一个进程，视频播放器是另一个进程，类似的，音乐播放器和Word都是进程。
 
-某些进程内部还需要同时执行多个子任务。例如，我们在使用Word的时候，Word可以让我们一边打字，一边检查贫血，同时还可以在后台打印，我们把子任务称为线程。
+某些进程内部还需要同时执行多个子任务。例如，我们在使用Word的时候，Word可以让我们一边打字，一边检查拼写，同时还可以在后台打印，我们把子任务称为线程。
 
 ```
                             ┌──────────┐
@@ -36,7 +36,7 @@ CPU执行代码都是一条一条顺序执行的，但是，即使是单核cpu�
     └──────────────────────────────────────────────┘
 ```
 
-操作系统调度的最小任务单元就是线程，常用的Windows，Linux都采用抢占式调度的多人，如果调度线程完全由操作系统决定，程序自己不能决定什么时候执行，以及执行多长时间。
+操作系统调度的最小任务单元就是线程，常用的Windows，Linux都采用抢占式调度的模式，调度线程完全由操作系统决定，程序自己不能决定什么时候执行，以及执行多长时间。
 
 因为同一个应用程序，既可以有多个进程，也可以有多个线程，实现多任务的方法，有以下几种
 
@@ -96,7 +96,7 @@ CPU执行代码都是一条一条顺序执行的，但是，即使是单核cpu�
 
 #### **多线程**
 
-Java语言内置了多线程支持：一个Java程序实际上是一个JVM进程，JVM进程用一个主线程来执行main()方法，在main()方法内部，我们又可以启动多个线程。此外，JVM还有负责垃圾回收的其他工作线程等。
+Java语言内置了多线程支持：一个Java程序实际上是一个JVM进程，JVM进程用一个主线程来执行`main()`方法，在`main()`方法内部，我们又可以启动多个线程。此外，JVM还有负责垃圾回收的其他工作线程等。
 
 因此对于大多数Java程序员来说，我们说多任务，实际上是说如何使用多线程实现多任务。
 
@@ -109,9 +109,9 @@ Java多线程编程的特点在于：
 
 #### **创建新线程**
 
-Java语言内置了多线程的支持，当Java程序启动的时候，实际上启动了一个JVM进程，然后JVM主线程来执行main()方法，在main()方法中，我们又可以启动其他线程。
+Java语言内置了多线程的支持，当Java程序启动的时候，实际上启动了一个JVM进程，然后JVM主线程来执行`main()`方法，在`main()`方法中，我们又可以启动其他线程。
 
-要创建一个新线程非常简单，我们需要实例化一个Thread实例，然后调用它的start()方法：
+要创建一个新线程非常简单，我们需要实例化一个`Thread`实例，然后调用它的`start()`方法：
 
 ```java
 public class ThreadClass {
@@ -496,7 +496,7 @@ class Counter {
 
 class AddThread extends Thread {
     public void run () {
-        for (int i = 0; i < 10000l i++){
+        for (int i = 0; i < 10000; i++){
             Counter.count += 1;
         }
     }
@@ -1053,7 +1053,7 @@ public synchronized String getTask() {
 
 现在我们面临第二个问题：如何让等待的线程被重新唤醒，然后从wait()方法返回？答案就是在相同锁对象上调用notify()方法，我们修改addTask()如下：
 
-```java
+``` java
 public synchronized void addTask(String s) {
     this.queue.add(s);
     this.notify();
@@ -1076,17 +1076,424 @@ public class Main {
                         try {
                             String s = q.getTask();
                             System.out.println("execute task: " + s);
-                        } catch () {
-                            
+                        } catch (InterruptedException e) {
+                            return;
                         }
                     }
                 }
-            }           
+            };
+            t.start();
+            ts.add(t);
         }
+        var add = new Thread(() -> {
+            for(int i = 0; i < 10; i++){
+                // 放入task
+                String s = "t-" + Math.random();
+                System.out.println("add task " + s);
+                q.addTask(s);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    
+                }
+            }
+        });
+        add.start();
+        add.join();
+        Thread.sleep(100);
+        for (var t : ts) {
+            t.interrupt();
+        }
+    }
+}
+
+class TaskQueue {
+    Queue<String> queue = new LinkedList<>();
     
+    public synchronized void addTask (String s) {
+        this.queue.add(s);
+        this.notifyAll();
+    }
+    
+    public synchronized String getTask() throws InterruptedException {
+        while (queue.isEmpty()){
+            this.wait();
+        }
+        return queue.remove();
+    }
+
+}
+```
+
+这个例子中，我们重点关注addTask()方法，内部调用了this.notifyAll()而不是this.notify()，使用notifyAll()将唤醒所有当前正在this锁等待的线程，而notify()只会唤醒一个（具体哪一个依赖操作系统，有一定的随机性），这是因为可能又多个线程正在调用getTask()方法内部的wait()中等待，使用notifyAll()方法将一次性全部唤醒。通常来说，notifyAll()更安全，有些时候，如果我们的代码逻辑考虑不周，用notify()会导致只唤醒了一个线程，而其他线程可能永远等下去醒不过来。
+
+但是，注意到wait()方法返回时需要重新获得this锁，假设当前有三个线程被唤醒，唤醒之后，首先要等待执行addTask()的线程结束此方法，才能释放this锁，随后三个线程中只能有一个获得this锁，剩下两个继续等待。
+
+再注意到我们在while()循环中调用wait()，而不是if语句：
+
+``` java
+public synchronized String getTask() throws InterruptedException {
+    if (queue.isEmpty()){
+        this.wait();
+    }
+    return queue.remove();
+}
+```
+
+这种写法实际上是错误的，因为线程被唤醒之后，需要再次获得this锁，多个线程被唤醒后，只有一个线程能获得this锁，此刻，该线程执行queue.remove()可以获取队列的元素，然而剩下的线程如果获取this锁之后，执行queue.remove()，此刻队列可能已经没有任何元素了，所以要始终在while循环中wait()，并且每次被唤醒之后拿到this锁就必须再此判断：
+
+``` java
+while(queue.isEmpty()){
+    this.wait();
+}
+```
+
+所以，正确编写多线程代码非常困难，需要仔细考虑的条件非常多，任何一个地方考虑不周，都会导致多线程运行时的不正常。
+
+#### **使用ReentrantLock**
+
+从Java5开始，引入了一个高级的处理并发的java.util.concurrent包，它提供了大量更高级的并发功能，大大简化多线程的编写。
+
+我们知道Java语言直接提供了synchronized关键字用于加锁，但是这种锁很重，而且获取时必须一直等待，没有额外的尝试机制。
+
+java.util.concurrent.locks包提供的ReentrantLock用于替代synchronized加锁，看一下传统的synchronized代码。
+
+```java
+public class Counter {
+    private int count;
+    
+    public void add (int n) {
+        synchronized (this) {
+            count += n;
+        }
     }
 }
 ```
+
+如果使用ReentrantLock代替，可以把代码改造为：
+
+```java
+public class Counter {
+    private final Lock lock = new ReentrantLock();
+    private int count;
+    
+    public void add (int n) {
+        lock.lock();
+        try {
+            count += n;
+        } finally{
+            lock.unlock();
+        }
+    }
+}
+```
+
+因为synchronized是Java语言层面提供的语法，所以我们不需要考虑异常，而ReentrantLock是Java代码实现的锁，我们就必须先获取锁，然后finally中正确释放锁。
+
+顾名思义，ReentrantLock是可重入锁，它和synchronized一样，一个线程可以多次获取同一个锁。
+
+和synchronized不同的是，ReentrantLock可以尝试获取锁：
+
+``` java
+if(lock.tryLock(1, TimeUnit.SECONDS)) {
+    try {
+        ...
+    } finally {
+        lock.unlock();
+    }
+}
+```
+
+上述代码正在尝试获取锁的时候，最多等待1秒，如果1秒后仍未获得锁，tryLock()返回false，程序就可以做一些额外的处理，而不是无限等下去。
+
+所以，使用ReentrantLock比直接使用synchronized更安全，线程在truLock()失败的时候不会导致死锁。
+
+#### **使用Condition**
+
+使用ReentrantLock比直接使用synchronized更安全，可以代替synchronized进行线程同步。
+
+但是，synchronized可以配合wait()和notify()实现线程在条件不满足的时候等待，条件满足时被唤醒，用ReentranLock我们怎么编写wait和notify的功能呢？
+
+答案是使用Condition对象来实现wait和notify的功能。
+
+我们仍然以TaskQueue为例子，把前面用synchronized实现的功能，使用ReentrantLock和Condition来实现：
+
+```java
+class TaskQueue {
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
+    private Queue<String> queue = new LinkedList<>();
+    
+    public void addTask(String s) {
+        lock.lock();
+        try {
+            queue.add(s);
+            condition.signalAll();
+        } finally{
+            lock.unlock();
+        }
+    }
+    
+    public String getTask () {
+        lock.lock();
+        try {
+            while (queue.isEmpty()) {
+                condition.await();
+            }
+            return queue.remove();
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
+
+可见，使用Condition时，引用的Condition对象必须从Lock实例的newCondition()返回，这样才能获得一个绑定了Lock实例的Condition实例。
+
+Condition提供await()，signal()，signalAll()原理和synchronized锁对象的wait()，notify()，notifyAll()是一致的，并且其行为意识一样的：
+
+- await()会释放当前锁，进入等待状态；
+- signal()会唤醒某个等待线程；
+- signalAll()会唤醒所有等待线程；
+- 唤醒线程从await()返回后，需要重新获得锁
+
+此外，和tryLock()类似，await()可以在等待指定时间后，如果还没有被其他线程通过signal()或者signalAll()唤醒，可以自己醒来：
+
+``` java
+if(condition.await(1, TimeUnit.SECOND)){
+    // 被唤醒
+} else {
+    // 指定时间内没有被其他线程唤醒
+}
+```
+
+可见，使用Condition配合Lock，我们可以实现更灵活的线程同步。
+
+#### **使用ReadWriteLock**
+
+之前讲到了ReentrantLock保证了只有一个线程可以执行临界区代码：
+
+```java
+public class Counter {
+    private final Lock lock = new ReentrantLock();
+    private int[] counts = new int[10];
+    
+    public void inc (int index) {
+        lock.lock();
+        try {
+            counts[index] += 1;
+        } finally{
+            lock.unlock();
+        }
+    }
+    
+    public int[] get () {
+        lock.lock();
+        try {
+            return Arrays.copyOf(counts, counts.length);
+        } finally{
+            lock.unlock();
+        }
+    }
+}
+```
+
+但是有些时候，这种保护有点过头了，因为我们发现，任何时候，只允许一个线程修改，也就是调用inc()方法是碧玺获取锁，但是，get()方法只读取数据，不修改数据，它实际上允许多个线程同时调用。
+
+实际上我们想要的是：允许多个线程同时读，但只要有一个线程在写，其他线程就必须等待。
+
+使用ReadWriteLock可以解决这个问题，它保证：
+
+- 只允许一个线程写入（其他线程既不能写入也不能读取）；
+- 没有写入时，多个线程允许同时读（提高性能）。
+
+用ReadWriteLock实现这个功能非常简单，我们需要创建一个ReadWriteLock实例，然后分别获取读锁和写锁：
+
+```java
+public class Counter {
+    private final ReadWriteLock rwLock = new ReadWriteLock();
+    private final Lock rLock = rwLock.readLock();
+    private final Lock wLock = rwLock.writeLock();
+    private int[] counts = new int[10];
+    
+    public void inc (int index) {
+        wLock.lock();
+        try {
+            counts[index] += 1;
+        } finally{
+             wLock.unlock();
+        }
+    }
+    
+    public int[] get () {
+        rLock.lock();
+        try {
+            return Arrays.copyOf(counts, counts.length);
+        } finally{
+            rLock.unlock();
+        }
+    }
+}
+```
+
+把读写操作分开，分别使用读锁和写锁，多个线程可以同时获得读锁，这样就大大提高了并发的执行效率。
+
+使用ReadWriteLock时，适用条件是同一个数据，有大量线程读取，但仅有少数线程修改。
+
+例如，一个论坛的帖子，回复可以看作写入操作，它不是频繁的，但是浏览可以看作读取操作，是非常频繁的，这个时候就可以使用ReadWriteLock。
+
+#### **使用StampedLock**
+
+之前介绍了ReadWriteLock可以解决多线程同时读取，但只有一个线程能写的问题。
+
+如果我们深入分析ReadWriteLock，会发现它有一个潜在的问题：如果有线程正在读，写入线程需要等待读线程释放锁之后才能获取写锁，即读的过程中不允许写，这是一种悲观锁。
+
+要进一步提升并发执行效率，Java8 引入了新的读写锁：StampedLock。
+
+StampedLock和ReadWriteLock相比，改进之处在于：读的过程中也允许获取写锁后写入，这样一来，我们读的数据就可能不一致，所以，需要一点额外的代码来判断读的过程中是否有写入，这种读锁是一种乐观锁。
+
+> 乐观锁：乐观的估计读的过程中大概率不会有写入，因此被称为乐观锁。
+
+> 悲观锁：读的过程中拒绝有写入，也就是写入必须等待。
+
+显然，乐观锁的并发效率更高，但一旦有小概率的写入导致读取读数据不一致，需要能检测出来，再读一遍。
+
+查看例子：
+
+```java
+public class Point {
+    private final StampedLock stampedLock = new StampedLock();
+    
+    private double x;
+    private double y;
+    
+    public void move(double deltaX, double deltaY){
+        long stamp = stampedLock.writeLock(); // 获取写锁
+        try {
+            x += deltaX;
+            y += deltaY;
+        } finally{
+            stampedLock.unlockWrite(stamp);  // 释放写锁
+        }
+    }
+    
+    public double distanceFromOrigin () {
+        long stamp = stampedLock.tryOptimisticRead(); // 获取乐观读版本号，此时并没有锁
+        
+        double currentX = x;
+        
+        double currentY = y;
+        
+        // 验证读锁版本号，确保读的过程中没有写入操作，如果有，那么加悲观锁重新读
+        if(!stampedLock.validte(stamp)) {
+            stamp = stampLock.readLock(); // 获得一个悲观读锁
+            try {
+                currentX = x;
+                currentY = y;
+            } finally{
+                stampedLock.unLockRead(stamp); // 释放悲观读锁
+            }
+        }
+        return Math.sqrt(currentX * currentX + currentY * currentY);
+    }
+}
+```
+
+和ReadWriteLock相比，写入的加锁是完全一样的，不同的是读取，注意到首先我们同归tryOptimisticRead()获得一个乐观锁，并返回版本号。接着进行读取，读取完成后，我们通过validate()去验证版本号，如果在读取过程中没有写入，版本号不变，验证成功，我们就可以放心的继续后面操作，如果在读取过程中有写入，版本号会发生变化，验证失败，在失败的时候，我们再通过悲观锁再次读取，由于写入的概率不高，程序在绝大部分情况下可以通过乐观 读锁获取数据，极少情况下使用悲观读锁获取数据。
+
+可见，StampedLock还提供了更复杂的将悲观读锁升级为写锁的功能，它主要使用在if-then-update的场景：首先读，如果读的数据条件满足，就返回，如果读的数据不满足条件，再尝试写。
+
+#### **使用Concurrent集合**
+
+我们之前已经了解了ReentrantLock和Condition实现了一个BlockingQueue：
+
+```java
+public class TaskQueue {
+    private final Lock lock = new ReentrantLock();
+    private Condition condition = lock.newCondition();
+    private Queue<String> queue = new LinkedList<>();
+    
+    public void addTask(String s) {
+        lock.lock();
+        try {
+            queue.add(s);
+            condition.signalAll();
+        } finally{
+            lock.unlock();
+        }
+    }
+    
+    public String getTask() {
+        lock.lock();
+        try {
+            while (queue.isEmpty()) {
+                condition.await();
+            }
+            return queue.remove();
+        } finally{
+            lock.unlock();
+        }
+    }
+}
+```
+
+BlockingQueue的意思就是说，当一个线程调用这个TaskQueue的getTask()方法时，该方法内部可能会让线程变成等待状态，直到队列条件满足不为空，线程被唤醒后，getTask()方法才会返回。
+
+因为BlockingQueue非常有用，所以我们不必自己编写，可以直接使用Java标准库的java.util.concurrent包提供的线程安全集合：ArrayBlockingQueue。
+
+除了BlockingQueue之外，针对List，Map，Set，Deque等，java.util.concurrent包也提供了对应的并发集合类。归纳如下：
+
+|interface|non-thread-safe|thread-safe|
+|---|---|---|
+|List|ArrayList|CopyOnWriteArrayList|
+|Map|HashMap|ConcurrentHashMap|
+|Set|HashSet/TreeSet|CopyOnwriteArraySey|
+|Queue|ArrayDeque/LinkedList|ArrayBlockingQueue/LinkedBlockingQueue|
+|Deque|ArrayDeque/LinkedList|LinkedBlockingDeque|
+
+使用这些并发集合与使用非线程安全的集合类相同。我们以ConcurrentHashMap为例：
+
+``` java
+Map<String, String> map = new ConcurrentHashMap<>();
+
+map.put("A", "1");
+map.put("B", "2");
+map.put("C", "3");
+```
+
+因为所有的同步和加锁的逻辑都在集合内部实现，对外部调用者来说，只需要正常按接口引用，其他代码和原来的非线程安全的代码完全一样。即我们需要多线程访问是，只需要把：
+
+``` java
+Map<String, String> map = new HashMap<>();
+```
+
+改成：
+
+``` java
+Map<String, String> map = new ConcurrentHashMap<>();
+```
+
+就可以了。
+
+java.util.Collections工具类还提供了一个旧的线程安全集合转换器，可以用：
+
+``` java
+Map unsafeMap = new HashMap();
+
+Map threadSafeMap = Collections.synchronizedMap(unsafeMap);
+```
+
+但是它实际上是用一个包装类包装了非线程安全Map，然后对所有读写方法都用synchronized加锁，这样获得的线程安全集合的性能比java.util.concurrent集合要低很多，所以不推荐使用。
+
+
+
+
+
+
+
+
+
+
 
 
 
