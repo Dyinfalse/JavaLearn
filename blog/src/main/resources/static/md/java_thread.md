@@ -124,7 +124,7 @@ public class ThreadClass {
 
 但是这个线程启动之后什么也不会做就立即结束了，我们希望新线程能执行指定的代码，有以下几种方法：
 
-方法一：从Thread()派生一个自定义类，然后覆写run()方法：
+方法一：从`Thread()`派生一个自定义类，然后覆写`run()`方法：
 
 ```java
 public class ThreadRunClass {
@@ -142,9 +142,9 @@ public class MyThread extends Thread {
 }
 ```
 
-执行上述代码，注意到start()方法会在内部调用实例的run()方法。
+执行上述代码，注意到`start()`方法会在内部调用实例的`run()`方法。
 
-方法二：创建Thread实例，传入一个Runnable
+方法二：创建`Thread`实例，传入一个`Runnable`
 
 ```java
 public class ThreadRunnableClass {
@@ -162,7 +162,7 @@ public class MyRunnable implements Runnable {
 } 
 ```
 
-或者使用Java8引用的lambda语法进一步简写：
+或者使用Java8引用的`lambda`语法进一步简写：
 
 ```java
 public class ThreadLambda {
@@ -173,7 +173,7 @@ public class ThreadLambda {
 }
 ```
 
-下面查看一个多线程实例，为了提现多线程的特点，我们加入Thread.sleep(int)方法
+下面查看一个多线程实例，为了提现多线程的特点，我们加入`Thread.sleep(int)`方法
 
 ```java
 public class Main {
@@ -201,16 +201,16 @@ public class Main {
 >> thread end
 ```
 
-sleep传入的参数是毫秒数，调整时间的大小，我们可以看到main线程和t线程的执行顺序。事实上，我们只能肯定main run会最先打印，但是main end在thread run之前还是在thread end之后打印，我们都无法确定，因为t线程开始运行之后，两个线程就开始同时运行了，并且由操作系统调度，程序本身无法确定线程的调度顺序。
+`sleep`传入的参数是毫秒数，调整时间的大小，我们可以看到`main`线程和`t`线程的执行顺序。事实上，我们只能肯定`main run`会最先打印，但是`main end`在`thread run`之前还是在`thread end`之后打印，我们都无法确定，因为`t`线程开始运行之后，两个线程就开始同时运行了，并且由操作系统调度，程序本身无法确定线程的调度顺序。
 
-需要注意的一点：直接调用Thread实例的run()方法，是无效的：
+需要注意的一点：直接调用`Thread`实例的`run()`方法，是无效的：
 
 ``` java
 Thread t = new Thread();
 t.run()
 ```
 
-直接调用run()方法，相当与调用了一个普通Java方法，当前线程不会由任何变化，也不会启动新线程，必须使用Thread实例的start方法才能启动新的线程，如果我们查看Thread类的源码，会看到start()方法内部调用了一个private native void start0()方法，native修饰符表示这是一个JVM虚拟机内部C代码实现的，不是由Java代码实现的。
+直接调用`run()`方法，相当与调用了一个普通Java方法，当前线程不会由任何变化，也不会启动新线程，必须使用`Thread`实例的`start`方法才能启动新的线程，如果我们查看`Thread`类的源码，会看到`start()`方法内部调用了一个`private native void start0()`方法，`native`修饰符表示这是一个JVM虚拟机内部C代码实现的，不是由Java代码实现的。
 
 线程调度的优先级
 
@@ -223,14 +223,14 @@ Thread.setPriority(int n);
 
 #### **线程的状态**
 
-在Java程序中，一个线程对象只能调用一次start()方法启动新线程，并在新线程中执行run()方法。一旦run()方法执行完毕，线程就结束了，因此，Java线程状态有以下几种：
+在Java程序中，一个线程对象只能调用一次`start()`方法启动新线程，并在新线程中执行`run()`方法。一旦`run()`方法执行完毕，线程就结束了，因此，Java线程状态有以下几种：
 
-- New：新创建的线程，尚未执行。
-- Runnable：运行中的线程，正在执行run()方法的Java代码。
-- Blocked：运行中的线程，因为某些操作被阻塞而挂起。
-- Waiting：运行中的线程，因为某些操作在等待中。
-- Timed Waiting：运行中的线程，因为执行sleep()方法正在计时等待。
-- Terminated：线程已终止，因为run()方法执行完毕。
+- `New`：新创建的线程，尚未执行。
+- `Runnable`：运行中的线程，正在执行`run()`方法的Java代码。
+- `Blocked`：运行中的线程，因为某些操作被阻塞而挂起。
+- `Waiting`：运行中的线程，因为某些操作在等待中。
+- `Timed Waiting`：运行中的线程，因为执行`sleep()`方法正在计时等待。
+- `Terminated`：线程已终止，因为`run()`方法执行完毕。
 
 用一个状态转移图表示如下：
 
@@ -255,15 +255,15 @@ Thread.setPriority(int n);
              └─────────────┘
 ```
 
-当线程启动之后，它可以在Runnable，Blocked，Waiting和Timeed Waiting这几个状态之间切换，直到最后编程Terminated状态，线程终结
+当线程启动之后，它可以在`Runnable`，`Blocked`，`Waiting`和`Timeed Waiting`这几个状态之间切换，直到最后编程`Terminated`状态，线程终结
 
 线程终止的原因有
 
-- 线程正常终止：run()方法执行到return语句返回；
-- 线程意外终止：run()方法因为未捕获的异常导致线程终止；
-- 对某个线程的Thread实例调用stop()方法强制终止（非常不建议）
+- 线程正常终止：`run()`方法执行到`return`语句返回；
+- 线程意外终止：`run()`方法因为未捕获的异常导致线程终止；
+- 对某个线程的`Thread`实例调用`stop()`方法强制终止（非常不建议）
 
-一个线程还可以等待另一个线程直到其运行结束。例如，main线程在启动t线程后，可以通过t.join()方法等待t线程结束后再继续运行：
+一个线程还可以等待另一个线程直到其运行结束。例如，`main`线程在启动`t`线程后，可以通过`t.join()`方法等待`t`线程结束后再继续运行：
 
 ```java
 public class Main {
@@ -277,17 +277,17 @@ public class Main {
 }
 ```
 
-当main线程对线程对象t调用join()方法时，主线程将等待变量t表示的线程运行结束，即join()就是指等待线程结束，然后才继续往下执行自身线程，所以，上述代码打印顺序肯定是main线程先打印start，t线程再打印hello，main线程最后再打印end。
+当main线程对线程对象t调用`join()`方法时，主线程将等待变量`t`表示的线程运行结束，即`join()`就是指等待线程结束，然后才继续往下执行自身线程，所以，上述代码打印顺序肯定是`main`线程先打印`start`，`t`线程再打印`hello`，`main`线程最后再打印`end`。
 
-如果t线程已经结束，对实例t调用join()会立即返回，此外，join(long)的重载方法也可以指定一个等待时间，超过等待时间就不再继续等待。
+如果`t`线程已经结束，对实例t调用`join()`会立即返回，此外，`join(long)`的重载方法也可以指定一个等待时间，超过等待时间就不再继续等待。
 
 #### **中断线程**
 
-如果线程需要执行一个长时间的任务，就可能需要使用中断线程。中断线程就是其他线程给该线程发一个信号，该线程收到信号后结束执行run()方法，使得自身线程能立刻结束运行。
+如果线程需要执行一个长时间的任务，就可能需要使用中断线程。中断线程就是其他线程给该线程发一个信号，该线程收到信号后结束执行`run()`方法，使得自身线程能立刻结束运行。
 
-我们举个例子，假设从网络下载一个100M的文件，如果网速很慢，用户等的不耐烦了，就可能在下载过程中点击"取消"，这时，程序就需要中断下载线程。
+我们举个例子，假设从网络下载一个`100M`的文件，如果网速很慢，用户等的不耐烦了，就可能在下载过程中点击"取消"，这时，程序就需要中断下载线程。
 
-中断线程非常简单，只需要在其他线程中对目标线程调用interrupt()方法，目标线程需要反复检测自身状态是否是interrupted状态，如果是，就立刻结束运行。
+中断线程非常简单，只需要在其他线程中对目标线程调用`interrupt()`方法，目标线程需要反复检测自身状态是否是`interrupted`状态，如果是，就立刻结束运行。
 
 我们还是看实例代码：
 
@@ -314,9 +314,9 @@ class MyThread extends Thread {
 }
 ```
 
-仔细看上述代码，main线程通过调用t.interrupt()方法中断t线程，但是要注意，interrupt()方法仅仅向t线程发送"中断请求"，至于t线程是否能立刻相应，要看具体代码的实现，而t线程的while循环会检测isInterrupt()，所以上述代码能够正确响应interrupt()的请求，使得自身立刻结束运行run()方法。
+仔细看上述代码，main线程通过调用`t.interrupt()`方法中断`t`线程，但是要注意，`interrupt()`方法仅仅向`t`线程发送"中断请求"，至于`t`线程是否能立刻相应，要看具体代码的实现，而`t`线程的`while`循环会检测`isInterrupt()`，所以上述代码能够正确响应`interrupt()`的请求，使得自身立刻结束运行`run()`方法。
 
-如果线程处于等待状态，例如，t.join()会让main线程进入等待状态，此时，如果对main线程调用interrupt()，join()方法会立刻抛出InterruptedException，就说明有其他线程对其调用了interrupt()方法，通常情况下该线程应该立刻结束运行。
+如果线程处于等待状态，例如，`t.join()`会让`main`线程进入等待状态，此时，如果对`main`线程调用`interrupt()`，`join()`方法会立刻抛出`InterruptedException`，就说明有其他线程对其调用了`interrupt()`方法，通常情况下该线程应该立刻结束运行。
 
 我们来看下示例代码
 
@@ -362,9 +362,9 @@ public class HelloThread extends Thread {
 }
 ```
 
-main线程通过调用t.interrupt()从而请求t线程中断，而此时t线程正位于hello.join()的等待中，此方法会立刻结束并抛出InterruptedException。由于我们在t线程中捕获了InterruptedException，因此，就可以准备结束该线程，在t结束之前，对hello线程也进行了interrupt()调用请求中断，如果去掉这一行代码，可以发现hello仍然会继续运行，切JVM不会推出。
+`main`线程通过调用`t.interrupt()`从而请求`t`线程中断，而此时`t`线程正位于`hello.join()`的等待中，此方法会立刻结束并抛出`InterruptedException`。由于我们在`t`线程中捕获了`InterruptedException`，因此，就可以准备结束该线程，在`t`结束之前，对`hello`线程也进行了`interrupt()`调用请求中断，如果去掉这一行代码，可以发现`hello`仍然会继续运行，且JVM不会推出。
 
-另一个常用的中断线程的方法是设置标志位。我们通常会用一个running标志来表示线程是否正在运行，在外部线程中，通过HelloThread.running设置为false，就可以让线程结束：
+另一个常用的中断线程的方法是设置标志位。我们通常会用一个`running`标志来表示线程是否正在运行，在外部线程中，通过`HelloThread.running`设置为`false`，就可以让线程结束：
 
 ```java
 public class Main {
@@ -391,9 +391,9 @@ class HelloThread extends Thread {
 }
 ```
 
-注意到HelloThread的标志位boolean running是一个线程间共享变量。线程间共享变量需要使用volatile关键字标记，确保每个线程都能读取到更新后的变量。
+注意到`HelloThread`的标志位`boolean running`是一个线程间共享变量。线程间共享变量需要使用`volatile`关键字标记，确保每个线程都能读取到更新后的变量。
 
-为什么要对线程间共享变量用关键字volatile声明呢？这涉及到Java的内存模型，在Java虚拟机中，变量的值保存在内存中，但是当线程访问变量的时候，它会先取一个副本，并保存在自己的工作内存中，如果线程修改了变量的值，虚拟机会在某个时刻把修改后的值写回到主内存，但是，这个时间是不确定的！
+为什么要对线程间共享变量用关键字`volatile`声明呢？这涉及到Java的内存模型，在Java虚拟机中，变量的值保存在内存中，但是当线程访问变量的时候，它会先取一个副本，并保存在自己的工作内存中，如果线程修改了变量的值，虚拟机会在某个时刻把修改后的值写回到主内存，但是，这个时间是不确定的！
 
 ``` java
 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
@@ -414,20 +414,20 @@ class HelloThread extends Thread {
 └ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ┘
 ```
 
-这就会导致如果一个线程更新了某一个变量，另一个线程读取的值可能还是更新前的。例如，主内存的变量a = true，线程1执行 a = false时，它在此时此刻仅仅把变量a的副本变成了false，主内存的变量a还是true，在JVM把修改后的a写回到主内存之前，其他线程读取的a的值仍然是true，这就造成多线程之间共享变量不一致。
+这就会导致如果一个线程更新了某一个变量，另一个线程读取的值可能还是更新前的。例如，主内存的变量`a = true`，线程1执行`a = false`时，它在此时此刻仅仅把变量`a`的副本变成了`false`，主内存的变量`a`还是`true`，在JVM把修改后的`a`写回到主内存之前，其他线程读取的`a`的值仍然是`true`，这就造成多线程之间共享变量不一致。
 
-因此，volatile关键字就是告诉虚拟机：
+因此，`volatile`关键字就是告诉虚拟机：
 
 - 每次访问变量时，总是获取内存的最新值；
 - 每次修改变量后，立刻写回到主内存；
 
-volatile关键字解决的是可见性问题：当一个线程修改了某个共享变量的值，其他线程能够立刻看到修改后的值。
+`volatile`关键字解决的是可见性问题：当一个线程修改了某个共享变量的值，其他线程能够立刻看到修改后的值。
 
-如果我们去掉volatile关键字，运行上述程序，发现效果和带volatile差不多，这是因为在x86架构下，JVM回写主内存的速度非常快，但是换成ARM架构，就会有显著的延迟。
+如果我们去掉`volatile`关键字，运行上述程序，发现效果和带`volatile`差不多，这是因为在`x86`架构下，JVM回写主内存的速度非常快，但是换成ARM架构，就会有显著的延迟。
 
 #### **守护线程**
 
-Java程序入口就是由JVM启动main线程，main线程又可以启动其他线程，当所有线程都结束时，JVM退出，进程结束。
+Java程序入口就是由JVM启动`main`线程，`main`线程又可以启动其他线程，当所有线程都结束时，JVM退出，进程结束。
 
 如果有一个线程没有退出，JVM进程就不会退出，所以必须保证所有线程都能及时结束
 
@@ -459,11 +459,11 @@ public class TimerThread extends Thread {
 
 因此，JVM退出时，不必关心守护线程是否结束。
 
-如何创建守护线程呢？方法和普通线程一样，只是在调用start()方法之前，调用setDeamon(true)，把该线程标记为守护线程：
+如何创建守护线程呢？方法和普通线程一样，只是在调用`start()`方法之前，调用`setDaemon(true)`，把该线程标记为守护线程：
 
 ``` java
 Thread t = new Thread();
-t.setDeamon(true);
+t.setDaemon(true);
 t.start()
 ```
 
@@ -511,7 +511,7 @@ class DecThread extends Thread {
 }
 ```
 
-上面代码很简单，两个线程同时对一个int变量进行操作，一个加10000次，一个减10000次，最后结果应该是0，但是每次运行，结果实际上都不一样。
+上面代码很简单，两个线程同时对一个`int`变量进行操作，一个加`10000`次，一个减`10000`次，最后结果应该是`0`，但是每次运行，结果实际上都不一样。
 
 这是因为对变量进行读取和写入的时候，结果要正确，必须保证是原子操作，原子操作是指不能被中断的一个或一系列操作。
 
@@ -529,7 +529,7 @@ IADD
 ISTORE
 ```
 
-我们假设n的值是100，如果两个线程同时执行n = n + 1，得到的结果很可能不是102，而是101，原因在于：
+我们假设`n`的值是`100`，如果两个线程同时执行`n = n + 1`，得到的结果很可能不是`102`，而是`101`，原因在于：
 
 ``` java
     ┌───────┐    ┌───────┐
@@ -545,7 +545,7 @@ ISTORE
         ▼            ▼
 ```
 
-如果线程1在执行ILOAD后被操作系统中断，此时如果线程2被调度执行，它执行ILOAD后获取的值仍然是100，最终结果被两个线程ISTORE写入后变成101，而不是预期的102。
+如果线程1在执行`ILOAD`后被操作系统中断，此时如果线程2被调度执行，它执行`ILOAD`后获取的值仍然是`100`，最终结果被两个线程`ISTORE`写入后变成`101`，而不是预期的`102`。
 
 这说明多线程模型下，要保证逻辑正确，对共享变量进行读写时，必须保证一组指令以原子方式执行：即某一个线程执行时么，其他线程必须等待：
 
@@ -567,9 +567,9 @@ ISTORE
         ▼             ▼
 ```
 
-通过加锁和解锁的操作，就能保证三条指令总是在一个线程执行期间，不会有其他线程会进入此指令区间，即使在执行期间线程被操作系统中断，其他线程也会因为无法获得锁导致无法进入此指令区间。只有执行线程将锁释放后，其他线程才能有机会获得锁并执行。这种加锁和解锁之间的代码块，我们称之为临界区（Critical Section），任何时候玲姐去最多只有一个线程能执行。
+通过加锁和解锁的操作，就能保证三条指令总是在一个线程执行期间，不会有其他线程会进入此指令区间，即使在执行期间线程被操作系统中断，其他线程也会因为无法获得锁导致无法进入此指令区间。只有执行线程将锁释放后，其他线程才能有机会获得锁并执行。这种加锁和解锁之间的代码块，我们称之为临界区（Critical Section），任何时候临界区最多只有一个线程能执行。
 
-可见，保证一段代码的原子性，就是通过加锁和解锁实现的，Java程序使用synchronized，关键字对一个对象进行加锁
+可见，保证一段代码的原子性，就是通过加锁和解锁实现的，Java程序使用`synchronized`，关键字对一个对象进行加锁
 
 ``` java
 sychronized(lock){
@@ -577,7 +577,7 @@ sychronized(lock){
 }
 ```
 
-synchronized保证了代码块在任意时刻最多只有一个线程能执行，我们把上面代码用synchronized改写：
+`synchronized`保证了代码块在任意时刻最多只有一个线程能执行，我们把上面代码用`synchronized`改写：
 
 ```java
 public class Main {
@@ -626,19 +626,19 @@ synchronized(Counter.lock){
 }
 ```
 
-它表示Counter.lock实例作为锁，两个线程在各自的synchronized(Counter.lock){...}代码块时，必须先获得锁，才能进入代码块进行。执行结束后，在synchronized语句结束后会自动释放锁，这样一来，对Counter.count变量进行读写就不可能同时进行，上述代码无论运行多少次，最终结果都是0。
+它表示`Counter.lock`实例作为锁，两个线程在各自的`synchronized(Counter.lock){...}`代码块时，必须先获得锁，才能进入代码块进行。执行结束后，在`synchronized`语句结束后会自动释放锁，这样一来，对`Counter.count`变量进行读写就不可能同时进行，上述代码无论运行多少次，最终结果都是`0`。
 
-使用synchronized解决了多线程同步访问共享变量的正确性问题，但是，它的缺点是带来了性能下降，因此，synchronized代码块无法并发执行，加锁和解锁也有一定的耗时，所以synchronized会降低程序的执行效率。
+使用`synchronized`解决了多线程同步访问共享变量的正确性问题，但是，它的缺点是带来了性能下降，因此，`synchronized`代码块无法并发执行，加锁和解锁也有一定的耗时，所以`synchronized`会降低程序的执行效率。
 
-我们来概括一下如何使用synchronized：
+我们来概括一下如何使用`synchronized`：
 
 - 找出修改共享变量的线程代码块；
 - 选择一个共享实例作为锁；
-- 使用synchronized(lockObejct){...}
+- 使用`synchronized(lockObject){...}`
 
-synchronized除了加锁的功能，还具备内存屏蔽功能，并且强制读取所有共享变量的主内存最新值，退出synchronized的时候，再强制回写到祝内存（如果有修改）
+`synchronized`除了加锁的功能，还具备内存屏蔽功能，并且强制读取所有共享变量的主内存最新值，退出`synchronized`的时候，再强制回写到祝内存（如果有修改）
 
-在使用synchronized的时候，不必担心抛出异常，因为无论是否有异常，都会在synchronized结束处正确释放锁：
+在使用`synchronized`的时候，不必担心抛出异常，因为无论是否有异常，都会在`synchronized`结束处正确释放锁：
 
 ``` java
 public void add (){
@@ -651,7 +651,7 @@ public void add (){
 }
 ```
 
-我们再来看一个错误使用synchronized的例子：
+我们再来看一个错误使用`synchronized`的例子：
 
 ```java
 public class Main {
@@ -693,16 +693,16 @@ class DecThread extends Thread {
 }
 ```
 
-其结果并不是0，这是因为，两个线程各自的synchronized锁住的不是同一个对象，这使得两个线程各自都可以同时获得锁：因为JVM只保证同一个锁在任意时刻只能被一个线程获取，但是两个不同的锁，在同一时刻是可以被两个不同的线程分别获取的。
+其结果并不是`0`，这是因为，两个线程各自的`synchronized`锁住的不是同一个对象，这使得两个线程各自都可以同时获得锁：因为JVM只保证同一个锁在任意时刻只能被一个线程获取，但是两个不同的锁，在同一时刻是可以被两个不同的线程分别获取的。
 
-因此，使用synchronized的时候，获取到那个锁非常重要。锁的对象如果不对，代码逻辑就不对。
+因此，使用`synchronized`的时候，获取到那个锁非常重要。锁的对象如果不对，代码逻辑就不对。
 
 JVM规范定义了几种原子操作：
 
-- 基本类型(long和double除外)赋值，例如：int n = m；
-- 引用类型赋值，例如: List<String> list = testList;
+- 基本类型(`long`和`double`除外)赋值，例如：`int n = m`；
+- 引用类型赋值，例如: `List<String> list = testList`;
 
-long和double是64为数据，JVM没有明确规定64位赋值操作是不是一个原子操作，不过在x64平台的JVM是把long和double的赋值作为原子操作实现的。
+`long`和`double`是64位数据，JVM没有明确规定64位赋值操作是不是一个原子操作，不过在`x64`平台的JVM是把`long`和`double`的赋值作为原子操作实现的。
 
 单条原子操作的语句不需要同步。例如：
 
@@ -753,19 +753,19 @@ class Pair {
 }
 ```
 
-这样就不需要同步，因为this.pair = ps是引用赋值的原子操作。而语句：
+这样就不需要同步，因为`this.pair = ps`是引用赋值的原子操作。而语句：
 
 ``` java
 int[] ps = new int[] { first, last };
 ```
 
-这里的ps是方法内部定义的局部变量，每个线程都会有各自的局部变量，互不影响，并且互不可见，并不需要同步。
+这里的`ps`是方法内部定义的局部变量，每个线程都会有各自的局部变量，互不影响，并且互不可见，并不需要同步。
 
 #### **同步方法**
 
-我们知道Java程序依靠synchronized对线程进行同步，使用synchronized的时候，锁住的是哪个对象非常重要。
+我们知道Java程序依靠`synchronized`对线程进行同步，使用`synchronized`的时候，锁住的是哪个对象非常重要。
 
-让线程自己选择锁住的对象，往往会使得代码逻辑混乱，也不利于封装。更好的方法是把synchronized逻辑封装起来，例如，我们编写一个计数器
+让线程自己选择锁住的对象，往往会使得代码逻辑混乱，也不利于封装。更好的方法是把`synchronized`逻辑封装起来，例如，我们编写一个计数器
 
 ```java
 public class Counter {
@@ -789,7 +789,7 @@ public class Counter {
 }
 ```
 
-这样一来，线程调用add()，dec()方法时，它不必关心同步逻辑，因为synchronized代码块在add()，dec()方法内部，并且我们注意到，synchronized锁住的对象是this，即当前实例，这又使得创建多个Counter实例的时候，它们之间互不影响，可以并发执行：
+这样一来，线程调用`add()`，`dec()`方法时，它不必关心同步逻辑，因为`synchronized`代码块在`add()`，`dec()`方法内部，并且我们注意到，`synchronized`锁住的对象是`this`，即当前实例，这又使得创建多个`Counter`实例的时候，它们之间互不影响，可以并发执行：
 
 ``` java
 var c1 = Counter();
@@ -814,15 +814,15 @@ new Thread(() -> {
 }).start();
 ```
 
-现在对于Counter类，多线程可以正确调用。
+现在对于`Counter`类，多线程可以正确调用。
 
-如果一个类被设计为允许多线程正确访问，我们就说这个类就是"线程安全"的(thread-safe)，上面的Counter类就是线程安全的类，Java标准库的java.lang.SringBuffer也是线程安全的。
+如果一个类被设计为允许多线程正确访问，我们就说这个类就是"线程安全"的(thread-safe)，上面的`Counter`类就是线程安全的类，Java标准库的`java.lang.SringBuffer`也是线程安全的。
 
-还有一些不变类，例如String，Integer，LocalDate，它们所有的成员变量都是final，多线程同时访问时只能读不能写，这些不变类也是线程安全的。
+还有一些不变类，例如`String`，`Integer`，`LocalDate`，它们所有的成员变量都是`final`，多线程同时访问时`只能读不能写`，这些不变类也是线程安全的。
 
-最后，类似Math这也只提供静态方法，没有成员变量的类，也是线程安全的。
+最后，类似`Math`这也只提供静态方法，没有成员变量的类，也是线程安全的。
 
-除了上述几种少数情况，大部分类，例如ArrayList，都是非线程安全的类，我们不能在多线程中修改它们。但是，如果所有线程都只能读取，不能写入，那么ArrayList是可以安全的线程间共享的。
+除了上述几种少数情况，大部分类，例如`ArrayList`，都是非线程安全的类，我们不能在多线程中修改它们。但是，如果所有线程都只能读取，不能写入，那么`ArrayList`是可以安全的线程间共享的。
 
 > 如果没有特殊说明，一个类默认是非线程安全的。
 
@@ -844,7 +844,7 @@ public synchronized void add (int n) {
 }
 ```
 
-使用synchronized修饰的方法，都使用this加锁。所有两个方法是等价的。因此，使用synchronized修饰的方法就是同步方法。
+使用`synchronized`修饰的方法，都使用`this`加锁。所有两个方法是等价的。因此，使用`synchronized`修饰的方法就是同步方法。
 
 观察下面方法签名
 
@@ -852,9 +852,9 @@ public synchronized void add (int n) {
 public synchronized static void test (int n);
 ```
 
-静态方法是没有this实例的，那么它锁住的是哪个对象呢？
+静态方法是没有`this`实例的，那么它锁住的是哪个对象呢？
 
-static方法是针对类而不是实例，但是我们主要到，任何一个类都有一个由JVM创建的Class实例，因此，对于static方法添加synchronized修饰，锁住的是该类的Class实例，上述synchronized static方法实际上相当于
+`static`方法是针对类而不是实例，但是我们主要到，任何一个类都有一个由JVM创建的`Class`实例，因此，对于`static`方法添加`synchronized`修饰，锁住的是该类的`Class`实例，上述`synchronized static`方法实际上相当于
 
 ```java
 public class Counter {
@@ -866,7 +866,7 @@ public class Counter {
 }
 ```
 
-观察get()方法
+观察`get()`方法
 
 ```java
 public class Counter {
@@ -878,7 +878,7 @@ public class Counter {
 }
 ```
 
-它并没有同步，因为读取一个int变量不需要同步。
+它并没有同步，因为读取一个`int`变量不需要同步。
 
 但是下面代码就需要同步了
 
@@ -921,13 +921,13 @@ public class Counter {
 }
 ```
 
-观察synchronized修饰的add()方法，一旦线程执行到add()方法内部，说明它已经获取的当前实例的this锁，如果传入的n< 0，将在add方法内部调用dec()方法，由于dec()方法也需要this锁，选在问题来了：
+观察`synchronized`修饰的`add()`方法，一旦线程执行到`add()`方法内部，说明它已经获取的当前实例的`this`锁，如果传入的`n < 0`，将在`add`方法内部调用`dec()`方法，由于`dec()`方法也需要`this`锁，选在问题来了：
 
 对同一个线程，能否在获取到锁以后继续获取同一个锁？
 
 答案是肯定的，JVM允许同一个线程重复获取同一个锁，这种被同一个线程反复获取的锁，就叫可重入锁。
 
-由于Java的线程锁是可重入锁，所以，获取锁的时候，不但要判断是否是第一次获取，还要记录这是第几次获取，每回获取一次锁，就记录+1，每退出synchronized块，就记录-1，减到0的时候，才会真正的释放锁。
+由于Java的线程锁是可重入锁，所以，获取锁的时候，不但要判断是否是第一次获取，还要记录这是第几次获取，每回获取一次锁，就记录`+1`，每退出`synchronized`块，就记录`-1`，减到`0`的时候，才会真正的释放锁。
 
 死锁
 
@@ -953,15 +953,15 @@ public void dec (int m){
 }
 ```
 
-在获取多个锁的时候，不同线程获取多个不同对象的锁可能是死锁，对于上述代码，线程1和线程2如果分贝执行add()和dec()方法时：
+在获取多个锁的时候，不同线程获取多个不同对象的锁可能是死锁，对于上述代码，线程1和线程2如果分别执行`add()`和`dec()`方法时：
 
-- 线程1：进入add()，获得lockA;
-- 线程2：进入dec()，获得lockB；
+- 线程1：进入`add()`，获得`lockA`;
+- 线程2：进入`dec()`，获得`lockB`；
 
 随后
 
-- 线程1：准备获得lockB，失败，等待中；
-- 线程2：准备获得lockA，失败，等待中；
+- 线程1：准备获得`lockB`，失败，等待中；
+- 线程2：准备获得`lockA`，失败，等待中；
 
 此时，两个线程各自持有不同的锁，然后各自试图获取对方手中的锁，造成了双方无限等待下去，这就是死锁。
 
@@ -969,7 +969,7 @@ public void dec (int m){
 
 因此，在编写多线程应用时，要特别注意防止死锁。因为死锁一旦形成，就只能强制结束进程。
 
-那么我们应该如何避免死锁呢？答案是：线程获取锁的顺序要一致，即严格按照先获取lockA，再获取lockB的顺序，改写dec()方法。
+那么我们应该如何避免死锁呢？答案是：线程获取锁的顺序要一致，即严格按照先获取`lockA`，再获取`lockB`的顺序，改写`dec()`方法。
 
 ``` java
 public void dec(int m) {
@@ -984,7 +984,7 @@ public void dec(int m) {
 
 #### **使用wait和notify**
 
-在Java程序中，synchronized解决了对哦线程竞争的问题，例如，对于一个任务管理器，多个线程同时往队列中添加任务，可以用synchronized加锁。
+在Java程序中，`synchronized`解决了多线程竞争的问题，例如，对于一个任务管理器，多个线程同时往队列中添加任务，可以用`synchronized`加锁。
 
 ```java
 public class TaskQueue {
@@ -995,9 +995,9 @@ public class TaskQueue {
 }
 ```
 
-但是synchronized并没有解决多线程协调问题。
+但是`synchronized`并没有解决多线程协调问题。
 
-仍然以上面的TaskQueue为例，我们再编写一个getTask()方法取出队列的第一个任务：
+仍然以上面的`TaskQueue`为例，我们再编写一个`getTask()`方法取出队列的第一个任务：
 
 ```java
 public class TaskQueue {
@@ -1015,20 +1015,20 @@ public class TaskQueue {
 }
 ```
 
-上述代码看上去没有问题：getTask()内部先判断队列是否为空，如果为空，就等待循环，直到另一个线程往队列中放如任务，while()循环退出，就可以返回队列的元素了。
+上述代码看上去没有问题：`getTask()`内部先判断队列是否为空，如果为空，就等待循环，直到另一个线程往队列中放如任务，`while()`循环退出，就可以返回队列的元素了。
 
-但实际上while()循环永远不会退出。因为线程在执行while()循环时，已经在getTask()入口获取了this锁，其他线程根本无法调用addTask()，因为addTask()执行条件也是获取this锁。
+但实际上`while()`循环永远不会退出。因为线程在执行`while()`循环时，已经在`getTask()`入口获取了this锁，其他线程根本无法调用`addTask()`，因为`addTask()`执行条件也是获取`this`锁。
 
-因此，执行上述代码，线程会在getTask()中因死循环而100%占用CPU资源。
+因此，执行上述代码，线程会在`getTask()`中因死循环而100%占用CPU资源。
 
 如果我们深入思考一下，我们想要的执行效果是：
 
-- 线程1可以调用addTask()不断往队列中添加任务；
-- 线程2可以调用getTask()从队列中获取任务。如果队列为空，则getTask()应该等待，直到队列中至少有一个任务再返回。
+- 线程1可以调用`addTask()`不断往队列中添加任务；
+- 线程2可以调用`getTask()`从队列中获取任务。如果队列为空，则`getTask()`应该等待，直到队列中至少有一个任务再返回。
 
 因此，多线程协调运行的原则就是：当条件不满足时，线程进入等待状态；当条件满足时，线程被唤醒，继续执行任务。
 
-对于上述TaskQueue，我们改造getTask()方法，在条件不满足时，线程进入等待状态。
+对于上述`TaskQueue`，我们改造`getTask()`方法，在条件不满足时，线程进入等待状态。
 
 ``` java
 public synchronized String getTask() {
@@ -1039,19 +1039,19 @@ public synchronized String getTask() {
 }
 ```
 
-当一个线程执行到getTask()方法内部的while循环时，它必定已经获得到了this锁，此时，线程执行while条件判断，如果条件成立(队列为空)，线程将执行this.wait()方法，进入等待状态。
+当一个线程执行到`getTask()`方法内部的`while`循环时，它必定已经获得到了`this`锁，此时，线程执行`while`条件判断，如果条件成立(队列为空)，线程将执行`this.wait()`方法，进入等待状态。
 
-这里的关键是：wait()方法必须在当前获取的锁的对象上调用，这里获取的是this锁，因此调用this.wait()。
+这里的关键是：`wait()`方法必须在当前获取的锁的对象上调用，这里获取的是`this`锁，因此调用`this.wait()`。
 
-那么即使线程在getTask()内部等待，其他线程如果拿不到this锁，照样无法执行addTask()方法，怎么办？
+那么即使线程在`getTask()`内部等待，其他线程如果拿不到`this`锁，照样无法执行`addTask()`方法，怎么办？
 
-这个问题的关键就在于wait()方法的执行机制非常复杂，首先，它不是一个普通的Java方法，而是定义在Object类的一个native方法，也就是由JVM的C代码实现，其次，必须在synchronized块中才能使用wait()，因为wait()方法调用时，会释放线程获得的锁，wait()方法返回之后，线程又会重新试图获取锁。
+这个问题的关键就在于`wait()`方法的执行机制非常复杂，首先，它不是一个普通的Java方法，而是定义在`Object`类的一个`native`方法，也就是由JVM的C代码实现，其次，必须在`synchronized`块中才能使用`wait()`，因为`wait()`方法调用时，会释放线程获得的锁，`wait()`方法返回之后，线程又会重新试图获取锁。
 
-因此，只能在锁的对象上调用wait()方法，因为在getTask()中，我们获得this锁，所以只能在this对象上调用wait()方法。
+因此，只能在锁的对象上调用`wait()`方法，因为在`getTask()`中，我们获得`this`锁，所以只能在`this`对象上调用`wait()`方法。
 
-当一个线程在this.wait()等待时，它就会释放this锁，从而使得其他线程能够在addTask()方法获得this锁。
+当一个线程在`this.wait()`等待时，它就会释放`this`锁，从而使得其他线程能够在`addTask()`方法获得`this`锁。
 
-现在我们面临第二个问题：如何让等待的线程被重新唤醒，然后从wait()方法返回？答案就是在相同锁对象上调用notify()方法，我们修改addTask()如下：
+现在我们面临第二个问题：如何让等待的线程被重新唤醒，然后从`wait()`方法返回？答案就是在相同锁对象上调用`notify()`方法，我们修改`addTask()`如下：
 
 ``` java
 public synchronized void addTask(String s) {
@@ -1060,7 +1060,7 @@ public synchronized void addTask(String s) {
 }
 ```
 
-注意到现在往队列中添加了任务后，线程立刻对this锁对象调用notify()方法，这个方法会唤醒一个正在this锁等待的线程（就是在getTask()中位于this.wait()的线程）从而使得等待线程从this.wait()方法返回。
+注意到现在往队列中添加了任务后，线程立刻对this锁对象调用`notify()`方法，这个方法会唤醒一个正在`this`锁等待的线程（就是在`getTask()`中位于`this.wait()`的线程）从而使得等待线程从`this.wait()`方法返回。
 
 我们来看一个完整的例子：
 
@@ -1125,11 +1125,11 @@ class TaskQueue {
 }
 ```
 
-这个例子中，我们重点关注addTask()方法，内部调用了this.notifyAll()而不是this.notify()，使用notifyAll()将唤醒所有当前正在this锁等待的线程，而notify()只会唤醒一个（具体哪一个依赖操作系统，有一定的随机性），这是因为可能又多个线程正在调用getTask()方法内部的wait()中等待，使用notifyAll()方法将一次性全部唤醒。通常来说，notifyAll()更安全，有些时候，如果我们的代码逻辑考虑不周，用notify()会导致只唤醒了一个线程，而其他线程可能永远等下去醒不过来。
+这个例子中，我们重点关注`addTask()`方法，内部调用了`this.notifyAll()`而不是`this.notify()`，使用`notifyAll()`将唤醒所有当前正在`this`锁等待的线程，而`notify()`只会唤醒一个（具体哪一个依赖操作系统，有一定的随机性），这是因为可能又多个线程正在调用`getTask()`方法内部的`wait()`中等待，使用`notifyAll()`方法将一次性全部唤醒。通常来说，`notifyAll()`更安全，有些时候，如果我们的代码逻辑考虑不周，用`notify()`会导致只唤醒了一个线程，而其他线程可能永远等下去醒不过来。
 
-但是，注意到wait()方法返回时需要重新获得this锁，假设当前有三个线程被唤醒，唤醒之后，首先要等待执行addTask()的线程结束此方法，才能释放this锁，随后三个线程中只能有一个获得this锁，剩下两个继续等待。
+但是，注意到`wait()`方法返回时需要重新获得`this`锁，假设当前有三个线程被唤醒，唤醒之后，首先要等待执行`addTask()`的线程结束此方法，才能释放`this`锁，随后三个线程中只能有一个获得`this`锁，剩下两个继续等待。
 
-再注意到我们在while()循环中调用wait()，而不是if语句：
+再注意到我们在`while()`循环中调用`wait()`，而不是`if`语句：
 
 ``` java
 public synchronized String getTask() throws InterruptedException {
@@ -1140,7 +1140,7 @@ public synchronized String getTask() throws InterruptedException {
 }
 ```
 
-这种写法实际上是错误的，因为线程被唤醒之后，需要再次获得this锁，多个线程被唤醒后，只有一个线程能获得this锁，此刻，该线程执行queue.remove()可以获取队列的元素，然而剩下的线程如果获取this锁之后，执行queue.remove()，此刻队列可能已经没有任何元素了，所以要始终在while循环中wait()，并且每次被唤醒之后拿到this锁就必须再此判断：
+这种写法实际上是错误的，因为线程被唤醒之后，需要再次获得`this`锁，多个线程被唤醒后，只有一个线程能获得`this`锁，此刻，该线程执行`queue.remove()`可以获取队列的元素，然而剩下的线程如果获取`this`锁之后，执行`queue.remove()`，此刻队列可能已经没有任何元素了，所以要始终在`while`循环中`wait()`，并且每次被唤醒之后拿到`this`锁就必须再此判断：
 
 ``` java
 while(queue.isEmpty()){
@@ -1152,11 +1152,11 @@ while(queue.isEmpty()){
 
 #### **使用ReentrantLock**
 
-从Java5开始，引入了一个高级的处理并发的java.util.concurrent包，它提供了大量更高级的并发功能，大大简化多线程的编写。
+从Java5开始，引入了一个高级的处理并发的`java.util.concurrent`包，它提供了大量更高级的并发功能，大大简化多线程的编写。
 
-我们知道Java语言直接提供了synchronized关键字用于加锁，但是这种锁很重，而且获取时必须一直等待，没有额外的尝试机制。
+我们知道Java语言直接提供了`synchronized`关键字用于加锁，但是这种锁很重，而且获取时必须一直等待，没有额外的尝试机制。
 
-java.util.concurrent.locks包提供的ReentrantLock用于替代synchronized加锁，看一下传统的synchronized代码。
+`java.util.concurrent.locks`包提供的`ReentrantLock`用于替代`synchronized`加锁，看一下传统的`synchronized`代码。
 
 ```java
 public class Counter {
@@ -1170,7 +1170,7 @@ public class Counter {
 }
 ```
 
-如果使用ReentrantLock代替，可以把代码改造为：
+如果使用`ReentrantLock`代替，可以把代码改造为：
 
 ```java
 public class Counter {
@@ -1188,11 +1188,11 @@ public class Counter {
 }
 ```
 
-因为synchronized是Java语言层面提供的语法，所以我们不需要考虑异常，而ReentrantLock是Java代码实现的锁，我们就必须先获取锁，然后finally中正确释放锁。
+因为`synchronized`是Java语言层面提供的语法，所以我们不需要考虑异常，而`ReentrantLock`是Java代码实现的锁，我们就必须先获取锁，然后`finally`中正确释放锁。
 
-顾名思义，ReentrantLock是可重入锁，它和synchronized一样，一个线程可以多次获取同一个锁。
+顾名思义，`ReentrantLock`是可重入锁，它和`synchronized`一样，一个线程可以多次获取同一个锁。
 
-和synchronized不同的是，ReentrantLock可以尝试获取锁：
+和`synchronized`不同的是，`ReentrantLock`可以尝试获取锁：
 
 ``` java
 if(lock.tryLock(1, TimeUnit.SECONDS)) {
@@ -1204,19 +1204,19 @@ if(lock.tryLock(1, TimeUnit.SECONDS)) {
 }
 ```
 
-上述代码正在尝试获取锁的时候，最多等待1秒，如果1秒后仍未获得锁，tryLock()返回false，程序就可以做一些额外的处理，而不是无限等下去。
+上述代码正在尝试获取锁的时候，最多等待1秒，如果1秒后仍未获得锁，`tryLock()`返回`false`，程序就可以做一些额外的处理，而不是无限等下去。
 
-所以，使用ReentrantLock比直接使用synchronized更安全，线程在truLock()失败的时候不会导致死锁。
+所以，使用`ReentrantLock`比直接使用`synchronized`更安全，线程在`truLock()`失败的时候不会导致死锁。
 
 #### **使用Condition**
 
-使用ReentrantLock比直接使用synchronized更安全，可以代替synchronized进行线程同步。
+使用`ReentrantLock`比直接使用`synchronized`更安全，可以代替`synchronized`进行线程同步。
 
-但是，synchronized可以配合wait()和notify()实现线程在条件不满足的时候等待，条件满足时被唤醒，用ReentranLock我们怎么编写wait和notify的功能呢？
+但是，`synchronized`可以配合`wait()`和`notify()`实现线程在条件不满足的时候等待，条件满足时被唤醒，用`ReentrantLock`我们怎么编写`wait`和`notify`的功能呢？
 
-答案是使用Condition对象来实现wait和notify的功能。
+答案是使用`Condition`对象来实现`wait`和`notify`的功能。
 
-我们仍然以TaskQueue为例子，把前面用synchronized实现的功能，使用ReentrantLock和Condition来实现：
+我们仍然以`TaskQueue`为例子，把前面用`synchronized`实现的功能，使用`ReentrantLock`和`Condition`来实现：
 
 ```java
 class TaskQueue {
@@ -1248,16 +1248,16 @@ class TaskQueue {
 }
 ```
 
-可见，使用Condition时，引用的Condition对象必须从Lock实例的newCondition()返回，这样才能获得一个绑定了Lock实例的Condition实例。
+可见，使用`Condition`时，引用的`Condition`对象必须从`Lock`实例的`newCondition()`返回，这样才能获得一个绑定了`Lock`实例的`Condition`实例。
 
-Condition提供await()，signal()，signalAll()原理和synchronized锁对象的wait()，notify()，notifyAll()是一致的，并且其行为意识一样的：
+`Condition`提供`await()`，`signal()`，`signalAll()`原理和`synchronized`锁对象的`wait()`，`notify()`，`notifyAll()`是一致的，并且其行为意识一样的：
 
-- await()会释放当前锁，进入等待状态；
-- signal()会唤醒某个等待线程；
-- signalAll()会唤醒所有等待线程；
-- 唤醒线程从await()返回后，需要重新获得锁
+- `await()`会释放当前锁，进入等待状态；
+- `signal()`会唤醒某个等待线程；
+- `signalAll()`会唤醒所有等待线程；
+- 唤醒线程从`await()`返回后，需要重新获得锁
 
-此外，和tryLock()类似，await()可以在等待指定时间后，如果还没有被其他线程通过signal()或者signalAll()唤醒，可以自己醒来：
+此外，和`tryLock()`类似，`await()`可以在等待指定时间后，如果还没有被其他线程通过`signal()`或者`signalAll()`唤醒，可以自己醒来：
 
 ``` java
 if(condition.await(1, TimeUnit.SECOND)){
@@ -1267,11 +1267,11 @@ if(condition.await(1, TimeUnit.SECOND)){
 }
 ```
 
-可见，使用Condition配合Lock，我们可以实现更灵活的线程同步。
+可见，使用`Condition`配合`Lock`，我们可以实现更灵活的线程同步。
 
 #### **使用ReadWriteLock**
 
-之前讲到了ReentrantLock保证了只有一个线程可以执行临界区代码：
+之前讲到了`ReentrantLock`保证了只有一个线程可以执行临界区代码：
 
 ```java
 public class Counter {
@@ -1298,16 +1298,16 @@ public class Counter {
 }
 ```
 
-但是有些时候，这种保护有点过头了，因为我们发现，任何时候，只允许一个线程修改，也就是调用inc()方法是碧玺获取锁，但是，get()方法只读取数据，不修改数据，它实际上允许多个线程同时调用。
+但是有些时候，这种保护有点过头了，因为我们发现，任何时候，只允许一个线程修改，也就是调用`inc()`方法是必须获取锁，但是，`get()`方法只读取数据，不修改数据，它实际上允许多个线程同时调用。
 
 实际上我们想要的是：允许多个线程同时读，但只要有一个线程在写，其他线程就必须等待。
 
-使用ReadWriteLock可以解决这个问题，它保证：
+使用`ReadWriteLock`可以解决这个问题，它保证：
 
 - 只允许一个线程写入（其他线程既不能写入也不能读取）；
 - 没有写入时，多个线程允许同时读（提高性能）。
 
-用ReadWriteLock实现这个功能非常简单，我们需要创建一个ReadWriteLock实例，然后分别获取读锁和写锁：
+用`ReadWriteLock`实现这个功能非常简单，我们需要创建一个`ReadWriteLock`实例，然后分别获取读锁和写锁：
 
 ```java
 public class Counter {
@@ -1338,23 +1338,23 @@ public class Counter {
 
 把读写操作分开，分别使用读锁和写锁，多个线程可以同时获得读锁，这样就大大提高了并发的执行效率。
 
-使用ReadWriteLock时，适用条件是同一个数据，有大量线程读取，但仅有少数线程修改。
+使用`ReadWriteLock`时，适用条件是同一个数据，有大量线程读取，但仅有少数线程修改。
 
-例如，一个论坛的帖子，回复可以看作写入操作，它不是频繁的，但是浏览可以看作读取操作，是非常频繁的，这个时候就可以使用ReadWriteLock。
+例如，一个论坛的帖子，回复可以看作写入操作，它不是频繁的，但是浏览可以看作读取操作，是非常频繁的，这个时候就可以使用`ReadWriteLock`。
 
 #### **使用StampedLock**
 
-之前介绍了ReadWriteLock可以解决多线程同时读取，但只有一个线程能写的问题。
+之前介绍了`ReadWriteLock`可以解决多线程同时读取，但只有一个线程能写的问题。
 
-如果我们深入分析ReadWriteLock，会发现它有一个潜在的问题：如果有线程正在读，写入线程需要等待读线程释放锁之后才能获取写锁，即读的过程中不允许写，这是一种悲观锁。
+如果我们深入分析`ReadWriteLock`，会发现它有一个潜在的问题：如果有线程正在读，写入线程需要等待读线程释放锁之后才能获取写锁，即读的过程中不允许写，这是一种悲观锁。
 
-要进一步提升并发执行效率，Java8 引入了新的读写锁：StampedLock。
+要进一步提升并发执行效率，Java8 引入了新的读写锁：`StampedLock`。
 
-StampedLock和ReadWriteLock相比，改进之处在于：读的过程中也允许获取写锁后写入，这样一来，我们读的数据就可能不一致，所以，需要一点额外的代码来判断读的过程中是否有写入，这种读锁是一种乐观锁。
+`StampedLock`和`ReadWriteLock`相比，改进之处在于：读的过程中也允许获取写锁后写入，这样一来，我们读的数据就可能不一致，所以，需要一点额外的代码来判断读的过程中是否有写入，这种读锁是一种乐观锁。
 
 > 乐观锁：乐观的估计读的过程中大概率不会有写入，因此被称为乐观锁。
 
-> 悲观锁：读的过程中拒绝有写入，也就是写入必须等待。
+> 悲观锁：读的过程中拒绝有写入，也就是写入时必须等待。
 
 显然，乐观锁的并发效率更高，但一旦有小概率的写入导致读取读数据不一致，需要能检测出来，再读一遍。
 
@@ -1399,13 +1399,13 @@ public class Point {
 }
 ```
 
-和ReadWriteLock相比，写入的加锁是完全一样的，不同的是读取，注意到首先我们同归tryOptimisticRead()获得一个乐观锁，并返回版本号。接着进行读取，读取完成后，我们通过validate()去验证版本号，如果在读取过程中没有写入，版本号不变，验证成功，我们就可以放心的继续后面操作，如果在读取过程中有写入，版本号会发生变化，验证失败，在失败的时候，我们再通过悲观锁再次读取，由于写入的概率不高，程序在绝大部分情况下可以通过乐观 读锁获取数据，极少情况下使用悲观读锁获取数据。
+和`ReadWriteLock`相比，写入的加锁是完全一样的，不同的是读取，注意到首先我们同归`tryOptimisticRead()`获得一个乐观锁，并返回版本号。接着进行读取，读取完成后，我们通过`validate()`去验证版本号，如果在读取过程中没有写入，版本号不变，验证成功，我们就可以放心的继续后面操作，如果在读取过程中有写入，版本号会发生变化，验证失败，在失败的时候，我们再通过悲观锁再次读取，由于写入的概率不高，程序在绝大部分情况下可以通过乐观 读锁获取数据，极少情况下使用悲观读锁获取数据。
 
-可见，StampedLock还提供了更复杂的将悲观读锁升级为写锁的功能，它主要使用在if-then-update的场景：首先读，如果读的数据条件满足，就返回，如果读的数据不满足条件，再尝试写。
+可见，`StampedLock`还提供了更复杂的将悲观读锁升级为写锁的功能，它主要使用在`if-then-update`的场景：首先读，如果读的数据条件满足，就返回，如果读的数据不满足条件，再尝试写。
 
 #### **使用Concurrent集合**
 
-我们之前已经了解了ReentrantLock和Condition实现了一个BlockingQueue：
+我们之前已经了解了`ReentrantLock`和`Condition`实现了一个`BlockingQueue`：
 
 ```java
 public class TaskQueue {
@@ -1437,11 +1437,11 @@ public class TaskQueue {
 }
 ```
 
-BlockingQueue的意思就是说，当一个线程调用这个TaskQueue的getTask()方法时，该方法内部可能会让线程变成等待状态，直到队列条件满足不为空，线程被唤醒后，getTask()方法才会返回。
+`BlockingQueue`的意思就是说，当一个线程调用这个`TaskQueue的getTask()`方法时，该方法内部可能会让线程变成等待状态，直到队列条件满足不为空，线程被唤醒后，`getTask()`方法才会返回。
 
-因为BlockingQueue非常有用，所以我们不必自己编写，可以直接使用Java标准库的java.util.concurrent包提供的线程安全集合：ArrayBlockingQueue。
+因为`BlockingQueue`非常有用，所以我们不必自己编写，可以直接使用Java标准库的`java.util.concurrent`包提供的线程安全集合：`ArrayBlockingQueue`。
 
-除了BlockingQueue之外，针对List，Map，Set，Deque等，java.util.concurrent包也提供了对应的并发集合类。归纳如下：
+除了`BlockingQueue`之外，针对`List`，`Map`，`Set`，`Deque`等，`java.util.concurrent`包也提供了对应的并发集合类。归纳如下：
 
 |interface|non-thread-safe|thread-safe|
 |---|---|---|
@@ -1451,7 +1451,7 @@ BlockingQueue的意思就是说，当一个线程调用这个TaskQueue的getTask
 |Queue|ArrayDeque/LinkedList|ArrayBlockingQueue/LinkedBlockingQueue|
 |Deque|ArrayDeque/LinkedList|LinkedBlockingDeque|
 
-使用这些并发集合与使用非线程安全的集合类相同。我们以ConcurrentHashMap为例：
+使用这些并发集合与使用非线程安全的集合类相同。我们以`ConcurrentHashMap`为例：
 
 ``` java
 Map<String, String> map = new ConcurrentHashMap<>();
@@ -1475,7 +1475,7 @@ Map<String, String> map = new ConcurrentHashMap<>();
 
 就可以了。
 
-java.util.Collections工具类还提供了一个旧的线程安全集合转换器，可以用：
+`java.util.Collections`工具类还提供了一个旧的线程安全集合转换器，可以用：
 
 ``` java
 Map unsafeMap = new HashMap();
@@ -1483,7 +1483,7 @@ Map unsafeMap = new HashMap();
 Map threadSafeMap = Collections.synchronizedMap(unsafeMap);
 ```
 
-但是它实际上是用一个包装类包装了非线程安全Map，然后对所有读写方法都用synchronized加锁，这样获得的线程安全集合的性能比java.util.concurrent集合要低很多，所以不推荐使用。
+但是它实际上是用一个包装类包装了非线程安全`Map`，然后对所有读写方法都用`synchronized`加锁，这样获得的线程安全集合的性能比`java.util.concurrent`集合要低很多，所以不推荐使用。
 
 
 
