@@ -64,9 +64,7 @@ code {
 }
 
 pre {
-    padding: .5rem;
     line-height: 1.25;
-    overflow-x: scroll;
 }
 
 a,
@@ -224,4 +222,8 @@ table th, table tr:nth-child(even) {
 
 table {
     width: 100%;
+}
+
+#select {
+    position: fixed;
 }

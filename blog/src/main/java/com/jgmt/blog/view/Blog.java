@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @RestController
 @RequestMapping("/")
@@ -52,6 +53,8 @@ public class Blog {
             mv.addObject("html", html);
 
             mv.setViewName("blog");
+
+            is.close();
         } catch (FileNotFoundException e) {
             /**
              * 未找到文件返回博客首页
