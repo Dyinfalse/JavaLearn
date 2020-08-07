@@ -1,6 +1,6 @@
 ## java Thread 知识点
 
-*2020-08-06 Dyinfalse* 本篇是阅读[廖雪峰文章](https://www.liaoxuefeng.com/wiki/1252599548343744/1304521607217185)的总结
+*2020-08-07 Dyinfalse* 本篇是阅读[廖雪峰文章](https://www.liaoxuefeng.com/wiki/1252599548343744/1304521607217185)的总结
 
 #### **多线程基础**
 
@@ -1703,7 +1703,7 @@ ses.scheduleWithFixedDelay(new Task("fixed-delay"), 2, 3, TimeUnit.SECONDS);
 
 > 如果此任务的任何执行时间超过其周期，则后续执行可能会延迟开始，但并不会并行执行。
 
-- Q2：任务抛出了异常，后续任务还是否执行？
+- 任务抛出了异常，后续任务还是否执行？
 
 > 如果任务的执行遇到了任何异常，则禁止后续任务的执行。
 
@@ -1723,7 +1723,7 @@ class Task implements Runnable {
 }
 ```
 
-Runnable接口有一个问题，它的方法没有返回值。如果一个任务需要返回一个结果，那么只能保存到变量，还要额外的读取方法，非常不方便，所以Java标准库提供了一个Callable接口，和Runnable接口比，它多了一个返回值：
+`Runnable`接口有一个问题，它的方法没有返回值。如果一个任务需要返回一个结果，那么只能保存到变量，还要额外的读取方法，非常不方便，所以Java标准库提供了一个`Callable`接口，和`Runnable`接口比，它多了一个返回值：
 
 ```java
 class Task implements Callable<String> {
@@ -1733,11 +1733,11 @@ class Task implements Callable<String> {
 }
 ```
 
-并且Callable接口是一个泛型接口，可以返回指定类型的结果。
+并且`Callable`接口是一个泛型接口，可以返回指定类型的结果。
 
 现在的问题是，如何获得异步执行的结果？
 
-如果仔细看ExecutorService.submit()方法，可以看到，它返回了一个Future类型，一个Future类型的实例代表一个未来能获取结果的对象：
+如果仔细看`ExecutorService.submit()`方法，可以看到，它返回了一个`Future`类型，一个`Future`类型的实例代表一个未来能获取结果的对象：
 
 ``` java
 ExecutorService executor = Executor.newFixedThreadPool(4);
@@ -1749,22 +1749,22 @@ Future<String> future = executor.submit(task);
 String result = future.get();
 ```
 
-当我们提交了一个Callable任务之后，我们会同时获得一个Future对象，然后，我们在主线程某个时刻调用Future对象的get()方法，就可以获得异步执行的结果。在调用get()时，如果异步任务已经完成，我们就直接获取结果，如果异步任务还没完成，那么get()会阻塞，直到任务完成后才返回结果。
+当我们提交了一个`Callable`任务之后，我们会同时获得一个`Future`对象，然后，我们在主线程某个时刻调用`Future`对象的`get()`方法，就可以获得异步执行的结果。在调用`get()`时，如果异步任务已经完成，我们就直接获取结果，如果异步任务还没完成，那么`get()`会阻塞，直到任务完成后才返回结果。
 
-一个Future<V>接口表示一个未来可能返回的结果，它定义的方法有：
+一个`Future<V>`接口表示一个未来可能返回的结果，它定义的方法有：
 
-- get()：获取结果（等待任务完成）；
-- get(long timeout, TimeUnit unit)；获取结果，但只等待指定时间；
-- cancel(boolean mayInterruptIfRunning)：取消当前任务；
-- isDone()：判断任务是否已经完成
+- `get()`：获取结果（等待任务完成）；
+- `get(long timeout, TimeUnit unit)`；获取结果，但只等待指定时间；
+- `cancel(boolean mayInterruptIfRunning)`：取消当前任务；
+- `isDone()`：判断任务是否已经完成
 
 #### **CompletableFuture**
 
-使用Future获得异步执行结果时，要么调用阻塞方法get()，要么轮询查看isDone()是否为true，两种方法都不是很好，因为主线程会被迫等待。
+使用`Future`获得异步执行结果时，要么调用阻塞方法`get()`，要么轮询查看`isDone()`是否为`true`，两种方法都不是很好，因为主线程会被迫等待。
 
-从Java 8开始引入了CompletableFuture，它针对Future做了改进，可以传回调对象，当异步任务完成或发生异常的时候，自动调用对象的回调方法。
+从Java 8开始引入了`CompletableFuture`，它针对`Future`做了改进，可以传回调对象，当异步任务完成或发生异常的时候，自动调用对象的回调方法。
 
-我们以获取股票价格为例，看看如何使用CompletableFuture：
+我们以获取股票价格为例，看看如何使用`CompletableFuture`：
 
 ```java
 public class Main {
@@ -1798,7 +1798,7 @@ public class Main {
 }
 ```
 
-创建了一个CompletableFuture是通过CompletableFuture.supplyAsync()实现的，它需要一个实现了Supplier接口对象：
+创建了一个`CompletableFuture`是通过`CompletableFuture.supplyAsync()`实现的，它需要一个实现了`Supplier`接口对象：
 
 ```java
 public interface Supplier<T> {
@@ -1806,9 +1806,9 @@ public interface Supplier<T> {
 }
 ```
 
-这里我们用lambda语法简化了一下，直接传入Main::fetchPrice，因为Main.fetchPrice()静态方法的签名符合Supplier接口的定义(除了方法名以外，指返回类型)。
+这里我们用`lambda`语法简化了一下，直接传入`Main::fetchPrice`，因为`Main.fetchPrice()`静态方法的签名符合`Supplier`接口的定义(除了方法名以外，指返回类型)。
 
-紧接着，CompletableFuture已经被提交给默认的线程执行了，我们需要定义的是CompletableFuture完成时和异常时需要回调的实例。完成时，CompletableFuture会调用Consumer对象：
+紧接着，`CompletableFuture`已经被提交给默认的线程执行了，我们需要定义的是`CompletableFuture`完成时和异常时需要回调的实例。完成时，`CompletableFuture`会调用`Consumer`对象：
 
 ```java
 public interface Consumer<T> {
@@ -1816,7 +1816,7 @@ public interface Consumer<T> {
 }
 ```
 
-异常时，CompletableFuture会待哦用Function对象：
+异常时，`CompletableFuture`会调用`Function`对象：
 
 ```java
 public interface Function<T, R> {
@@ -1824,17 +1824,17 @@ public interface Function<T, R> {
 }
 ```
 
-这里我们都用lambda语法简化了代码。
+这里我们都用`lambda`语法简化了代码。
 
-可见CompletableFuture的优点是：
+可见`CompletableFuture`的优点是：
 
 - 异步任务结束时，会自动回调某个对象的方法；
 - 异步任务出错时，会自动调用某个对象的方法；
 - 主线程设置好回调后，不再关心异步任务的执行。
 
-如果只是实现了异步回调机制，我们还看不出CompletableFuture和Future的优势。
+如果只是实现了异步回调机制，我们还看不出`CompletableFuture`和`Future`的优势。
 
-CompletableFuture更强大的功能是，多个CompletableFuture可以串行执行，例如，定义两个CompletableFuture，第一个CompletableFuture根据证券名称查询证券代码，第二个CompletableFuture根据证券代码查询证券价格，使用CompletableFuture实例的thenApplyAsync方法，可以在当前任务完成的时候，立刻执行下一个任务，并且可以拿到上一个任务的返回结果，CompletableFuture实现串行操作如下：
+`CompletableFuture`更强大的功能是，多个`CompletableFuture`可以串行执行，例如，定义两个`CompletableFuture`，第一个`CompletableFuture`根据证券名称查询证券代码，第二个`CompletableFuture`根据证券代码查询证券价格，使用`CompletableFuture`实例的`thenApplyAsync`方法，可以在当前任务完成的时候，立刻执行下一个任务，并且可以拿到上一个任务的返回结果，`CompletableFuture`实现串行操作如下：
 
 ```java
 public class Main {
@@ -1869,7 +1869,7 @@ public class Main {
 }
 ```
 
-除了串行执行外，多个CompletableFuture还可以并行执行。例如，同时查询新浪和网易的证券代码，只要任意一个返回结果，就进行下一步查询价格，查询价格也同时从新浪和网易查询，只要任意一个返回结果就完成操作：
+除了串行执行外，多个`CompletableFuture`还可以并行执行。例如，同时查询新浪和网易的证券代码，只要任意一个返回结果，就进行下一步查询价格，查询价格也同时从新浪和网易查询，只要任意一个返回结果就完成操作：
 
 ```java
 public class Main {
@@ -1957,18 +1957,18 @@ public class Main {
              └─────────────┘
 ```
 
-除了anyOf()可以实现"任意个CompletableFuture只要一个成功"，allOf()可以实现"所有CompletableFuture都必须成功"，这些组合操作可以实现非常复杂的异步流程控制。
+除了`anyOf()`可以实现"任意个`CompletableFuture`只要一个成功"，`allOf()`可以实现"所有`CompletableFuture`都必须成功"，这些组合操作可以实现非常复杂的异步流程控制。
 
-最后我们注意到CompletableFuture的命名规范：
+最后我们注意到`CompletableFuture`的命名规范：
 
-- xxx()：表示该方法将继续在已有线程中执行；
-- xxxAsync()：表示将已不再线程池中执行。
+- `xxx()`：表示该方法将继续在已有线程中执行；
+- `xxxAsync()`：表示将已不再线程池中执行。
 
 #### **ForkJoin**
 
-Java 7开始引入一种新的Fork/Join线程池，它可以执行一种特殊任务：把一个大任务拆成多个小任务并行执行。
+Java 7开始引入一种新的`Fork/Join`线程池，它可以执行一种特殊任务：把一个大任务拆成多个小任务并行执行。
 
-Fork/Join的原理就是：判断一个任务是否足够小，如果是，直接计算，否则，就拆分成几个小任务分别计算，这个过程可以反复分裂成一系列小任务。
+`Fork/Join`的原理就是：判断一个任务是否足够小，如果是，直接计算，否则，就拆分成几个小任务分别计算，这个过程可以反复分裂成一系列小任务。
 
 下面观察一个例子：
 
@@ -2064,9 +2064,9 @@ class SumTask extends RecursiveTask<Long> {
 > Fork/join sum: 9788366 in 1169 ms.
 ```
 
-观察上面代码的执行过程，一个大的计算任务0～2000，首先分类为两个小人物0～1000和1000～2000，这两个任务仍然太大，继续分为0～500，500～1000，1000～1500和1500～2000，最后计算依次合并，得到最终结果。
+观察上面代码的执行过程，一个大的计算任务`0～2000`，首先分类为两个小人物`0～1000`和`1000～2000`，这两个任务仍然太大，继续分为`0～500`，`500～1000`，`1000～1500`和`1500～2000`，最后计算依次合并，得到最终结果。
 
-因此，核心代码SumTask继承自RecursiveTask，在compute()方法中，关键是如何分裂出子任务并提交：
+因此，核心代码`SumTask`继承自`RecursiveTask`，在`compute()`方法中，关键是如何分裂出子任务并提交：
 
 ``` java
 class SumTask extends RecursiveTask <Long> {
@@ -2085,11 +2085,11 @@ class SumTask extends RecursiveTask <Long> {
 }
 ```
 
-Fork/Join线程池在Java标准库中就有应用。Java标准库提供的java.util.Arrays.parallelSort(array)可以进行并行排序，它的原理就是内部通过Fork/Join对大数组进行拆分并发排序，在多核CPU上就可以大大提高排序速度。
+`Fork/Join`线程池在Java标准库中就有应用。Java标准库提供的`java.util.Arrays.parallelSort(array)`可以进行并行排序，它的原理就是内部通过`Fork/Join`对大数组进行拆分并发排序，在多核CPU上就可以大大提高排序速度。
 
 #### **ThreadLocal**
 
-多线程是Java实现多线程任务的基础，Thread对象代表一个线程，我们可以在代码中调用Thread.currentThread()获取当前线程。例如打印日志的时候，可以同时打印出线程名称：
+多线程是Java实现多线程任务的基础，`Thread`对象代表一个线程，我们可以在代码中调用`Thread.currentThread()`获取当前线程。例如打印日志的时候，可以同时打印出线程名称：
 
 ```java
 public class Main {
@@ -2130,9 +2130,9 @@ public void process (User user) {
 
 然后通过线程池去执行这些任务。
 
-观察process()方法，它的内部需要调用若干其他方法，同时，我们遇到一个问题：如何在一个线程内传递状态？
+观察`process()`方法，它的内部需要调用若干其他方法，同时，我们遇到一个问题：如何在一个线程内传递状态？
 
-process()方法需要传递的状态就是User实例，通常我们会认为直接把User作为参数直接穿进去就好了：
+`process()`方法需要传递的状态就是`User`实例，通常我们会认为直接把`User`作为参数直接穿进去就好了：
 
 ```
 public void process(User user) {
@@ -2143,7 +2143,7 @@ public void process(User user) {
 }
 ```
 
-但是往往一个方法又会调用很多其他方法，这样会导致User传递到所有地方：
+但是往往一个方法又会调用很多其他方法，这样会导致`User`传递到所有地方：
 
 ```
 void doWork (User user) {
@@ -2156,11 +2156,11 @@ void doWork (User user) {
 
 这种在一个线程中，横阔若干方法调用，需要传递的对象，我们通常称之为上下文(Context)，它是一种状态，可以是用户信息，任务信息等。
 
-给每个方法增加一个context参数非常麻烦，而且有些时候，如果调用链有无法修改的源码的第三方库，User对象就传不进去了。
+给每个方法增加一个`context`参数非常麻烦，而且有些时候，如果调用链有无法修改的源码的第三方库，`User`对象就传不进去了。
 
-Java标准库提供了一个特殊的ThreadLocal，它可以在一个线程中传递对象。
+Java标准库提供了一个特殊的`ThreadLocal`，它可以在一个线程中传递对象。
 
-ThreadLocal实例通常总是以静态字段初始化：
+`ThreadLocal`实例通常总是以静态字段初始化：
 
 ``` java
 static ThreadLocal<User> threadLocalUser = new ThreadLocal<>();
@@ -2180,7 +2180,7 @@ void processUser (User user) {
 }
 ```
 
-通过设置一个User实例关联到ThreadLocal中，在移除之前，所有方法都可以随时获取到该User实例：
+通过设置一个`User`实例关联到`ThreadLocal`中，在移除之前，所有方法都可以随时获取到该`User`实例：
 
 ```
 void step1() {
@@ -2195,17 +2195,17 @@ void log() {
 }
 ```
 
-注意到普通的方法调用一定是同一个线程执行的，所以step1(), step2()以及log()方法内部，threadLocalUser.get()获取的User对象实例是同一个。
+注意到普通的方法调用一定是同一个线程执行的，所以`step1()`, `step2()`以及`log()`方法内部，`threadLocalUser.get()`获取的`User`对象实例是同一个。
 
-实际上，可以把ThreadLocal看成一个全局Map<Thread, Object>：每个线程获取ThreadLocal变量时，总是使用Thread自身作为key：
+实际上，可以把`ThreadLocal`看成一个全局`Map<Thread, Object>`：每个线程获取`ThreadLocal`变量时，总是使用`Thread`自身作为`key`：
 
 ```
 Object threadLocalValue = threadLocalMap.get(Thread.currentThread());
 ```
 
-因此，ThreadLocal相当于给每个线程都开辟了一个独立的存储空间，各个线程的ThreadLocal关联的实例互不相干。
+因此，`ThreadLocal`相当于给每个线程都开辟了一个独立的存储空间，各个线程的`ThreadLocal`关联的实例互不相干。
 
-特别注意ThreadLocal一定要在finally中清除：
+特别注意`ThreadLocal`一定要在`finally`中清除：
 
 ``` java
 try {
@@ -2216,9 +2216,9 @@ try {
 }
 ```
 
-这是因为当前线程执行完相关代码后，很可能会被重新放入线程池，如果ThreadLocal没被清除，该线程执行其他代码是，会把上一次的状态带进去。
+这是因为当前线程执行完相关代码后，很可能会被重新放入线程池，如果`ThreadLocal`没被清除，该线程执行其他代码是，会把上一次的状态带进去。
 
-为了保证能释放ThreadLocal关联的实例，我们可以通过AutoCloseable接口配合try(resource) {...}结构，让编译器自动为我们关闭，例如，一个保存了当前用户的ThreadLocal可以封装为一个UserContext对象：
+为了保证能释放`ThreadLocal`关联的实例，我们可以通过`AutoCloseable`接口配合`try(resource) {...}`结构，让编译器自动为我们关闭，例如，一个保存了当前用户的`ThreadLocal`可以封装为一个`UserContext`对象：
 
 ```java
 public class UserContext implements AutoCloseable {
@@ -2239,7 +2239,7 @@ public class UserContext implements AutoCloseable {
 }
 ```
 
-使用的时候，我们借助try(resource){...}结构，如下：
+使用的时候，我们借助`try(resource){...}`结构，如下：
 
 ``` java
 try (var ctx = new UserContext("Bob")) {
@@ -2247,7 +2247,7 @@ try (var ctx = new UserContext("Bob")) {
 }
 ```
 
-这样就在UserContext中完全封装了ThreadLocal，外部代码在try(resource) {...}内部可以随时使用UserContext.currentUser()获取当前线程绑定的用户名。
+这样就在`UserContext`中完全封装了`ThreadLocal`，外部代码在`try(resource) {...}`内部可以随时使用`UserContext.currentUser()`获取当前线程绑定的用户名。
 
 
 
