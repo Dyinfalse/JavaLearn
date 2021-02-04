@@ -1,10 +1,47 @@
+html {
+    height: 100%;
+}
 body {
     margin: 0px;
     padding: 0px;
+    height: 100%;
 }
 
-body a {
-    color: #444444;
+body span {
+    color: #fff;
     display: block;
     text-decoration: none;
+}
+
+#flex-box {
+    display: flex;
+    height: 100%;
+}
+
+#flex-box #index {
+    width: 300px;
+    background: #79a2a0;
+}
+
+#flex-box #index span {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 30px;
+    cursor: pointer;
+}
+#flex-box #index span.active {
+    background: #608180;
+}
+#flex-box #index span:hover {
+    background: #608180;
+}
+
+#flex-box .content {
+    flex: 1;
+}
+
+#flex-box .content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
 }

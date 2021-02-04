@@ -6,12 +6,22 @@
     <script class="script" th:src="@{/js/blogIndex.js}"></script>
 </head>
 <body>
-    <a href="/blog/javascript_3" target="_blank">《javascript权威指南（第三版）》阅读分析</a>
-    <a href="/blog/spring_mvc" target="_blank">《SpringMVC学习指南》阅读分析</a>
-    <a href="/blog/spring_boot_kfsz" target="_blank">《SpringBoot开发实战》阅读分析</a>
-    <a href="/blog/java_fxlj" target="_blank">java范型</a>
-    <a href="/blog/java_collection" target="_blank">java集合</a>
-    <a href="/blog/java_thread" target="_blank">java多线程</a>
-    <a href="/blog/network" target="_blank">网络编程</a>
+    <div id="flex-box">
+        <div id="index">
+            <span id="/blog/javascript_3" class="active">《javascript权威指南（第三版）》</span>
+            <span id="/blog/spring_mvc">《SpringMVC学习指南》小结</span>
+            <span id="/blog/spring_boot_kfsz">《SpringBoot开发实战》小结</span>
+            <span id="/blog/java_fxlj">java范型</span>
+            <span id="/blog/java_collection">java集合</span>
+            <span id="/blog/java_thread">java多线程</span>
+            <span id="/blog/network">网络编程</span>
+            <span id="/blog/mysql">mysql</span>
+            <span id="/blog/jsrc">JS日常</span>
+            <span id="/blog/sygj">实用工具</span>
+        </div>
+        <div class="content">
+            <iframe id="iframe" src="/blog/javascript_3" />
+        </div>
+    </div>
 </body>
 </html>
