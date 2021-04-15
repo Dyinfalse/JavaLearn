@@ -224,6 +224,9 @@ table {
     width: 100%;
 }
 
-#select {
+.code-style {
     position: fixed;
+    font-size: 12px;
+    background: #fff;
+    padding: 3px;
 }

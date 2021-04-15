@@ -51,7 +51,7 @@ public class MarkdownServiceImpl implements MarkdownService {
                 }
             }
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
 
         return cssList;

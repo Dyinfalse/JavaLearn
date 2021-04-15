@@ -8,7 +8,10 @@
     <script class="script" th:src="@{/js/blog.js}"></script>
 </head>
     <body>
-        <select name="css" value="androidstudio.css" id="select"></select>
+        <div class="code-style">
+            <span>代码风格</span>
+            <select name="css" value="androidstudio.css" id="select"></select>
+        </div>
         <article class="markdown-body" th:utext="${html}"></article>
     </body>
 </html>

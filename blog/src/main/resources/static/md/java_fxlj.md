@@ -164,10 +164,12 @@ Pair<String, Integer> pair = new Pair<>("String", "Integer");
 
 Java 在实现泛型的时候采用的是擦拭法，当我们开发一个泛型类 `Pair<T>` 的时候，虚拟机根本不知道泛型这回事
 因为编译器会把所有 `<T>` 都擦拭成 `Object`，只在需要转型的时候编译器会根据`<T>`类型自动安全转型，所以这也导致了一些问题，比如
+
 - 泛型类型不能是基本数据类型，`Pair<int> p = new Pair<>(1,2);`， 类似这样的代码会编译错误。
-- 无法获取带有泛型的`Class`， 因为`Pair<String> p1 = new Pair<>()`和`Pair<Integer> p2 = new Pair<>()`其实是统一个类，`p1.getClass() == p2.getClass()`显示结果为`true`。
+- 无法获取带有泛型的`Class`， 因为`Pair<String> p1 = new Pair<>()`和`Pair<Integer> p2 = new Pair<>()`其实是同一个类，`p1.getClass() == p2.getClass()`显示结果为`true`。
 - 不能直接实例化`<T>`因为`new T()`会被擦拭成`new Object()`, 这样无法区分类型，所以会被编译器阻止，只能通过`Class.newInstance`来实现实例化泛型类(其实是利用反射)
 - 导致不正确的覆写比如下面这个例子
+
 ```java
 public class Pair<T> {
     public boolean equals(T t){
